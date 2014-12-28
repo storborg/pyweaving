@@ -3,7 +3,7 @@ Python Weaving Tools
 
 Author: `Scott Torborg <http://www.scotttorborg.com>`_
 
-The goal of ``pyweaving`` is to provide functionality to::
+The goal of ``pyweaving`` is to provide functionality to:
 
 * Parse and write WIF files, with an object-based interface
 * Render weave drafts to images
@@ -13,7 +13,11 @@ The goal of ``pyweaving`` is to provide functionality to::
 * Check a WIF file for validity
 * Generate a draft from scratch based on some parameters: for example, simple twills or double weaves
 
-Right now, it is under early development and can't do much of anything.
+Right now, it provides basic functionality for parsing a WIF file to render a draft. Here's an example:
+
+.. image:: 63365.png
+
+Draft by Nathaniel Stimson, from `HandWeaving.net <http://www.handweaving.net/PatternDisplay.aspx?PATTERNID=63365>`_.
 
 .. seealso::
 
