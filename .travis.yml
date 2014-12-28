@@ -1,0 +1,15 @@
+language: python
+
+python:
+  - "2.7"
+
+install:
+  - "pip install coverage nose-cover3 flake8 --use-mirrors"
+  - "pip install -e . --use-mirrors"
+
+before_script: "flake8 pyweaving"
+
+script:  "nosetests"
+
+after_success:
+  - coveralls

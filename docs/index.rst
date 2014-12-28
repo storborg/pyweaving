@@ -1,0 +1,41 @@
+Python Weaving Tools
+====================
+
+Author: `Scott Torborg <http://www.scotttorborg.com>`_
+
+The goal of ``pyweaving`` is to provide functionality to::
+
+* Parse and write WIF files, with an object-based interface
+* Render weave drafts to images
+* Render weave drafts to PDF or SVG
+* Calculate resource utilization of a pattern (in the form of thread/yarn by color or type)
+* Simplify drafts (reduce the number of harnesses or treadles to the bare minimum that are required to produce the same weave, or reduce the number of treadles active at any given time)
+* Check a WIF file for validity
+* Generate a draft from scratch based on some parameters: for example, simple twills or double weaves
+
+Right now, it is under early development and can't do much of anything.
+
+.. seealso::
+
+    `What's WIF Got to Do With It? <http://www.weavezine.com/content/whats-wif-got-do-it>`_
+        A brief overview of the history and purpose of WIF.
+
+    `The WIF Specification <http://www.mhsoft.com/wif/wif1-1.txt>`_
+        The canonical WIF 1.1 specification, published April 1997.
+
+
+Contents
+========
+
+.. toctree::
+    :maxdepth: 2
+
+    api
+    contributing
+
+
+Indices and Tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`

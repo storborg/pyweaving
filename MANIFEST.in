@@ -1,0 +1,10 @@
+include README.rst
+include CHANGES
+include LICENSE
+include tox.ini
+recursive-include docs *
+recursive-include pyweaving/tests/samples *
+
+prune docs/_build
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
