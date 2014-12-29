@@ -12,6 +12,8 @@ The goal of ``pyweaving`` is to provide functionality to:
 * Simplify drafts (reduce the number of harnesses or treadles to the bare minimum that are required to produce the same weave, or reduce the number of treadles active at any given time)
 * Check a WIF file for validity
 * Generate a draft from scratch based on some parameters: for example, simple twills or double weaves
+* Interchange with a JSON-based representation of the draft for use in client-side web apps.
+* Support rendering drafts with a representation of variable-thickness threads/yarns. E.g. if a given weft thread is narrower than others, that pick should be shorter (fewer pixels tall) than others.
 
 Right now, it provides basic functionality for parsing a WIF file to render a draft. Here's an example:
 
