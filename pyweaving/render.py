@@ -9,21 +9,23 @@ font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 
 
 class ImageRenderer(object):
-    def __init__(self, draft):
+    def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10):
         self.draft = draft
 
-        # XXX Allow these options to be customized
+        self.liftplan = liftplan
 
-        self.liftplan = False
+        self.margin_pixels = margin_pixels
+        self.pixels_per_square = scale
 
-        self.margin_pixels = 20
-        self.pixels_per_square = 10
+        # XXX Allow these colors to be customized
         self.background = (255, 255, 255)
         self.foreground = (127, 127, 127)
         self.markers = (0, 0, 0)
         self.numbering = (200, 0, 0)
 
-        self.font = ImageFont.truetype(font_path, 12)
+        self.font_size = int(round(scale * 1.2))
+
+        self.font = ImageFont.truetype(font_path, self.font_size)
 
     def pad_image(self, im):
         w, h = im.size
@@ -55,7 +57,7 @@ class ImageRenderer(object):
         self.paint_threading(draw)
 
         self.paint_weft(draw)
-        if self.draft.liftplan:
+        if self.liftplan:
             self.paint_liftplan(draw)
         else:
             self.paint_tieup(draw)
@@ -139,8 +141,41 @@ class ImageRenderer(object):
                            fill=thread.color.rgb)
 
     def paint_liftplan(self, draw):
-        # XXX
-        pass
+        num_threads = len(self.draft.weft)
+
+        offsetx = (1 + len(self.draft.warp)) * self.pixels_per_square
+        offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
+        for ii, thread in enumerate(self.draft.weft):
+            starty = (ii * self.pixels_per_square) + offsety
+            endy = starty + self.pixels_per_square
+
+            for jj, shaft in enumerate(self.draft.shafts):
+                startx = (jj * self.pixels_per_square) + offsetx
+                endx = startx + self.pixels_per_square
+                draw.rectangle((startx, starty, endx, endy),
+                               outline=self.foreground)
+
+                if shaft in thread.connected_shafts:
+                    # draw liftplan marker
+                    self.paint_fill_marker(draw, (startx, starty, endx, endy))
+
+            # paint the number if it's a multiple of 4
+            thread_no = ii + 1
+            if ((thread_no != num_threads) and
+                (thread_no != 0) and
+                    (thread_no % 4 == 0)):
+                # draw line
+                startx = endx
+                starty = endy
+                endx = startx + (2 * self.pixels_per_square)
+                endy = starty
+                draw.line((startx, starty, endx, endy),
+                          fill=self.numbering)
+                # draw text
+                draw.text((startx + 2, starty - 2 - self.font_size),
+                          str(thread_no),
+                          font=self.font,
+                          fill=self.numbering)
 
     def paint_tieup(self, draw):
         offsetx = (1 + len(self.draft.warp)) * self.pixels_per_square
@@ -229,7 +264,7 @@ class ImageRenderer(object):
                 draw.line((startx, starty, endx, endy),
                           fill=self.numbering)
                 # draw text
-                draw.text((startx + 2, starty - 2 - 12),
+                draw.text((startx + 2, starty - 2 - self.font_size),
                           str(thread_no),
                           font=self.font,
                           fill=self.numbering)

@@ -22,6 +22,17 @@ class Thread(object):
             assert dir == 'weft', "only weft threads can have treadles"
             self.treadles = treadles or set()
 
+    @property
+    def connected_shafts(self):
+        if self.shafts:
+            return self.shafts
+        else:
+            assert self.treadles
+            ret = set()
+            for treadle in self.treadles:
+                ret.update(treadle.shafts)
+            return ret
+
     def __repr__(self):
         return '<Thread %s color:%s>' % (self.dir, self.color.rgb)
 
@@ -137,15 +148,8 @@ class Draft(object):
         warp_thread = self.warp[x]
         weft_thread = self.weft[y]
 
-        if self.liftplan:
-            shafts = weft_thread.shafts
-        else:
-            treadles = weft_thread.treadles
-            shafts = set()
-            for treadle in treadles:
-                shafts.update(treadle.shafts)
-
-        warp_at_rest = shafts.isdisjoint(warp_thread.shafts)
+        connected_shafts = weft_thread.connected_shafts
+        warp_at_rest = connected_shafts.isdisjoint(warp_thread.shafts)
         if warp_at_rest ^ self.rising_shed:
             return warp_thread
         else:
