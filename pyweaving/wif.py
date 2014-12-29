@@ -10,7 +10,7 @@ class WIFReader(object):
         Range (which might be 0-65535 instead of 0-255). Scale accordingly or
         whatever, normalize to our color objects.
     """
-    allowed_units = ('Decipoints', 'Inches', 'Centimeters')
+    allowed_units = ('decipoints', 'inches', 'centimeters')
 
     def __init__(self, filename):
         self.config = RawConfigParser()
@@ -28,7 +28,7 @@ class WIFReader(object):
 
     def put_warp(self, draft, wif_palette):
         warp_thread_count = self.config.getint('WARP', 'Threads')
-        warp_units = self.config.get('WARP', 'Units')
+        warp_units = self.config.get('WARP', 'Units').lower()
         assert warp_units in self.allowed_units, \
             "Warp Units of %r is not understood" % warp_units
 
@@ -41,6 +41,14 @@ class WIFReader(object):
             warp_color_map = {}
             for thread_no, value in self.config.items('WARP COLORS'):
                 warp_color_map[int(thread_no)] = int(value)
+        else:
+            warp_color_map = None
+
+        warp_color = None
+        if not warp_color_map:
+            # try to get warp color from WARP section
+            has_warp_colors = False
+            warp_color = self.config.getint('WARP', 'Color')
 
         has_threading = self.getbool('CONTENTS', 'THREADING')
 
@@ -59,7 +67,7 @@ class WIFReader(object):
                 if has_warp_colors:
                     color = wif_palette[warp_color_map[thread_no]]
                 else:
-                    color = None
+                    color = wif_palette[warp_color]
 
                 if has_threading:
                     shafts = set(draft.shafts[shaft_no - 1]
@@ -87,6 +95,14 @@ class WIFReader(object):
             weft_color_map = {}
             for thread_no, value in self.config.items('WEFT COLORS'):
                 weft_color_map[int(thread_no)] = int(value)
+        else:
+            weft_color_map = None
+
+        weft_color = None
+        if not weft_color_map:
+            # try to get weft color from WEFT section
+            has_weft_colors = False
+            weft_color = self.config.getint('WEFT', 'Color')
 
         has_liftplan = self.getbool('CONTENTS', 'LIFTPLAN')
 
@@ -110,7 +126,7 @@ class WIFReader(object):
                 if has_weft_colors:
                     color = wif_palette[weft_color_map[thread_no]]
                 else:
-                    color = None
+                    color = wif_palette[weft_color]
 
                 if has_liftplan:
                     shafts = set(draft.shafts[shaft_no - 1]
