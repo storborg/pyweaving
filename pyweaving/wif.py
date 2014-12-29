@@ -83,7 +83,7 @@ class WIFReader(object):
 
     def put_weft(self, draft, wif_palette):
         weft_thread_count = self.config.getint('WEFT', 'Threads')
-        weft_units = self.config.get('WEFT', 'Units')
+        weft_units = self.config.get('WEFT', 'Units').lower()
         assert weft_units in self.allowed_units, \
             "Weft Units of %r is not understood" % weft_units
         # weft_spacing = self.config.get('WEFT', 'Spacing')
