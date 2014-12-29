@@ -1,3 +1,4 @@
+from copy import deepcopy
 from datetime import date
 
 
@@ -137,7 +138,7 @@ class Draft(object):
         self.notes = ''
 
     def copy(self):
-        pass
+        return deepcopy(self)
 
     def compute_drawdown_at(self, position):
         """
@@ -261,7 +262,7 @@ class Draft(object):
         the left side of the fabric becomes the right, and the right becomes
         the left.
         """
-        raise NotImplementedError
+        self.warp.reverse()
 
     def flip_warpwise(self):
         """
@@ -269,4 +270,4 @@ class Draft(object):
         the near side of the fabric becomes the far, and the far becomes
         the near.
         """
-        raise NotImplementedError
+        self.weft.reverse()
