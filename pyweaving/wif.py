@@ -117,8 +117,12 @@ class WIFReader(object):
         if has_treadling:
             treadling_map = {}
             for thread_no, value in self.config.items('TREADLING'):
-                treadling_map[int(thread_no)] = \
-                    [int(tn) for tn in value.split(',')]
+                try:
+                    treadles = [int(tn) for tn in value.split(',')]
+                except ValueError:
+                    pass
+                else:
+                    treadling_map[int(thread_no)] = treadles
 
         for thread_no in range(1, weft_thread_count + 1):
             if (has_liftplan and (thread_no in liftplan_map)) or \
