@@ -1,4 +1,4 @@
-from . import Draft, Thread
+from .. import Draft, Thread
 
 
 def twill():
