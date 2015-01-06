@@ -9,7 +9,9 @@ font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 
 
 class ImageRenderer(object):
-    def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10):
+    def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10,
+                 foreground=(127, 127, 127), background=(255, 255, 255),
+                 markers=(0, 0, 0), numbering=(200, 0, 0)):
         self.draft = draft
 
         self.liftplan = liftplan
@@ -17,11 +19,10 @@ class ImageRenderer(object):
         self.margin_pixels = margin_pixels
         self.pixels_per_square = scale
 
-        # XXX Allow these colors to be customized
-        self.background = (255, 255, 255)
-        self.foreground = (127, 127, 127)
-        self.markers = (0, 0, 0)
-        self.numbering = (200, 0, 0)
+        self.background = background
+        self.foreground = foreground
+        self.markers = markers
+        self.numbering = numbering
 
         self.font_size = int(round(scale * 1.2))
 
