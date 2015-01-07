@@ -1,28 +1,32 @@
 from .. import Draft, Thread
 
 
-def twill():
-    # just generates 2/2 twill for now
+def twill(size=2):
+    # float=2 --> 2/2 twill
+    # float=3 --> 3/3 twill
+    # float=4 --> 4/4 twill
+    # etc
 
-    # we'll need 4 shafts and 4 treadles
-    draft = Draft(num_shafts=4, num_treadles=4)
+    # we'll need 2 shafts / treadles per float thread
+    shafts = 2 * size
+    draft = Draft(num_shafts=shafts, num_treadles=shafts)
 
     # do tie-up
-    for ii in range(4):
-        draft.treadles[ii].shafts.add(draft.shafts[ii])
-        draft.treadles[ii].shafts.add(draft.shafts[(ii + 1) % 4])
+    for ii in range(shafts):
+        for jj in range(size):
+            draft.treadles[ii].shafts.add(draft.shafts[(ii + jj) % shafts])
 
-    for ii in range(20):
+    for ii in range(8 * size):
         draft.warp.append(Thread(
             dir='warp',
-            color=(0, 160, 0),
-            shafts=set([draft.shafts[ii % 4]]),
+            color=(0, 0, 100),
+            shafts=set([draft.shafts[ii % shafts]]),
         ))
 
         draft.weft.append(Thread(
             dir='weft',
-            color=(160, 0, 0),
-            treadles=set([draft.treadles[ii % 4]]),
+            color=(255, 255, 255),
+            treadles=set([draft.treadles[ii % shafts]]),
         ))
 
     return draft
