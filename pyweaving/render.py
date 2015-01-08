@@ -671,6 +671,9 @@ class SVGRenderer(object):
                                                   thread.color.css)))
         doc.append(SVG.g(*grp))
 
+    def render_to_string(self):
+        return self.make_svg_doc()
+
     def save(self, filename):
         s = self.make_svg_doc()
         with open(filename, 'w') as f:
