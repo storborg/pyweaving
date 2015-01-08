@@ -3,6 +3,9 @@ from datetime import date
 
 
 class Color(object):
+    """
+    A color type. Internally stored as RGB, and does not support transparency.
+    """
     def __init__(self, rgb):
         if not isinstance(rgb, tuple):
             rgb = tuple(rgb)
@@ -17,6 +20,9 @@ class Color(object):
 
 
 class Thread(object):
+    """
+    Represents a single thread, either weft or warp.
+    """
     def __init__(self, dir, color=None, shafts=None, treadles=None):
         self.dir = dir
         if color and not isinstance(color, Color):
@@ -43,90 +49,35 @@ class Thread(object):
 
 
 class Shaft(object):
-    def __init__(self, index):
-        self.index = index
+    """
+    Represents a single shaft of the loom.
+    """
+    pass
 
 
 class Treadle(object):
-    def __init__(self, index, shafts=None):
-        self.index = index
+    """
+    Represents a single treadle of the loom.
+    """
+    def __init__(self, shafts=None):
         self.shafts = shafts or set()
 
 
 class Draft(object):
     """
-    Internal data model:
-
-    Fields which are really save-specific:
-        - version (1.1)
-        - source program
-        - source version
-        - developers
-
-    Plain fields:
-        - date
-        - title
-        - author
-        - address
-        - email
-        - telephone
-        - fax
-
-    Notes:
-        - notes -- multi-line, stored in WIF as line-no-referenced
-
-    Weaving:
-        * shafts (generate from threading)
-        * treadles (generate from tie-up or treadling)
-        - rising shed (bool)
-
-    Warp:
-        * threads (generate from wrap thread listing)
-        * warp palette (generate from warp thread listing)
-        - symbol (??)
-        - symbol number (??)
-        - units (optional, required if spacing or thickness is used)
-            -- Decipoints, Inches, or Centimeters in the WIF spec
-        - spacing (optional, real)
-        - thickness (optional, real)
-        - spacing zoom (??)
-        - thickness zoom (??)
-
-    Weft:
-        * threads (generate from weft thread listing)
-        * weft palette (generate from weft thread listing)
-        - symbol (??)
-        - symbol number (??)
-        - units (optional, required if spacing or thickness is used)
-            -- Decipoints, Inches, or Centimeters in the WIF spec
-        - spacing (optional, real)
-        - thickness (optional, real)
-        - spacing zoom (??)
-        - thickness zoom (??)
-
-    Tieup: (mapping of shafts to treadles)
-        - ???
-
-    Threading: (mapping of threads to shafts)
-        - ???
-
-    Treadling: (treadles used for each weft row) -- use either this OR
-    liftplan?
-
-    Liftplan: (shafts used for each weft row) -- use either this OR treadling?
-
+    The core representation of a weaving draft.
     """
     def __init__(self, num_shafts, num_treadles=0, rising_shed=True):
         self.liftplan = (num_treadles == 0)
         self.rising_shed = rising_shed
 
         self.shafts = []
-        for ii in range(num_shafts):
-            self.shafts.append(Shaft(index=ii))
+        for __ in range(num_shafts):
+            self.shafts.append(Shaft())
 
         self.treadles = []
-        for ii in range(num_treadles):
-            self.treadles.append(Treadle(index=ii))
+        for __ in range(num_treadles):
+            self.treadles.append(Treadle())
 
         self.warp = []
         self.weft = []
@@ -142,6 +93,9 @@ class Draft(object):
         self.notes = ''
 
     def copy(self):
+        """
+        Make a complete copy of this draft.
+        """
         return deepcopy(self)
 
     def compute_drawdown_at(self, position):
@@ -172,7 +126,8 @@ class Draft(object):
 
     def compute_floats(self):
         """
-        Return an iterator over every float, yielding a tuple for each one:
+        Return an iterator over every float, yielding a tuple for each one::
+
             (start, end, visible, length, thread)
         """
         num_warp_threads = len(self.warp)

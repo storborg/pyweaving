@@ -5,10 +5,7 @@ from . import Draft, Thread
 
 class WIFReader(object):
     """
-    FIXME:
-        - Use the COLOR PALETTE section, take particular note of Form (RGB) and
-        Range (which might be 0-65535 instead of 0-255). Scale accordingly or
-        whatever, normalize to our color objects.
+    A reader for a specific WIF file.
     """
     allowed_units = ('decipoints', 'inches', 'centimeters')
 
@@ -159,6 +156,9 @@ class WIFReader(object):
                 treadle.shafts.add(shaft)
 
     def read(self):
+        """
+        Perform the actual parsing, and return a Draft instance.
+        """
         self.config = RawConfigParser()
         self.config.read(self.filename)
 
@@ -206,11 +206,15 @@ class WIFReader(object):
 
 
 class WIFWriter(object):
-
+    """
+    A writer for a WIF file.
+    """
     def __init__(self, filename):
         self.filename = filename
 
-    def write(self):
-        config = RawConfigParser()
+    def write(self, draft):
+        self.config = RawConfigParser()
 
-        config.write(self.filename)
+        self.config.set('WIF', 'Date', draft.date)
+
+        self.config.write(self.filename)
