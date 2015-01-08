@@ -1,5 +1,8 @@
 import os.path
+import tempfile
 
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -679,4 +682,7 @@ class PDFRenderer(object):
         self.draft = draft
 
     def save(self, filename):
-        raise NotImplementedError
+        with tempfile.NamedTemporaryFile() as f:
+            SVGRenderer(self.draft).save(f.name)
+            rldrawing = svg2rlg(f.name)
+        renderPDF.drawToFile(rldrawing, filename)
