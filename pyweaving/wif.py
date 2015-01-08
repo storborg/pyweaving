@@ -207,6 +207,10 @@ class WIFReader(object):
 
 class WIFWriter(object):
 
-    def write(self, filename):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def write(self):
         config = RawConfigParser()
-        config.write(filename)
+
+        config.write(self.filename)
