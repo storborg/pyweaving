@@ -13,8 +13,7 @@ class WIFReader(object):
     allowed_units = ('decipoints', 'inches', 'centimeters')
 
     def __init__(self, filename):
-        self.config = RawConfigParser()
-        self.config.read(filename)
+        self.filename = filename
 
     def getbool(self, section, option):
         if self.config.has_option(section, option):
@@ -160,6 +159,9 @@ class WIFReader(object):
                 treadle.shafts.add(shaft)
 
     def read(self):
+        self.config = RawConfigParser()
+        self.config.read(self.filename)
+
         rising_shed = self.getbool('WEAVING', 'Rising Shed')
         num_shafts = self.config.getint('WEAVING', 'Shafts')
         num_treadles = self.config.getint('WEAVING', 'Treadles')
