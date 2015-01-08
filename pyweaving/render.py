@@ -38,7 +38,7 @@ class ImageRenderer(object):
 
     def make_pil_image(self):
         width_squares = len(self.draft.warp) + 6
-        if self.draft.liftplan:
+        if self.liftplan:
             width_squares += len(self.draft.shafts)
         else:
             width_squares += len(self.draft.treadles)
@@ -125,7 +125,7 @@ class ImageRenderer(object):
     def paint_weft(self, draw):
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
         startx_squares = len(self.draft.warp) + 5
-        if self.draft.liftplan:
+        if self.liftplan:
             startx_squares += len(self.draft.shafts)
         else:
             startx_squares += len(self.draft.treadles)
@@ -270,22 +270,7 @@ class ImageRenderer(object):
                           font=self.font,
                           fill=self.numbering)
 
-    def paint_drawdown_cells(self, draw):
-        offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
-
-        for ii, warp_thread in enumerate(self.draft.warp):
-            for jj, weft_thread in enumerate(self.draft.weft):
-                startx = ii * self.pixels_per_square
-                endx = startx + self.pixels_per_square
-                starty = (jj * self.pixels_per_square) + offsety
-                endy = starty + self.pixels_per_square
-
-                visible_thread = self.draft.compute_drawdown_at((ii, jj))
-                draw.rectangle((startx, starty, endx, endy),
-                               outline=self.foreground,
-                               fill=visible_thread.color.rgb)
-
-    def paint_drawdown_floats(self, draw):
+    def paint_drawdown(self, draw):
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
         floats = self.draft.compute_floats()
 
@@ -298,8 +283,6 @@ class ImageRenderer(object):
                 draw.rectangle((startx, starty, endx, endy),
                                outline=self.foreground,
                                fill=thread.color.rgb)
-
-    paint_drawdown = paint_drawdown_floats
 
     def show(self):
         im = self.make_pil_image()
