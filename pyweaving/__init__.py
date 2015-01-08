@@ -11,6 +11,10 @@ class Color(object):
     def __eq__(self, other):
         return self.rgb == other.rgb
 
+    @property
+    def css(self):
+        return 'rgb(%d, %d, %d)' % self.rgb
+
 
 class Thread(object):
     def __init__(self, dir, color=None, shafts=None, treadles=None):

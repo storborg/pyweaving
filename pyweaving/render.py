@@ -293,6 +293,387 @@ class ImageRenderer(object):
         im.save(filename)
 
 
+svg_header = '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">'''
+
+
+class TagGenerator(object):
+    def __getattr__(self, name):
+        def tag(*children, **attrs):
+            inner = ''.join(children)
+            if attrs:
+                attrs = ' '.join(['%s="%s"' % (key.replace('_', '-'), val)
+                                  for key, val in attrs.items()])
+                return '<%s %s>%s</%s>' % (name, attrs, inner, name)
+            else:
+                return '<%s>%s</%s>' % (name, inner, name)
+        return tag
+
+
+SVG = TagGenerator()
+
+
+class SVGRenderer(object):
+    def __init__(self, draft, liftplan=None, scale=10,
+                 foreground='#7f7f7f', background='#ffffff',
+                 markers='#000000', numbering='#c80000'):
+        self.draft = draft
+
+        self.liftplan = liftplan
+
+        self.scale = scale
+
+        self.background = background
+        self.foreground = foreground
+        self.markers = markers
+        self.numbering = numbering
+
+        self.font_family = 'Arial, sans-serif'
+        self.font_size = 12
+
+    def make_svg_doc(self):
+        width_squares = len(self.draft.warp) + 6
+        if self.liftplan:
+            width_squares += len(self.draft.shafts)
+        else:
+            width_squares += len(self.draft.treadles)
+
+        height_squares = len(self.draft.weft) + 6 + len(self.draft.shafts)
+
+        width = width_squares * self.scale
+        height = height_squares * self.scale
+
+        doc = []
+        # Use a negative starting point so we don't have to offset everything
+        # in the drawing.
+        doc.append(svg_header.format(width=width, height=height))
+
+        self.write_metadata(doc)
+
+        self.paint_warp(doc)
+        self.paint_threading(doc)
+
+        self.paint_weft(doc)
+        if self.liftplan:
+            self.paint_liftplan(doc)
+        else:
+            self.paint_tieup(doc)
+            self.paint_treadling(doc)
+
+        self.paint_drawdown(doc)
+        doc.append('</svg>')
+        return '\n'.join(doc)
+
+    def write_metadata(self, doc):
+        doc.append(SVG.title(self.draft.title))
+
+    def paint_warp(self, doc):
+        starty = 0
+        grp = []
+        for ii, thread in enumerate(self.draft.warp):
+            # paint box, outlined with foreground color, filled with thread
+            # color
+            startx = self.scale * ii
+            grp.append(SVG.rect(
+                x=startx, y=starty,
+                width=self.scale, height=self.scale,
+                style='stroke:%s; fill:%s' % (self.foreground,
+                                              thread.color.css)))
+        doc.append(SVG.g(*grp))
+
+    def paint_weft(self, doc):
+        offsety = (6 + len(self.draft.shafts)) * self.scale
+        startx_squares = len(self.draft.warp) + 5
+        if self.liftplan:
+            startx_squares += len(self.draft.shafts)
+        else:
+            startx_squares += len(self.draft.treadles)
+        startx = startx_squares * self.scale
+
+        grp = []
+        for ii, thread in enumerate(self.draft.weft):
+            # paint box, outlined with foreground color, filled with thread
+            # color
+            starty = (self.scale * ii) + offsety
+            grp.append(SVG.rect(
+                x=startx, y=starty,
+                width=self.scale, height=self.scale,
+                style='stroke:%s; fill:%s' % (self.foreground,
+                                              thread.color.css)))
+        doc.append(SVG.g(*grp))
+
+    def paint_fill_marker(self, doc, box):
+        startx, starty, endx, endy = box
+        # XXX FIXME make box setback generated from scale fraction
+        assert self.scale > 8
+        doc.append(SVG.rect(
+            x=startx + 2,
+            y=starty + 2,
+            width=self.scale - 4,
+            height=self.scale - 4,
+            style='fill:%s' % self.markers))
+
+    def paint_threading(self, doc):
+        num_threads = len(self.draft.warp)
+        num_shafts = len(self.draft.shafts)
+
+        grp = []
+        for ii, thread in enumerate(self.draft.warp):
+            startx = (num_threads - ii - 1) * self.scale
+            endx = startx + self.scale
+
+            for jj, shaft in enumerate(self.draft.shafts):
+                starty = (4 + (num_shafts - jj)) * self.scale
+                endy = starty + self.scale
+                grp.append(SVG.rect(
+                    x=startx, y=starty,
+                    width=self.scale, height=self.scale,
+                    style='stroke:%s; fill:%s' % (self.foreground,
+                                                  self.background)))
+
+                if shaft in thread.shafts:
+                    # draw threading marker
+                    self.paint_fill_marker(grp, (startx, starty, endx, endy))
+
+            # paint the number if it's a multiple of 4
+            thread_no = ii + 1
+            if ((thread_no != num_threads) and
+                (thread_no != 0) and
+                    (thread_no % 4 == 0)):
+                # draw line
+                startx = endx = (num_threads - ii - 1) * self.scale
+                starty = 3 * self.scale
+                endy = (5 * self.scale) - 1
+                grp.append(SVG.line(
+                    x1=startx,
+                    y1=starty,
+                    x2=endx,
+                    y2=endy,
+                    style='stroke:%s' % self.numbering))
+                # draw text
+                grp.append(SVG.text(
+                    str(thread_no),
+                    x=(startx + 3),
+                    y=(starty + self.font_size),
+                    style='font-family:%s; font-size:%s; fill:%s' % (
+                        self.font_family,
+                        self.font_size,
+                        self.numbering)))
+        doc.append(SVG.g(*grp))
+
+    def paint_liftplan(self, doc):
+        num_threads = len(self.draft.weft)
+
+        offsetx = (1 + len(self.draft.warp)) * self.scale
+        offsety = (6 + len(self.draft.shafts)) * self.scale
+
+        grp = []
+        for ii, thread in enumerate(self.draft.weft):
+            starty = (ii * self.scale) + offsety
+            endy = starty + self.scale
+
+            for jj, shaft in enumerate(self.draft.shafts):
+                startx = (jj * self.scale) + offsetx
+                endx = startx + self.scale
+                grp.append(SVG.rect(
+                    x=startx,
+                    y=starty,
+                    width=self.scale,
+                    height=self.scale,
+                    style='stroke:%s; fill:%s' % (self.foreground,
+                                                  self.background)))
+
+                if shaft in thread.connected_shafts:
+                    # draw liftplan marker
+                    self.paint_fill_marker(grp, (startx, starty, endx, endy))
+
+            # paint the number if it's a multiple of 4
+            thread_no = ii + 1
+            if ((thread_no != num_threads) and
+                (thread_no != 0) and
+                    (thread_no % 4 == 0)):
+                # draw line
+                startx = endx
+                starty = endy
+                endx = startx + (2 * self.scale)
+                endy = starty
+                grp.append(SVG.line(
+                    x1=startx,
+                    y1=starty,
+                    x2=endx,
+                    y2=endy,
+                    style='stroke:%s' % self.numbering))
+                # draw text
+                grp.append(SVG.text(
+                    str(thread_no),
+                    x=(startx + 3),
+                    y=(starty - 4),
+                    style='font-family:%s; font-size:%s; fill:%s' % (
+                        self.font_family,
+                        self.font_size,
+                        self.numbering)))
+        doc.append(SVG.g(*grp))
+
+    def paint_tieup(self, doc):
+        offsetx = (1 + len(self.draft.warp)) * self.scale
+        offsety = 5 * self.scale
+
+        num_treadles = len(self.draft.treadles)
+        num_shafts = len(self.draft.shafts)
+
+        grp = []
+        for ii, treadle in enumerate(self.draft.treadles):
+            startx = (ii * self.scale) + offsetx
+            endx = startx + self.scale
+
+            treadle_no = ii + 1
+
+            for jj, shaft in enumerate(self.draft.shafts):
+                starty = (((num_shafts - jj - 1) * self.scale) +
+                          offsety)
+                endy = starty + self.scale
+
+                grp.append(SVG.rect(
+                    x=startx,
+                    y=starty,
+                    width=self.scale,
+                    height=self.scale,
+                    style='stroke:%s; fill:%s' % (self.foreground,
+                                                  self.background)))
+
+                if shaft in treadle.shafts:
+                    self.paint_fill_marker(grp, (startx, starty, endx, endy))
+
+                # on the last treadle, paint the shaft markers
+                if treadle_no == num_treadles:
+                    shaft_no = jj + 1
+                    if (shaft_no != 0) and (shaft_no % 4 == 0):
+                        # draw line
+                        line_startx = endx
+                        line_endx = line_startx + (2 * self.scale)
+                        line_starty = line_endy = starty
+                        grp.append(SVG.line(
+                            x1=line_startx,
+                            y1=line_starty,
+                            x2=line_endx,
+                            y2=line_endy,
+                            style='stroke:%s' % self.numbering))
+                        grp.append(SVG.text(
+                            str(shaft_no),
+                            x=(line_startx + 3),
+                            y=(line_starty + 2 + self.font_size),
+                            style='font-family:%s; font-size:%s; fill:%s' % (
+                                self.font_family,
+                                self.font_size,
+                                self.numbering)))
+
+            # paint the number if it's a multiple of 4 and not the first one
+            if (treadle_no != 0) and (treadle_no % 4 == 0):
+                # draw line
+                startx = endx = (treadle_no * self.scale) + offsetx
+                starty = 3 * self.scale
+                endy = (5 * self.scale) - 1
+                grp.append(SVG.line(
+                    x1=startx,
+                    y1=starty,
+                    x2=endx,
+                    y2=endy,
+                    style='stroke:%s' % self.numbering))
+                # draw text on left side, right justified
+                grp.append(SVG.text(
+                    str(treadle_no),
+                    x=(startx - 3),
+                    y=(starty + self.font_size),
+                    text_anchor='end',
+                    style='font-family:%s; font-size:%s; fill:%s' % (
+                        self.font_family,
+                        self.font_size,
+                        self.numbering)))
+        doc.append(SVG.g(*grp))
+
+    def paint_treadling(self, doc):
+        num_threads = len(self.draft.weft)
+
+        offsetx = (1 + len(self.draft.warp)) * self.scale
+        offsety = (6 + len(self.draft.shafts)) * self.scale
+
+        grp = []
+        for ii, thread in enumerate(self.draft.weft):
+            starty = (ii * self.scale) + offsety
+            endy = starty + self.scale
+
+            for jj, treadle in enumerate(self.draft.treadles):
+                startx = (jj * self.scale) + offsetx
+                endx = startx + self.scale
+                grp.append(SVG.rect(
+                    x=startx,
+                    y=starty,
+                    width=self.scale,
+                    height=self.scale,
+                    style='stroke:%s; fill:%s' % (self.foreground,
+                                                  self.background)))
+
+                if treadle in thread.treadles:
+                    # draw treadling marker
+                    self.paint_fill_marker(grp, (startx, starty, endx, endy))
+
+            # paint the number if it's a multiple of 4
+            thread_no = ii + 1
+            if ((thread_no != num_threads) and
+                (thread_no != 0) and
+                    (thread_no % 4 == 0)):
+                # draw line
+                startx = endx
+                starty = endy
+                endx = startx + (2 * self.scale)
+                endy = starty
+                grp.append(SVG.line(
+                    x1=startx,
+                    y1=starty,
+                    x2=endx,
+                    y2=endy,
+                    style='stroke:%s' % self.numbering))
+                # draw text
+                grp.append(SVG.text(
+                    str(thread_no),
+                    x=(startx + 3),
+                    y=(starty - 4),
+                    style='font-family:%s; font-size:%s; fill:%s' % (
+                        self.font_family,
+                        self.font_size,
+                        self.numbering)))
+        doc.append(SVG.g(*grp))
+
+    def paint_drawdown(self, doc):
+        offsety = (6 + len(self.draft.shafts)) * self.scale
+        floats = self.draft.compute_floats()
+
+        grp = []
+        for start, end, visible, length, thread in floats:
+            if visible:
+                startx = start[0] * self.scale
+                starty = (start[1] * self.scale) + offsety
+                endx = (end[0] + 1) * self.scale
+                endy = ((end[1] + 1) * self.scale) + offsety
+                width = endx - startx
+                height = endy - starty
+                grp.append(SVG.rect(
+                    x=startx,
+                    y=starty,
+                    width=width,
+                    height=height,
+                    style='stroke:%s; fill:%s' % (self.foreground,
+                                                  thread.color.css)))
+        doc.append(SVG.g(*grp))
+
+    def save(self, filename):
+        s = self.make_svg_doc()
+        with open(filename, 'w') as f:
+            f.write(s)
+
+
 class PDFRenderer(object):
     def __init__(self, draft):
         self.draft = draft
