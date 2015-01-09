@@ -1,5 +1,8 @@
+import datetime
 from copy import deepcopy
-from datetime import date
+
+
+__version__ = '0.0'
 
 
 class Color(object):
@@ -29,9 +32,9 @@ class Thread(object):
             color = Color(color)
         self.color = color
         self.shafts = shafts or set()
-        if treadles:
-            assert dir == 'weft', "only weft threads can have treadles"
-            self.treadles = treadles or set()
+        assert (dir == 'weft') or (not treadles), \
+            "only weft threads can have treadles"
+        self.treadles = treadles or set()
 
     @property
     def connected_shafts(self):
@@ -67,8 +70,10 @@ class Draft(object):
     """
     The core representation of a weaving draft.
     """
-    def __init__(self, num_shafts, num_treadles=0, rising_shed=True):
-        self.liftplan = (num_treadles == 0)
+    def __init__(self, num_shafts, num_treadles=0, liftplan=False,
+                 rising_shed=True, date=None, title='', author='', address='',
+                 email='', telephone='', fax='', notes=''):
+        self.liftplan = liftplan or (num_treadles == 0)
         self.rising_shed = rising_shed
 
         self.shafts = []

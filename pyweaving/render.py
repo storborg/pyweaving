@@ -41,7 +41,7 @@ class ImageRenderer(object):
 
     def make_pil_image(self):
         width_squares = len(self.draft.warp) + 6
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             width_squares += len(self.draft.shafts)
         else:
             width_squares += len(self.draft.treadles)
@@ -61,7 +61,7 @@ class ImageRenderer(object):
         self.paint_threading(draw)
 
         self.paint_weft(draw)
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             self.paint_liftplan(draw)
         else:
             self.paint_tieup(draw)
@@ -128,7 +128,7 @@ class ImageRenderer(object):
     def paint_weft(self, draw):
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
         startx_squares = len(self.draft.warp) + 5
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             startx_squares += len(self.draft.shafts)
         else:
             startx_squares += len(self.draft.treadles)
@@ -338,7 +338,7 @@ class SVGRenderer(object):
 
     def make_svg_doc(self):
         width_squares = len(self.draft.warp) + 6
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             width_squares += len(self.draft.shafts)
         else:
             width_squares += len(self.draft.treadles)
@@ -359,7 +359,7 @@ class SVGRenderer(object):
         self.paint_threading(doc)
 
         self.paint_weft(doc)
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             self.paint_liftplan(doc)
         else:
             self.paint_tieup(doc)
@@ -389,7 +389,7 @@ class SVGRenderer(object):
     def paint_weft(self, doc):
         offsety = (6 + len(self.draft.shafts)) * self.scale
         startx_squares = len(self.draft.warp) + 5
-        if self.liftplan:
+        if self.liftplan or self.draft.liftplan:
             startx_squares += len(self.draft.shafts)
         else:
             startx_squares += len(self.draft.treadles)

@@ -1,12 +1,19 @@
 from ConfigParser import RawConfigParser
 
-from . import Draft, Thread
+from . import Draft, Thread, __version__
 
 
 class WIFReader(object):
     """
     A reader for a specific WIF file.
     """
+
+    # TODO
+    # - add support for metadata: author, notes, etc.
+    # - add support for warp/weft spacing and thickness
+    # - ensure that we're correctly handling the 'palette form' (might be only
+    # RGB?)
+
     allowed_units = ('decipoints', 'inches', 'centimeters')
 
     def __init__(self, filename):
@@ -27,9 +34,6 @@ class WIFReader(object):
         warp_units = self.config.get('WARP', 'Units').lower()
         assert warp_units in self.allowed_units, \
             "Warp Units of %r is not understood" % warp_units
-
-        # warp_spacing = self.config.get('WARP', 'Spacing')
-        # warp_thickness = self.config.get('WARP', 'Thickness')
 
         has_warp_colors = self.getbool('CONTENTS', 'WARP COLORS')
 
@@ -82,8 +86,6 @@ class WIFReader(object):
         weft_units = self.config.get('WEFT', 'Units').lower()
         assert weft_units in self.allowed_units, \
             "Weft Units of %r is not understood" % weft_units
-        # weft_spacing = self.config.get('WEFT', 'Spacing')
-        # weft_thickness = self.config.get('WEFT', 'Thickness')
 
         has_weft_colors = self.getbool('CONTENTS', 'WEFT COLORS')
 
@@ -174,13 +176,10 @@ class WIFReader(object):
             "WIF contains liftplan and non-zero treadle count"
 
         if self.getbool('CONTENTS', 'COLOR PALETTE'):
-            # XXX
-            # palette_form = self.config.get('COLOR PALETTE', 'Form')
             palette_range = self.config.get('COLOR PALETTE', 'Range')
             rstart, rend = palette_range.split(',')
             palette_range = int(rstart), int(rend)
         else:
-            # palette_form = 'RGB'
             palette_range = 0, 255
 
         if self.getbool('CONTENTS', 'COLOR TABLE'):
@@ -200,21 +199,145 @@ class WIFReader(object):
         self.put_metadata(draft)
         self.put_warp(draft, wif_palette)
         self.put_weft(draft, wif_palette)
-        self.put_tieup(draft)
+        if treadling:
+            self.put_tieup(draft)
 
         return draft
 
 
 class WIFWriter(object):
     """
-    A writer for a WIF file.
+    A WIF writer for a draft.
     """
-    def __init__(self, filename):
-        self.filename = filename
 
-    def write(self, draft):
-        self.config = RawConfigParser()
+    # TODO
+    # - support greater color depth (may require change to Color)
 
-        self.config.set('WIF', 'Date', draft.date)
+    def __init__(self, draft):
+        self.draft = draft
 
-        self.config.write(self.filename)
+    def write_metadata(self, config):
+        config.add_section('WIF')
+        config.set('WIF', 'Date', self.draft.date)
+        config.set('WIF', 'Version', '1.1')
+        config.set('WIF', 'Developers', 'storborg@gmail.com')
+        config.set('WIF', 'Source Program', 'PyWeaving')
+        config.set('WIF', 'Source Version', __version__)
+
+        config.set('CONTENTS', 'WEAVING', 1)
+        config.add_section('WEAVING')
+        config.set('WEAVING', 'Rising Shed', self.draft.rising_shed)
+        config.set('WEAVING', 'Shafts', len(self.draft.shafts))
+        config.set('WEAVING', 'Treadles', len(self.draft.treadles))
+
+        config.set('CONTENTS', 'TEXT', 1)
+        config.add_section('TEXT')
+        config.set('TEXT', 'Title', self.draft.title)
+        config.set('TEXT', 'Author', self.draft.author)
+        config.set('TEXT', 'Address', self.draft.address)
+        config.set('TEXT', 'EMail', self.draft.email)
+        config.set('TEXT', 'Telephone', self.draft.telephone)
+        config.set('TEXT', 'FAX', self.draft.fax)
+
+        if self.draft.notes:
+            config.set('CONTENTS', 'NOTES', 1)
+            config.add_section('NOTES')
+            for ii, line in enumerate(self.draft.notes.split('\n')):
+                config.set('NOTES', str(ii), line)
+
+    def write_palette(self, config):
+        # generate the color table and write it to the config
+        # return a wif_palette mapping color instances to numbers.
+        colors = set(thread.color.rgb for thread in
+                     self.draft.warp + self.draft.weft)
+        wif_palette = {}
+        config.set('CONTENTS', 'COLOR TABLE', 1)
+        config.add_section('COLOR TABLE')
+        for ii, color in enumerate(colors, start=1):
+            val = '%d,%d,%d' % color
+            config.set('COLOR TABLE', str(ii), val)
+            wif_palette[color] = ii
+
+        config.set('CONTENTS', 'COLOR PALETTE', 1)
+        config.add_section('COLOR PALETTE')
+        config.set('COLOR PALETTE', 'Form', 'RGB')
+        config.set('COLOR PALETTE', 'Range', '0,255')
+        return wif_palette
+
+    def write_threads(self, config, wif_palette, dir):
+        assert dir in ('warp', 'weft')
+        threads = getattr(self.draft, dir)
+        dir = dir.upper()
+        config.set('CONTENTS', dir, 1)
+        config.add_section(dir)
+        config.set(dir, 'Threads', len(threads))
+        # XXX This should actually be stored in the draft.
+        config.set(dir, 'Units', 'Inches')
+
+        config.set('CONTENTS', '%s COLORS' % dir, 1)
+        config.add_section('%s COLORS' % dir)
+        for ii, thread in enumerate(threads):
+            config.set('%s COLORS' % dir,
+                       str(ii),
+                       wif_palette[thread.color.rgb])
+
+    def write_threading(self, config):
+        config.set('CONTENTS', 'THREADING', 1)
+        config.add_section('THREADING')
+
+        for ii, thread in enumerate(self.draft.warp):
+            shaft_nos = [self.draft.shafts.index(shaft)
+                         for shaft in thread.shafts]
+            shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
+            config.set('THREADING', str(ii), shaft_string)
+
+    def write_liftplan(self, config):
+        config.set('CONTENTS', 'LIFTPLAN', 1)
+        config.add_section('LIFTPLAN')
+
+        for ii, thread in enumerate(self.draft.weft):
+            shaft_nos = [self.draft.shafts.index(shaft)
+                         for shaft in thread.connected_shafts]
+            shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
+            config.set('LIFTPLAN', str(ii), shaft_string)
+
+    def write_treadling(self, config):
+        config.set('CONTENTS', 'TREADLING', 1)
+        config.add_section('TREADLING')
+
+        for ii, thread in enumerate(self.draft.weft):
+            treadle_nos = [self.draft.treadles.index(treadle)
+                           for treadle in thread.treadles]
+            treadle_string = ','.join([str(treadle_no) for treadle_no in
+                                       treadle_nos])
+            config.set('TREADLING', str(ii), treadle_string)
+
+    def write_tieup(self, config):
+        config.set('CONTENTS', 'TIEUP', 1)
+        config.add_section('TIEUP')
+
+        for ii, treadle in enumerate(self.draft.treadles):
+            shaft_nos = [self.draft.shafts.index(shaft)
+                         for shaft in treadle.shafts]
+            shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
+            config.set('TIEUP', str(ii), shaft_string)
+
+    def write(self, filename):
+        config = RawConfigParser()
+        config.optionxform = str
+        config.add_section('CONTENTS')
+
+        self.write_metadata(config)
+
+        wif_palette = self.write_palette(config)
+        self.write_threads(config, wif_palette, 'warp')
+        self.write_threads(config, wif_palette, 'weft')
+
+        self.write_threading(config)
+        self.write_liftplan(config)
+        if self.draft.treadles:
+            self.write_treadling(config)
+            self.write_tieup(config)
+
+        with open(filename, 'wb') as f:
+            config.write(f)
