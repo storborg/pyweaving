@@ -1,4 +1,5 @@
 import datetime
+import json
 from copy import deepcopy
 
 
@@ -87,15 +88,76 @@ class Draft(object):
         self.warp = []
         self.weft = []
 
-        self.date = date.today().strftime('%s %d, %Y')
+        self.date = date or datetime.date.today().strftime('%b %d, %Y')
 
-        self.title = ''
-        self.author = ''
-        self.address = ''
-        self.email = ''
-        self.telephone = ''
-        self.fax = ''
-        self.notes = ''
+        self.title = title
+        self.author = author
+        self.address = address
+        self.email = email
+        self.telephone = telephone
+        self.fax = fax
+        self.notes = notes
+
+    @classmethod
+    def from_json(cls, s):
+        obj = json.loads(s)
+        warp = obj.pop('warp')
+        weft = obj.pop('weft')
+        tieup = obj.pop('tieup')
+
+        draft = cls(**obj)
+
+        for thread_obj in warp:
+            draft.warp.append(Thread(
+                dir='warp',
+                color=thread_obj['color'],
+                shafts=set(draft.shafts[n] for n in thread_obj['shafts']),
+            ))
+
+        for thread_obj in weft:
+            draft.weft.append(Thread(
+                dir='weft',
+                color=thread_obj['color'],
+                shafts=set(draft.shafts[n] for n in thread_obj['shafts']),
+                treadles=set(draft.treadles[n] for n in
+                             thread_obj['treadles']),
+            ))
+
+        for ii, shaft_nos in enumerate(tieup):
+            draft.treadles[ii].shafts = set(draft.shafts[n] for n in shaft_nos)
+
+        return draft
+
+    def to_json(self):
+        return json.dumps({
+            'liftplan': self.liftplan,
+            'rising_shed': self.rising_shed,
+            'num_shafts': len(self.shafts),
+            'num_treadles': len(self.treadles),
+            'warp': [{
+                'color': thread.color.rgb,
+                'shafts': [self.shafts.index(sh) for sh in thread.shafts],
+            } for thread in self.warp],
+            'weft': [{
+                'color': thread.color.rgb,
+                'treadles': [self.treadles.index(tr)
+                             for tr in thread.treadles],
+                'shafts': [self.shafts.index(sh)
+                           for sh in thread.connected_shafts],
+            } for thread in self.weft],
+            'tieup': [
+                [self.shafts.index(sh) for sh in treadle.shafts]
+                for treadle in self.treadles
+            ],
+            'date': self.date,
+            'title': self.title,
+            'author': self.author,
+            'address': self.address,
+            'email': self.email,
+            'telephone': self.telephone,
+            'fax': self.fax,
+            'notes': self.notes,
+        })
 
     def copy(self):
         """
