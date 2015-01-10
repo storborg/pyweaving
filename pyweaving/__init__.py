@@ -264,6 +264,8 @@ class Draft(object):
         a complex draft possible to weave on a loom with a smaller number of
         treadles. Note that this may require that more treadles are active on
         any given pick.
+
+        Cannot be called on a liftplan draft.
         """
         raise NotImplementedError
 
@@ -272,6 +274,38 @@ class Draft(object):
         Optimize to use the fewest number of active treadles on any given pick,
         because not every weaver is an octopus. Note that this may mean using
         more total treadles.
+
+        Cannot be called on a liftplan draft.
+        """
+        if self.liftplan:
+            raise ValueError("can't reduce treadles on a liftplan draft")
+        used_shaft_combos = set()
+        for thread in self.weft:
+            used_shaft_combos.add(thread.connected_shafts)
+        desired_treadles = len(used_shaft_combos)
+
+    def sort_threading(self):
+        """
+        Reorder the shaft assignment in threading so that it follows as
+        sequential of an order as possible.
+
+        For a liftplan draft, will change the threading and liftplan.
+
+        For a treadled draft, will change the threading and tieup, won't change
+        the treadling.
+        """
+        raise NotImplementedError
+
+    def sort_treadles(self):
+        """
+        Reorder the treadle assignment in tieup so that it follows as
+        sequential of an order as possible in treadling.
+
+        Will change the tieup and treadling, won't change the threading. If
+        sorting both threading and treadles, call ``.sort_threading()`` before
+        calling ``.sort_treadles()``.
+
+        Cannot be called on a liftplan draft.
         """
         raise NotImplementedError
 
@@ -282,7 +316,11 @@ class Draft(object):
         drawdown: if this is not desired, simply change the .rising_shed
         attribute.
         """
-        raise NotImplementedError
+        self.rising_shed = not self.rising_shed
+        for thread in self.weft:
+            thread.shafts = self.shafts - thread.shafts
+        for treadle in self.treadles:
+            treadle.shafts = self.shafts - treadle.shafts
 
     def flip_weftwise(self):
         """
@@ -299,3 +337,12 @@ class Draft(object):
         the near.
         """
         self.weft.reverse()
+
+    def add_stable_selvedges(self):
+        """
+        Add new selvedge threads which are "stable": that is, they are picked
+        up on every pick. This method will try to use the liftplan/tieup and
+        add threads to existing shafts, but if it is not possible, new shafts
+        will be added.
+        """
+        raise NotImplementedError
