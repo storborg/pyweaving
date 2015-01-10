@@ -1,7 +1,7 @@
 from .. import Draft, Thread
 
 
-def twill(size=2):
+def twill(size=2, warp_color=(0, 0, 100), weft_color=(255, 255, 255)):
     # float=2 --> 2/2 twill
     # float=3 --> 3/3 twill
     # float=4 --> 4/4 twill
@@ -19,13 +19,13 @@ def twill(size=2):
     for ii in range(8 * size):
         draft.warp.append(Thread(
             dir='warp',
-            color=(0, 0, 100),
+            color=warp_color,
             shafts=set([draft.shafts[ii % shafts]]),
         ))
 
         draft.weft.append(Thread(
             dir='weft',
-            color=(255, 255, 255),
+            color=weft_color,
             treadles=set([draft.treadles[ii % shafts]]),
         ))
 
