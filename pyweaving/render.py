@@ -296,8 +296,9 @@ class ImageRenderer(object):
         im.save(filename)
 
 
-svg_header = '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}"
+svg_preamble = '<?xml version="1.0" encoding="utf-8" standalone="no"?>'
+svg_header = '''<svg width="{width}" height="{height}"
+    viewBox="0 0 {width} {height}"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">'''
 
@@ -675,7 +676,7 @@ class SVGRenderer(object):
         return self.make_svg_doc()
 
     def save(self, filename):
-        s = self.make_svg_doc()
+        s = svg_preamble + '\n' + self.make_svg_doc()
         with open(filename, 'w') as f:
             f.write(s)
 
