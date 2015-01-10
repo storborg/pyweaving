@@ -32,6 +32,8 @@ class Thread(object):
         if color and not isinstance(color, Color):
             color = Color(color)
         self.color = color
+        assert not (shafts and treadles), \
+            "can't have both shafts (liftplan) and treadles specified"
         self.shafts = shafts or set()
         assert (dir == 'weft') or (not treadles), \
             "only weft threads can have treadles"
