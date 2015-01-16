@@ -104,7 +104,7 @@ class ImageRenderer(object):
                 draw.rectangle((startx, starty, endx, endy),
                                outline=self.foreground)
 
-                if shaft in thread.shafts:
+                if shaft == thread.shaft:
                     # draw threading marker
                     self.paint_fill_marker(draw, (startx, starty, endx, endy))
 
@@ -437,7 +437,7 @@ class SVGRenderer(object):
                     style='stroke:%s; fill:%s' % (self.foreground,
                                                   self.background)))
 
-                if shaft in thread.shafts:
+                if shaft == thread.shaft:
                     # draw threading marker
                     self.paint_fill_marker(grp, (startx, starty, endx, endy))
 

@@ -1,6 +1,6 @@
 import re
 
-from .. import Draft, Thread
+from .. import Draft
 
 
 color_map = {
@@ -45,16 +45,14 @@ def tartan(sett, repeats=1):
     for ii in range(repeats):
         for color, count in colors:
             for jj in range(count):
-                draft.warp.append(Thread(
-                    dir='warp',
+                draft.add_warp_thread(
                     color=color,
-                    shafts=set([draft.shafts[thread_no % 4]]),
-                ))
-                draft.weft.append(Thread(
-                    dir='weft',
+                    shaft=thread_no % 4,
+                )
+                draft.add_weft_thread(
                     color=color,
-                    treadles=set([draft.treadles[thread_no % 4]]),
-                ))
+                    treadles=[thread_no % 4],
+                )
                 thread_no += 1
 
     return draft

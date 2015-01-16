@@ -23,21 +23,32 @@ class Color(object):
         return 'rgb(%d, %d, %d)' % self.rgb
 
 
-class Thread(object):
+class WarpThread(object):
     """
-    Represents a single thread, either weft or warp.
+    Represents a single warp thread.
     """
-    def __init__(self, dir, color=None, shafts=None, treadles=None):
-        self.dir = dir
+    def __init__(self, color=None, shaft=None):
+        if color and not isinstance(color, Color):
+            color = Color(color)
+        self.color = color
+        self.shaft = shaft
+
+    def __repr__(self):
+        return '<WarpThread color:%s shaft:%s>' % (self.color.rgb, self.shaft)
+
+
+class WeftThread(object):
+    """
+    Represents a single weft thread.
+    """
+    def __init__(self, color=None, shafts=None, treadles=None):
         if color and not isinstance(color, Color):
             color = Color(color)
         self.color = color
         assert not (shafts and treadles), \
             "can't have both shafts (liftplan) and treadles specified"
-        self.shafts = shafts or set()
-        assert (dir == 'weft') or (not treadles), \
-            "only weft threads can have treadles"
         self.treadles = treadles or set()
+        self.shafts = shafts or set()
 
     @property
     def connected_shafts(self):
@@ -51,7 +62,12 @@ class Thread(object):
             return ret
 
     def __repr__(self):
-        return '<Thread %s color:%s>' % (self.dir, self.color.rgb)
+        if self.treadles:
+            return '<WeftThread color:%s treadles:%s>' % (self.color.rgb,
+                                                          self.treadles)
+        else:
+            return '<WeftThread color:%s shafts:%s>' % (self.color.rgb,
+                                                        self.shafts)
 
 
 class Shaft(object):
@@ -110,20 +126,18 @@ class Draft(object):
         draft = cls(**obj)
 
         for thread_obj in warp:
-            draft.warp.append(Thread(
-                dir='warp',
+            draft.add_warp_thread(
                 color=thread_obj['color'],
-                shafts=set(draft.shafts[n] for n in thread_obj['shafts']),
-            ))
+                shaft=draft.shafts[thread_obj['shaft']],
+            )
 
         for thread_obj in weft:
-            draft.weft.append(Thread(
-                dir='weft',
+            draft.add_weft_thread(
                 color=thread_obj['color'],
                 shafts=set(draft.shafts[n] for n in thread_obj['shafts']),
                 treadles=set(draft.treadles[n] for n in
                              thread_obj['treadles']),
-            ))
+            )
 
         for ii, shaft_nos in enumerate(tieup):
             draft.treadles[ii].shafts = set(draft.shafts[n] for n in shaft_nos)
@@ -138,7 +152,7 @@ class Draft(object):
             'num_treadles': len(self.treadles),
             'warp': [{
                 'color': thread.color.rgb,
-                'shafts': [self.shafts.index(sh) for sh in thread.shafts],
+                'shaft': self.shafts.index(thread.shaft),
             } for thread in self.warp],
             'weft': [{
                 'color': thread.color.rgb,
@@ -167,6 +181,48 @@ class Draft(object):
         """
         return deepcopy(self)
 
+    def add_warp_thread(self, color=None, index=None, shaft=0):
+        """
+        Add a warp thread to this draft.
+        """
+        if not isinstance(shaft, Shaft):
+            shaft = self.shafts[shaft]
+        thread = WarpThread(
+            color=color,
+            shaft=shaft,
+        )
+        if index is None:
+            self.warp.append(thread)
+        else:
+            self.warp.insert(index, thread)
+
+    def add_weft_thread(self, color=None, index=None,
+                        shafts=None, treadles=None):
+        """
+        Add a weft thread to this draft.
+        """
+        shafts = shafts or set()
+        shaft_objs = set()
+        for shaft in shafts:
+            if not isinstance(shaft, Shaft):
+                shaft = self.shafts[shaft]
+            shaft_objs.add(shaft)
+        treadles = treadles or set()
+        treadle_objs = set()
+        for treadle in treadles:
+            if not isinstance(treadle, Treadle):
+                treadle = self.treadles[treadle]
+            treadle_objs.add(treadle)
+        thread = WeftThread(
+            color=color,
+            shafts=shaft_objs,
+            treadles=treadle_objs,
+        )
+        if index is None:
+            self.weft.append(thread)
+        else:
+            self.weft.insert(index, thread)
+
     def compute_drawdown_at(self, position):
         """
         Return the thread that is on top (visible) at the specified
@@ -177,7 +233,7 @@ class Draft(object):
         weft_thread = self.weft[y]
 
         connected_shafts = weft_thread.connected_shafts
-        warp_at_rest = connected_shafts.isdisjoint(warp_thread.shafts)
+        warp_at_rest = warp_thread.shaft not in connected_shafts
         if warp_at_rest ^ self.rising_shed:
             return warp_thread
         else:

@@ -1,6 +1,6 @@
 from ConfigParser import RawConfigParser
 
-from . import Draft, Thread, __version__
+from . import Draft, __version__
 
 
 class WIFReader(object):
@@ -72,14 +72,15 @@ class WIFReader(object):
                 if has_threading:
                     shafts = set(draft.shafts[shaft_no - 1]
                                  for shaft_no in threading_map[thread_no])
+                    assert len(shafts) == 1
+                    shaft = list(shafts)[0]
                 else:
-                    shafts = set()
+                    shaft = None
 
-                draft.warp.append(Thread(
-                    dir='warp',
+                draft.add_warp_thread(
                     color=color,
-                    shafts=shafts,
-                ))
+                    shaft=shaft,
+                )
 
     def put_weft(self, draft, wif_palette):
         weft_thread_count = self.config.getint('WEFT', 'Threads')
@@ -142,12 +143,11 @@ class WIFReader(object):
                 else:
                     treadles = set()
 
-                draft.weft.append(Thread(
-                    dir='weft',
+                draft.add_weft_thread(
                     color=color,
                     shafts=shafts,
                     treadles=treadles,
-                ))
+                )
 
     def put_tieup(self, draft):
         for treadle_no, value in self.config.items('TIEUP'):
