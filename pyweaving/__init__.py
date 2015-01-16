@@ -386,6 +386,12 @@ class Draft(object):
         for treadle in self.treadles:
             treadle.shafts = self.shafts - treadle.shafts
 
+    def rotate(self):
+        """
+        Rotate the draft: the weft becomes the warp, and vice versa.
+        """
+        raise NotImplementedError
+
     def flip_weftwise(self):
         """
         Flip/mirror along the weft axis: e.g. looking at the front of the loom,
@@ -408,5 +414,19 @@ class Draft(object):
         up on every pick. This method will try to use the liftplan/tieup and
         add threads to existing shafts, but if it is not possible, new shafts
         will be added.
+        """
+        raise NotImplementedError
+
+    def compute_weft_crossings(self):
+        """
+        Iterate over each weft row and compute the total number of thread
+        crossings in that row. Useful for determining sett.
+        """
+        raise NotImplementedError
+
+    def compute_warp_crossings(self):
+        """
+        Iterate over each warp row and compute the total number of thread
+        crossings in that row.
         """
         raise NotImplementedError

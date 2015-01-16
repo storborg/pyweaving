@@ -12,6 +12,11 @@ font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 
 
 class ImageRenderer(object):
+    # TODO:
+    # - Add option to render the backside of the draft
+    # - Add option to render a bar graph of the thread crossings along the
+    # sides
+    # - Add option to render 'stats table'
     def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10,
                  foreground=(127, 127, 127), background=(255, 255, 255),
                  markers=(0, 0, 0), numbering=(200, 0, 0)):
