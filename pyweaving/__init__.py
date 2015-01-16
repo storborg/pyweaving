@@ -1,6 +1,7 @@
 import datetime
 import json
 from copy import deepcopy
+from collections import defaultdict
 
 
 __version__ = '0.0'
@@ -335,10 +336,17 @@ class Draft(object):
         """
         if self.liftplan:
             raise ValueError("can't reduce treadles on a liftplan draft")
-        used_shaft_combos = set()
-        for thread in self.weft:
-            used_shaft_combos.add(thread.connected_shafts)
-        desired_treadles = len(used_shaft_combos)
+        if True or max(len(thread.treadles) for thread in self.weft) > 1:
+            used_shaft_combos = defaultdict(list)
+            for thread in self.weft:
+                used_shaft_combos[frozenset(thread.connected_shafts)].\
+                    append(thread)
+            self.treadles = []
+            for shafts, threads in used_shaft_combos.items():
+                treadle = Treadle(shafts=set(shafts))
+                self.treadles.append(treadle)
+                for thread in threads:
+                    thread.treadles = set([treadle])
 
     def sort_threading(self):
         """
