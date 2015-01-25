@@ -17,6 +17,16 @@ class ImageRenderer(object):
     # - Add option to render a bar graph of the thread crossings along the
     # sides
     # - Add option to render 'stats table'
+    #   - Number of harnesses/shafts
+    #   - Number of treadles
+    #   - Warp unit size / reps
+    #   - Weft unit size / reps
+    #   - Longest warp float
+    #   - Longest weft float
+    #   - Selvedge stability
+    # - Add option to rotate orientation
+    # - Add option to render selvedge stability
+    # - Add option to render inset "scale view" rendering of fabric
     def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10,
                  foreground=(127, 127, 127), background=(255, 255, 255),
                  markers=(0, 0, 0), numbering=(200, 0, 0)):

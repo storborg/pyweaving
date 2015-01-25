@@ -119,6 +119,10 @@ class Draft(object):
 
     @classmethod
     def from_json(cls, s):
+        """
+        Construct a new Draft instance from its JSON representation.
+        Counterpart to ``.to_json()``.
+        """
         obj = json.loads(s)
         warp = obj.pop('warp')
         weft = obj.pop('weft')
@@ -146,6 +150,10 @@ class Draft(object):
         return draft
 
     def to_json(self):
+        """
+        Serialize a Draft to its JSON representation. Counterpart to
+        ``.from_json()``.
+        """
         return json.dumps({
             'liftplan': self.liftplan,
             'rising_shed': self.rising_shed,
@@ -408,6 +416,13 @@ class Draft(object):
         """
         self.weft.reverse()
 
+    def selvedges_stable(self):
+        """
+        Check whether or not the selvedge threads will be picked up on every
+        pick.
+        """
+        raise NotImplementedError
+
     def add_stable_selvedges(self):
         """
         Add new selvedge threads which are "stable": that is, they are picked
@@ -428,5 +443,15 @@ class Draft(object):
         """
         Iterate over each warp row and compute the total number of thread
         crossings in that row.
+        """
+        raise NotImplementedError
+
+    def advance(self):
+        """
+        Given a base draft, make it 'advance'. Essentially:
+            1. Repeat the draft N times, where N is the number of shafts, in
+            both the warp and weft directions.
+            2. On each successive repeat, offset the threading by 1 additional
+            shaft and the treadling by one additional treadle.
         """
         raise NotImplementedError
