@@ -86,15 +86,21 @@ class Treadle(object):
         self.shafts = shafts or set()
 
 
+class DraftError(Exception):
+    pass
+
+
 class Draft(object):
     """
     The core representation of a weaving draft.
     """
     def __init__(self, num_shafts, num_treadles=0, liftplan=False,
-                 rising_shed=True, date=None, title='', author='', address='',
+                 rising_shed=True, start_at_lowest_thread=True,
+                 date=None, title='', author='', address='',
                  email='', telephone='', fax='', notes=''):
         self.liftplan = liftplan or (num_treadles == 0)
         self.rising_shed = rising_shed
+        self.start_at_lowest_thread = start_at_lowest_thread
 
         self.shafts = []
         for __ in range(num_shafts):
@@ -416,21 +422,72 @@ class Draft(object):
         """
         self.weft.reverse()
 
-    def selvedges_stable(self):
+    def selvedges_continuous(self):
         """
-        Check whether or not the selvedge threads will be picked up on every
-        pick.
+        Check whether or not both selvedge threads are "continuous" (will be
+        picked up on every pick).
         """
-        raise NotImplementedError
+        return (self.selvedge_continuous(False) and
+                self.selvedge_continuous(True))
 
-    def add_stable_selvedges(self):
+    def selvedge_continuous(self, low):
         """
-        Add new selvedge threads which are "stable": that is, they are picked
-        up on every pick. This method will try to use the liftplan/tieup and
-        add threads to existing shafts, but if it is not possible, new shafts
-        will be added.
+        Check whether the selvedge corresponding to the lowest-number thread is
+        continuous.
         """
-        raise NotImplementedError
+        # For the low selvedge:
+        # If this draft starts at the lowest thread, there needs to be a
+        # transition between threads 1 and 2 (0-indexed), threads 3 and 4, etc.
+        # Otherwise, there needs to be a transition between 0 and 1, 2 and 3,
+        # etc.
+
+        # For the high selvedge:
+        # If this draft starts at the highest thread, there needs to be a
+        # transition between threads 0 and 1, threads 2 and 3, etc.
+
+        offset = 0 if low ^ self.start_at_lowest_thread else 1
+        if low:
+            thread = self.warp[0]
+        else:
+            thread = self.warp[-1]
+        for ii in range(offset, len(self.weft) - 1, 2):
+            a_state = thread.shaft in self.weft[ii].connected_shafts
+            b_state = thread.shaft in self.weft[ii + 1].connected_shafts
+            if not a_state ^ b_state:
+                return False
+        return True
+
+    def make_selvedges_continuous(self, add_new_shafts=False):
+        """
+        Make the selvedge threads "continuous": that is, threaded and treadled
+        such that they are picked up on every pick. This method will try to use
+        the liftplan/tieup and switch selvedge threads to alternate shafts. If
+        that is impossible and ``add_new_shafts`` new shafts will be added to
+        handle the selvedge threads.
+
+        FIXME This method works, but it does not necessarily produce the
+        subjectively "best" solution in terms of aesthetics and structure. For
+        example, it may result in longer floats than necessary.
+        """
+        for low_thread in (False, True):
+            success = False
+            if low_thread:
+                warp_thread = self.warp[0]
+            else:
+                warp_thread = self.warp[-1]
+            if self.selvedge_continuous(low_thread):
+                success = True
+                continue
+            for shaft in self.shafts:
+                warp_thread.shaft = shaft
+                if self.selvedge_continuous(low_thread):
+                    success = True
+                    break
+            if not success:
+                if add_new_shafts:
+                    raise NotImplementedError
+                else:
+                    raise DraftError("cannot make continuous selvedges")
 
     def compute_weft_crossings(self):
         """
