@@ -269,6 +269,8 @@ class Draft(object):
         Return an iterator over every float, yielding a tuple for each one::
 
             (start, end, visible, length, thread)
+
+        FIXME: This ignores the back side of the fabric. Should it?
         """
         num_warp_threads = len(self.warp)
         num_weft_threads = len(self.weft)
@@ -510,5 +512,12 @@ class Draft(object):
             both the warp and weft directions.
             2. On each successive repeat, offset the threading by 1 additional
             shaft and the treadling by one additional treadle.
+        """
+        raise NotImplementedError
+
+    def all_threads_attached(self):
+        """
+        Check whether all threads (weft and warp) will be "attached" to the
+        fabric, instead of just falling off.
         """
         raise NotImplementedError
