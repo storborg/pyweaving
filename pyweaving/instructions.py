@@ -43,17 +43,31 @@ def describe_interval(secs):
     return ', '.join(parts)
 
 
-def print_stats(start_time, pick_counter, total_picks):
-    """
-    Print timing info.
-    """
-    elapsed_secs = time.time() - start_time
-    picks_per_second = pick_counter / elapsed_secs
-    picks_per_minute = picks_per_second * 60.
-    picks_to_go = total_picks - pick_counter
-    est_remaining_secs = picks_to_go / picks_per_second
-    print "This session: %0.2f picks/min, est remaining: %s" % (
-        picks_per_minute, describe_interval(est_remaining_secs))
+class StatCounter(object):
+
+    def __init__(self, total_picks, average_over=10):
+        self.pick_times = []
+        self.total_picks = total_picks
+        self.average_over = average_over
+
+    def start(self):
+        self.start_time = time.time()
+
+    def pick(self):
+        self.pick_times.append(time.time())
+
+    def print_stats(self):
+        last_picks = self.pick_times[-self.average_over:]
+        if len(last_picks) >= self.average_over:
+            elapsed_secs = last_picks[-1] - last_picks[0]
+        else:
+            elapsed_secs = last_picks[-1] - self.start_time
+        picks_per_second = len(last_picks) / elapsed_secs
+        picks_per_minute = picks_per_second * 60.
+        picks_to_go = self.total_picks - len(self.pick_times)
+        est_remaining_secs = picks_to_go / picks_per_second
+        print "Weaving %0.2f picks/min, %d picks left, est remaining: %s" % (
+            picks_per_minute, picks_to_go, describe_interval(est_remaining_secs))
 
 
 def wait_for_key():
@@ -73,10 +87,10 @@ def weaving(draft, repeats, start_repeat, start_pick):
 
     picks_per_repeat = len(draft.weft)
     total_picks = (((repeats - start_repeat) * picks_per_repeat) +
-                   (picks_per_repeat - start_pick))
+                   (picks_per_repeat - start_pick)) + 1
 
-    start_time = time.time()
-    pick_counter = 0
+    stats = StatCounter(total_picks)
+    stats.start()
 
     print "\n---- WEAVING INSTRUCTIONS ----\n"
 
@@ -107,8 +121,8 @@ def weaving(draft, repeats, start_repeat, start_pick):
         wait_for_key()
 
         current_pick += 1
-        pick_counter += 1
-        print_stats(start_time, pick_counter, total_picks)
+        stats.pick()
+        stats.print_stats()
 
     print "DONE!"
 
