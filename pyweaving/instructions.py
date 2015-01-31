@@ -67,7 +67,8 @@ class StatCounter(object):
         picks_to_go = self.total_picks - len(self.pick_times)
         est_remaining_secs = picks_to_go / picks_per_second
         print "Weaving %0.2f picks/min, %d picks left, est remaining: %s" % (
-            picks_per_minute, picks_to_go, describe_interval(est_remaining_secs))
+            picks_per_minute, picks_to_go,
+            describe_interval(est_remaining_secs))
 
 
 def wait_for_key():
