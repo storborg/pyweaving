@@ -64,14 +64,21 @@ def tieup(opts):
 def stats(opts):
     draft = load_draft(opts.infile)
     warp_longest, weft_longest = draft.compute_longest_floats()
-    info = {
-        'Shafts': len(draft.shafts),
-        'Treadles': len(draft.treadles),
-        'Longest Float (Warp)': warp_longest,
-        'Longest Float (Weft)': weft_longest,
-    }
-    for k, v in info.items():
-        print("%s: %s" % (k, v))
+    print("Title:", draft.title)
+    print("Author:", draft.author)
+    print("Address:", draft.address)
+    print("Email:", draft.email)
+    print("Telephone:", draft.telephone)
+    print("Fax:", draft.fax)
+    print("Notes:", draft.notes)
+    print("Date:", draft.date)
+    print("***")
+    print("Warp Threads:", len(draft.warp))
+    print("Weft Threads:", len(draft.weft))
+    print("Shafts:", len(draft.shafts))
+    print("Treadles:", len(draft.treadles))
+    print("Longest Float (Warp):", warp_longest)
+    print("Longest Float (Weft):", weft_longest)
 
 
 def main(argv=sys.argv):
