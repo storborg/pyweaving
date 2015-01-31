@@ -44,7 +44,7 @@ def convert(opts):
 
 def thread(opts):
     draft = load_draft(opts.infile)
-    instructions.threading(draft)
+    instructions.threading(draft, opts.repeats)
 
 
 def weave(opts):
@@ -105,6 +105,7 @@ def main(argv=sys.argv):
         'thread',
         help='Show threading instructions for a draft.')
     p_thread.add_argument('infile')
+    p_thread.add_argument('--repeats', type=int, default=1)
     p_thread.set_defaults(function=thread)
 
     p_weave = subparsers.add_parser(

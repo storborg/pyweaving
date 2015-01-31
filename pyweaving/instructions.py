@@ -68,9 +68,9 @@ class StatCounter(object):
         picks_per_minute = picks_per_second * 60.
         picks_to_go = self.total_picks - len(self.pick_times)
         est_remaining_secs = picks_to_go / picks_per_second
-        print("Weaving %0.2f picks/min, %d picks left, est remaining: %s",
-              picks_per_minute, picks_to_go,
-              describe_interval(est_remaining_secs))
+        print("Weaving %0.2f picks/min, %d picks left, est remaining: %s" %
+              (picks_per_minute, picks_to_go,
+               describe_interval(est_remaining_secs)))
 
 
 def wait_for_key():
@@ -105,7 +105,7 @@ def weaving(draft, repeats, start_repeat, start_pick):
                 break
             # Restart pattern
             print("-" * 79)
-            print("REPEAT %d COMPLETE", current_repeat)
+            print("REPEAT %d COMPLETE" % current_repeat)
             print("Restarting pattern...")
             print("-" * 79)
             current_repeat += 1
@@ -114,7 +114,7 @@ def weaving(draft, repeats, start_repeat, start_pick):
         from_right = draft.start_at_lowest_thread ^ (current_pick % 2)
 
         weft_thread = draft.weft[current_pick]
-        print("\nREPEAT %d, PICK %d\n", (current_repeat, current_pick + 1))
+        print("\nREPEAT %d, PICK %d\n" % (current_repeat, current_pick + 1))
         if from_right:
             print((" " * 40) + "<--- SHUTTLE")
         else:
@@ -135,16 +135,19 @@ def threading(draft, repeats):
     Print threading instructions.
     """
     print("\n---- THREADING INSTRUCTIONS ----\n")
-    print("Total heddles required: %d", (len(draft.shafts) * repeats))
+    total_count = 0
     for ii, shaft in enumerate(draft.shafts, start=1):
         count = len([thread for thread in draft.warp if thread.shaft == shaft])
         count *= repeats
-        print("Heddles on shaft %d: %d", (ii, count))
+        total_count += count
+        print("Heddles on shaft %d: %d" % (ii, count))
+
+    print("Total heddles required: %d" % total_count)
 
     for __ in range(repeats):
         for ii, warp_thread in enumerate(draft.warp, start=1):
             shaft_no = draft.shafts.index(warp_thread.shaft) + 1
-            print("\nWarp thread %d: shaft %d", (ii, shaft_no))
+            print("\nWarp thread %d: shaft %d" % (ii, shaft_no))
             wait_for_key()
 
     print("DONE!")
