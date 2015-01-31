@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 import sys
 import argparse
 
@@ -69,7 +71,7 @@ def stats(opts):
         'Longest Float (Weft)': weft_longest,
     }
     for k, v in info.items():
-        print "%s: %s" % (k, v)
+        print("%s: %s" % (k, v))
 
 
 def main(argv=sys.argv):
@@ -80,7 +82,7 @@ def main(argv=sys.argv):
     p_render = subparsers.add_parser(
         'render', help='Render a draft.')
     p_render.add_argument('infile')
-    p_render.add_argument('outfile')
+    p_render.add_argument('outfile', nargs='?')
     p_render.add_argument('--liftplan', action='store_true')
     p_render.set_defaults(function=render)
 

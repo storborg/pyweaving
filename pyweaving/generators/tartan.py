@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 import re
 
 from .. import Draft
@@ -29,7 +31,7 @@ def tartan(sett, repeats=1):
     # tartan is always the same design mirrored once
     colors.extend(reversed(colors))
 
-    print("Threads per repeat: %d" %
+    print("Threads per repeat: %d",
           sum(count for color, count in colors))
 
     # tartan is always 2/2 twill
