@@ -317,10 +317,10 @@ class Draft(object):
         return (
             max(length
                 for start, end, visible, length, thread in floats
-                if thread.dir == 'warp'),
+                if isinstance(thread, WarpThread)),
             max(length
                 for start, end, visible, length, thread in floats
-                if thread.dir == 'weft')
+                if isinstance(thread, WeftThread)),
         )
 
     def reduce_shafts(self):
