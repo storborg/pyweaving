@@ -218,7 +218,7 @@ class WIFWriter(object):
     def __init__(self, draft):
         self.draft = draft
 
-    def write_metadata(self, config):
+    def write_metadata(self, config, liftplan):
         config.add_section('WIF')
         config.set('WIF', 'Date', self.draft.date)
         config.set('WIF', 'Version', '1.1')
@@ -230,7 +230,8 @@ class WIFWriter(object):
         config.add_section('WEAVING')
         config.set('WEAVING', 'Rising Shed', self.draft.rising_shed)
         config.set('WEAVING', 'Shafts', len(self.draft.shafts))
-        config.set('WEAVING', 'Treadles', len(self.draft.treadles))
+        config.set('WEAVING', 'Treadles',
+                   0 if liftplan else len(self.draft.treadles))
 
         config.set('CONTENTS', 'TEXT', 1)
         config.add_section('TEXT')
@@ -322,20 +323,21 @@ class WIFWriter(object):
             shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
             config.set('TIEUP', str(ii), shaft_string)
 
-    def write(self, filename):
+    def write(self, filename, liftplan=False):
         config = RawConfigParser()
         config.optionxform = str
         config.add_section('CONTENTS')
 
-        self.write_metadata(config)
+        self.write_metadata(config, liftplan=liftplan)
 
         wif_palette = self.write_palette(config)
         self.write_threads(config, wif_palette, 'warp')
         self.write_threads(config, wif_palette, 'weft')
 
         self.write_threading(config)
-        self.write_liftplan(config)
-        if self.draft.treadles:
+        if liftplan or not self.draft.treadles:
+            self.write_liftplan(config)
+        else:
             self.write_treadling(config)
             self.write_tieup(config)
 
