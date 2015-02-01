@@ -1,6 +1,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+
+import os.path
 import time
+import json
 
 
 def print_shafts(draft, connected):
@@ -77,30 +80,53 @@ def wait_for_key():
     raw_input('... ')
 
 
-def weaving(draft, repeats, start_repeat, start_pick):
+def load_save_file(save_filename):
+    with open(save_filename) as f:
+        return json.load(f)
+
+
+def write_save_file(save_filename, obj):
+    with open(save_filename, 'w') as f:
+        json.dump(obj, f)
+
+
+def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
     """
     Print weaving instructions. Liftplan only for now.
 
-    start_repeat and start_pick are 1-indexed.
+    current_pick, start_repeat, and start_pick are 1-indexed.
     """
-    current_repeat = start_repeat
-
-    # current_pick is 0-indexed
-    current_pick = start_pick - 1
+    print("\n---- WEAVING INSTRUCTIONS ----\n")
 
     picks_per_repeat = len(draft.weft)
-    total_picks = (((repeats - start_repeat) * picks_per_repeat) +
-                   (picks_per_repeat - start_pick)) + 1
+
+    if save_filename and os.path.exists(save_filename):
+        print("Resuming progress from %s." % save_filename)
+        state = load_save_file(save_filename)
+        current_repeat = state['current_repeat']
+        current_pick = state['current_pick']
+    else:
+        current_repeat = start_repeat
+        current_pick = start_pick
+
+    total_picks = (((repeats - current_repeat) * picks_per_repeat) +
+                   (picks_per_repeat - current_pick)) + 1
 
     stats = StatCounter(total_picks)
     stats.start()
 
-    print("\n---- WEAVING INSTRUCTIONS ----\n")
+    if save_filename:
+        if not os.path.exists(save_filename):
+            print("Saving progress to %s." % save_filename)
+        else:
+            print("Progress will be saved.")
+    else:
+        print("Not saving progress.")
 
     print("NOTE: Assumes that the lowest-numbered thread is on the right -->.")
 
     while True:
-        if current_pick == len(draft.weft):
+        if (current_pick - 1) == len(draft.weft):
             if current_repeat == repeats:
                 break
             # Restart pattern
@@ -109,17 +135,23 @@ def weaving(draft, repeats, start_repeat, start_pick):
             print("Restarting pattern...")
             print("-" * 79)
             current_repeat += 1
-            current_pick = 0
+            current_pick = 1
 
-        from_right = draft.start_at_lowest_thread ^ (current_pick % 2)
+        from_right = draft.start_at_lowest_thread ^ ((current_pick - 1) % 2)
 
-        weft_thread = draft.weft[current_pick]
-        print("\nREPEAT %d, PICK %d\n" % (current_repeat, current_pick + 1))
+        weft_thread = draft.weft[current_pick - 1]
+        print("\nREPEAT %d, PICK %d\n" % (current_repeat, current_pick))
         if from_right:
             print((" " * 40) + "<--- SHUTTLE")
         else:
             print("SHUTTLE --->")
         print_shafts(draft, weft_thread.connected_shafts)
+
+        if save_filename:
+            write_save_file(save_filename, {
+                'current_repeat': current_repeat,
+                'current_pick': current_pick,
+            })
 
         wait_for_key()
 
