@@ -288,9 +288,7 @@ class WIFWriter(object):
         config.add_section('THREADING')
 
         for ii, thread in enumerate(self.draft.warp):
-            shaft_nos = [self.draft.shafts.index(shaft)
-                         for shaft in thread.shafts]
-            shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
+            shaft_string = str(self.draft.shafts.index(thread.shaft))
             config.set('THREADING', str(ii), shaft_string)
 
     def write_liftplan(self, config):
