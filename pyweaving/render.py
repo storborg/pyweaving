@@ -15,20 +15,28 @@ font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 
 class ImageRenderer(object):
     # TODO:
-    # - Add option to render the backside of the draft
+    # - Add a "drawndown only" option
+    # - Add a default tag (like a small delta symbol) to signal the initial
+    # shuttle direction
+    # - Add option to render the backside of the fabric
     # - Add option to render a bar graph of the thread crossings along the
     # sides
     # - Add option to render 'stats table'
+    #   - Number of warp threads
+    #   - Number of weft threads
     #   - Number of harnesses/shafts
     #   - Number of treadles
     #   - Warp unit size / reps
     #   - Weft unit size / reps
     #   - Longest warp float
     #   - Longest weft float
-    #   - Selvedge stability
+    #   - Selvedge continuity
     # - Add option to rotate orientation
-    # - Add option to render selvedge stability
+    # - Add option to render selvedge continuity
     # - Add option to render inset "scale view" rendering of fabric
+    # - Add option to change thread spacing
+    # - Support variable thickness threads
+    # - Add option to render heddle count on each shaft
     def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10,
                  foreground=(127, 127, 127), background=(255, 255, 255),
                  markers=(0, 0, 0), numbering=(200, 0, 0)):
