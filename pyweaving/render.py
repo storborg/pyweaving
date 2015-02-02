@@ -93,10 +93,29 @@ class ImageRenderer(object):
             self.paint_treadling(draw)
 
         self.paint_drawdown(draw)
+        self.paint_start_indicator(draw)
         del draw
 
         im = self.pad_image(im)
         return im
+
+    def paint_start_indicator(self, draw):
+        endy = ((len(self.draft.shafts) + 6) * self.pixels_per_square) - 1
+        starty = (endy - (self.pixels_per_square // 2))
+        if self.draft.start_at_lowest_thread:
+            # right side
+            endx = len(self.draft.warp) * self.pixels_per_square
+            startx = endx - self.pixels_per_square
+        else:
+            # left side
+            startx = 0
+            endx = self.pixels_per_square
+        vertices = [
+            (startx, starty),
+            (endx, starty),
+            (startx + (self.pixels_per_square // 2), endy),
+        ]
+        draw.polygon(vertices, fill=self.markers)
 
     def paint_warp(self, draw):
         starty = 0
