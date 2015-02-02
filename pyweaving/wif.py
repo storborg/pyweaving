@@ -279,7 +279,7 @@ class WIFWriter(object):
 
         config.set('CONTENTS', '%s COLORS' % dir, 1)
         config.add_section('%s COLORS' % dir)
-        for ii, thread in enumerate(threads):
+        for ii, thread in enumerate(threads, start=1):
             config.set('%s COLORS' % dir,
                        str(ii),
                        wif_palette[thread.color.rgb])
@@ -288,16 +288,16 @@ class WIFWriter(object):
         config.set('CONTENTS', 'THREADING', 1)
         config.add_section('THREADING')
 
-        for ii, thread in enumerate(self.draft.warp):
-            shaft_string = str(self.draft.shafts.index(thread.shaft))
+        for ii, thread in enumerate(self.draft.warp, start=1):
+            shaft_string = str(self.draft.shafts.index(thread.shaft) + 1)
             config.set('THREADING', str(ii), shaft_string)
 
     def write_liftplan(self, config):
         config.set('CONTENTS', 'LIFTPLAN', 1)
         config.add_section('LIFTPLAN')
 
-        for ii, thread in enumerate(self.draft.weft):
-            shaft_nos = [self.draft.shafts.index(shaft)
+        for ii, thread in enumerate(self.draft.weft, start=1):
+            shaft_nos = [self.draft.shafts.index(shaft) + 1
                          for shaft in thread.connected_shafts]
             shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
             config.set('LIFTPLAN', str(ii), shaft_string)
@@ -306,8 +306,8 @@ class WIFWriter(object):
         config.set('CONTENTS', 'TREADLING', 1)
         config.add_section('TREADLING')
 
-        for ii, thread in enumerate(self.draft.weft):
-            treadle_nos = [self.draft.treadles.index(treadle)
+        for ii, thread in enumerate(self.draft.weft, start=1):
+            treadle_nos = [self.draft.treadles.index(treadle) + 1
                            for treadle in thread.treadles]
             treadle_string = ','.join([str(treadle_no) for treadle_no in
                                        treadle_nos])
@@ -317,8 +317,8 @@ class WIFWriter(object):
         config.set('CONTENTS', 'TIEUP', 1)
         config.add_section('TIEUP')
 
-        for ii, treadle in enumerate(self.draft.treadles):
-            shaft_nos = [self.draft.shafts.index(shaft)
+        for ii, treadle in enumerate(self.draft.treadles, start=1):
+            shaft_nos = [self.draft.shafts.index(shaft) + 1
                          for shaft in treadle.shafts]
             shaft_string = ','.join([str(shaft_no) for shaft_no in shaft_nos])
             config.set('TIEUP', str(ii), shaft_string)
