@@ -324,6 +324,8 @@ class WIFWriter(object):
             config.set('TIEUP', str(ii), shaft_string)
 
     def write(self, filename, liftplan=False):
+        assert self.draw.start_at_lowest_thread
+
         config = RawConfigParser()
         config.optionxform = str
         config.add_section('CONTENTS')
