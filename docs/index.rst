@@ -17,6 +17,18 @@ The goal of ``pyweaving`` is to provide functionality to:
 
 Right now, it provides basic functionality for parsing a WIF file to render a draft. Here's an example:
 
+Contents
+========
+
+.. toctree::
+    :maxdepth: 2
+
+    cmd
+    tutorial
+    api
+    contributing
+
+
 .. image:: 63365.png
 
 Draft by Nathaniel Stimson, from `HandWeaving.net <http://www.handweaving.net/PatternDisplay.aspx?PATTERNID=63365>`_.
@@ -28,16 +40,6 @@ Draft by Nathaniel Stimson, from `HandWeaving.net <http://www.handweaving.net/Pa
 
     `The WIF Specification <http://www.mhsoft.com/wif/wif1-1.txt>`_
         The canonical WIF 1.1 specification, published April 1997.
-
-
-Contents
-========
-
-.. toctree::
-    :maxdepth: 2
-
-    api
-    contributing
 
 
 Indices and Tables
