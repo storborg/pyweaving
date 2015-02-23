@@ -507,6 +507,25 @@ class Draft(object):
         """
         raise NotImplementedError
 
+    def repeat(self, n):
+        """
+        Given a base draft, make it repeat with N units in each direction.
+        """
+        initial_warp = list(self.warp)
+        initial_weft = list(self.weft)
+        for ii in range(n):
+            for thread in initial_warp:
+                self.add_warp_thread(
+                    color=thread.color,
+                    shaft=thread.shaft,
+                )
+            for thread in initial_weft:
+                self.add_weft_thread(
+                    color=thread.color,
+                    treadles=thread.treadles,
+                    shafts=thread.shafts,
+                )
+
     def advance(self):
         """
         Given a base draft, make it 'advance'. Essentially:
@@ -515,7 +534,36 @@ class Draft(object):
             2. On each successive repeat, offset the threading by 1 additional
             shaft and the treadling by one additional treadle.
         """
-        raise NotImplementedError
+        initial_warp = list(self.warp)
+        initial_weft = list(self.weft)
+        num_shafts = len(self.shafts)
+        num_treadles = len(self.treadles)
+        for ii in range(1, num_shafts):
+            print("ADVANCE %d" % ii)
+            for thread in initial_warp:
+                print("  thread")
+                initial_shaft = self.shafts.index(thread.shaft)
+                print("    initial shaft: %d" % initial_shaft)
+                new_shaft = (initial_shaft + ii) % num_shafts
+                print("    new shaft: %d" % new_shaft)
+                self.add_warp_thread(
+                    color=thread.color,
+                    shaft=new_shaft,
+                )
+            for thread in initial_weft:
+                initial_treadles = [self.treadles.index(treadle)
+                                    for treadle in thread.treadles]
+                new_treadles = [(treadle + ii) % num_treadles
+                                for treadle in initial_treadles]
+                initial_shafts = [self.shafts.index(shaft)
+                                  for shaft in thread.shafts]
+                new_shafts = [(shaft + ii) % num_shafts
+                              for shaft in initial_shafts]
+                self.add_weft_thread(
+                    color=thread.color,
+                    treadles=new_treadles,
+                    shafts=new_shafts,
+                )
 
     def all_threads_attached(self):
         """
