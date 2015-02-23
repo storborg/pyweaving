@@ -61,7 +61,7 @@ class StatCounter(object):
     def pick(self):
         self.pick_times.append(time.time())
 
-    def print_stats(self):
+    def print_pick_stats(self):
         last_picks = self.pick_times[-self.average_over:]
         if len(last_picks) >= self.average_over:
             elapsed_secs = last_picks[-1] - last_picks[0]
@@ -74,6 +74,14 @@ class StatCounter(object):
         print("Weaving %0.2f picks/min, %d picks left, est remaining: %s" %
               (picks_per_minute, picks_to_go,
                describe_interval(est_remaining_secs)))
+
+    def print_session_stats(self):
+        elapsed_secs = self.pick_times[-1] - self.start_time
+        picks_done = len(self.pick_times)
+        picks_per_second = picks_done / elapsed_secs
+        picks_per_minute = picks_per_second * 60.
+        print("%d picks total, average %0.2f picks/min." %
+              (picks_done, picks_per_minute))
 
 
 def wait_for_key():
@@ -153,11 +161,16 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
                 'current_pick': current_pick,
             })
 
-        wait_for_key()
+        try:
+            wait_for_key()
+        except EOFError:
+            stats.print_session_stats()
+            print ("Ending session.")
+            return
 
         current_pick += 1
         stats.pick()
-        stats.print_stats()
+        stats.print_pick_stats()
 
     print("DONE!")
 
