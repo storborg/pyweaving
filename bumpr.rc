@@ -13,6 +13,7 @@ unsuffix = true
 message = Bump version {version}
 
 [prepare]
+part = patch
 suffix = dev
 message = Prepare version {version} for next development cycle
 
