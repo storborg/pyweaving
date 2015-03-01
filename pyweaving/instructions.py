@@ -148,11 +148,15 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
         from_right = draft.start_at_lowest_thread ^ ((current_pick - 1) % 2)
 
         weft_thread = draft.weft[current_pick - 1]
+        weft_color = weft_thread.color
+        last_color = draft.weft[current_pick - 2].color
+        if weft_color != last_color:
+            print("COLOR CHANGE! %s -> %s" % (last_color, weft_color))
         print("\nREPEAT %d, PICK %d\n" % (current_repeat, current_pick))
         if from_right:
-            print((" " * 40) + "<--- SHUTTLE")
+            print((" " * 40) + "<--- SHUTTLE %s" % weft_color)
         else:
-            print("SHUTTLE --->")
+            print("%s SHUTTLE --->" % weft_color)
         print_shafts(draft, weft_thread.connected_shafts)
 
         if save_filename:

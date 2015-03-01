@@ -22,9 +22,15 @@ class Color(object):
     def __eq__(self, other):
         return self.rgb == other.rgb
 
+    def __ne__(self, other):
+        return self.rgb != other.rgb
+
     @property
     def css(self):
         return 'rgb(%d, %d, %d)' % self.rgb
+
+    def __str__(self):
+        return str(self.rgb)
 
 
 class WarpThread(object):
