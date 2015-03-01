@@ -1,0 +1,14 @@
+[run]
+source = gimlet
+omit = gimlet/tests/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: nocover
+
+ignore_errors = True
+
+[html]
+directory = cover
