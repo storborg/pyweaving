@@ -175,7 +175,18 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
     print("DONE!")
 
 
-def threading(draft, repeats):
+default_color_table = {}
+default_colors = [
+    'red',
+    'yellow',
+    'blue',
+    'white',
+]
+for ii in range(64):
+    default_color_table[ii] = default_colors[ii % len(default_colors)]
+
+
+def threading(draft, repeats=1, color_table=default_color_table):
     """
     Print threading instructions.
     """
@@ -185,14 +196,17 @@ def threading(draft, repeats):
         count = len([thread for thread in draft.warp if thread.shaft == shaft])
         count *= repeats
         total_count += count
-        print("Heddles on shaft %d: %d" % (ii, count))
+        color = color_table[ii - 1]
+        print("Heddles on shaft %d: %d\t\t%s" % (ii, count, color))
 
     print("Total heddles required: %d" % total_count)
 
     for __ in range(repeats):
         for ii, warp_thread in enumerate(draft.warp, start=1):
             shaft_no = draft.shafts.index(warp_thread.shaft) + 1
-            print("\nWarp thread %d: shaft %d" % (ii, shaft_no))
+            heddle_color = color_table[shaft_no - 1]
+            print("\nWarp thread %d: shaft %d\tthread: %s\theddle: %s" % (
+                ii, shaft_no, warp_thread.color.rgb, heddle_color))
             wait_for_key()
 
     print("DONE!")
