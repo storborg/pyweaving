@@ -22,7 +22,7 @@ def twill(size=2, warp_color=(0, 0, 100), weft_color=(255, 255, 255)):
     for ii in range(8 * size):
         draft.add_warp_thread(
             color=warp_color,
-            shafts=[ii % shafts],
+            shaft=ii % shafts,
         )
 
         draft.add_weft_thread(
