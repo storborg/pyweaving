@@ -17,6 +17,10 @@ The goal of ``pyweaving`` is to provide functionality to:
 
 Right now, it provides basic functionality for parsing a WIF file to render a draft. Here's an example:
 
+.. image:: 63365.png
+
+Draft by Nathaniel Stimson, from `HandWeaving.net <http://www.handweaving.net/PatternDisplay.aspx?PATTERNID=63365>`_.
+
 Contents
 ========
 
@@ -27,11 +31,6 @@ Contents
     tutorial
     api
     contributing
-
-
-.. image:: 63365.png
-
-Draft by Nathaniel Stimson, from `HandWeaving.net <http://www.handweaving.net/PatternDisplay.aspx?PATTERNID=63365>`_.
 
 .. seealso::
 
