@@ -1,6 +1,6 @@
 [run]
-source = gimlet
-omit = gimlet/tests/*
+source = dram
+omit = dram/tests/*
 
 [report]
 # Regexes for lines to exclude from consideration
