@@ -37,10 +37,12 @@ copyright = u'2014-2015, Scott Torborg'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# The short X.Y version.
-version = '0.0'
 # The full version, including alpha/beta/rc tags.
-release = version
+release = '0.0.4.dev'
+
+# The short X.Y version. For now let's just make it the same.
+# version = '.'.join(s.split('.', 2)[:2])
+version = release
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

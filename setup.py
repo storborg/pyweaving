@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='pyweaving',
-      version='0.0.2.dev',
+      version='0.0.4.dev',
       description='Python Weaving Tools',
       long_description='',
       classifiers=[
