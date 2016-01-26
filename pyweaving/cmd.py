@@ -6,7 +6,7 @@ import argparse
 
 from . import Draft, instructions
 from .wif import WIFReader, WIFWriter
-from .render import ImageRenderer, SVGRenderer, PDFRenderer
+from .render import ImageRenderer, SVGRenderer
 
 
 def load_draft(infile):
@@ -26,8 +26,6 @@ def render(opts):
     if opts.outfile:
         if opts.outfile.endswith('.svg'):
             SVGRenderer(draft).save(opts.outfile)
-        elif opts.outfile.endswith('.pdf'):
-            PDFRenderer(draft).save(opts.outfile)
         else:
             ImageRenderer(draft).save(opts.outfile)
     else:
