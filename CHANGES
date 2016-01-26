@@ -1,7 +1,14 @@
 PyWeaving Changelog
 ===================
 
-Version 0.0.3
+Version 0.0.6
+-------------
+
+- Added quickstart to docs.
+- Fixed regression issues.
+- Clean up packaging issues and release configuration.
+
+Version 0.0.5
 -------------
 
 - Add Python 3 support.
