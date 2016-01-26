@@ -2,10 +2,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os.path
-import tempfile
 
-from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPDF
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -724,14 +721,3 @@ class SVGRenderer(object):
         s = svg_preamble + '\n' + self.make_svg_doc()
         with open(filename, 'w') as f:
             f.write(s)
-
-
-class PDFRenderer(object):
-    def __init__(self, draft):
-        self.draft = draft
-
-    def save(self, filename):
-        with tempfile.NamedTemporaryFile() as f:
-            SVGRenderer(self.draft).save(f.name)
-            rldrawing = svg2rlg(f.name)
-        renderPDF.drawToFile(rldrawing, filename)

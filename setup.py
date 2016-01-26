@@ -20,8 +20,6 @@ setup(name='pyweaving',
       author_email='storborg@gmail.com',
       install_requires=[
           'Pillow>=2.1.0',      # Provides PIL
-          'svglib>=0.6.3',
-          'reportlab>=3.1.44',
           'six>=1.5.2',
       ],
       license='MIT',
