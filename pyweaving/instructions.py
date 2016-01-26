@@ -5,6 +5,8 @@ import os.path
 import time
 import json
 
+from six.moves import input
+
 
 def print_shafts(draft, connected):
     """
@@ -85,7 +87,7 @@ class StatCounter(object):
 
 
 def wait_for_key():
-    raw_input('... ')
+    input('... ')
 
 
 def load_save_file(save_filename):
@@ -169,7 +171,7 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
             wait_for_key()
         except EOFError:
             stats.print_session_stats()
-            print ("Ending session.")
+            print("Ending session.")
             return
 
         current_pick += 1

@@ -52,7 +52,7 @@ def weave(opts):
     draft = load_draft(opts.infile)
     assert opts.liftplan, "only liftplan supported for now"
     save_filename = '.' + opts.infile + '.save'
-    print ("SAVE FILENAME is %r" % save_filename)
+    print("SAVE FILENAME is %r" % save_filename)
     instructions.weaving(draft,
                          repeats=opts.repeats,
                          start_repeat=opts.start_repeat,

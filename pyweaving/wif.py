@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from ConfigParser import RawConfigParser
+from six.moves.configparser import RawConfigParser
 
 from . import Draft, __version__
 
