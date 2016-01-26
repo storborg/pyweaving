@@ -27,6 +27,7 @@ Contents
 .. toctree::
     :maxdepth: 2
 
+    quickstart
     cmd
     tutorial
     api
