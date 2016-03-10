@@ -7,7 +7,7 @@ from copy import deepcopy
 from collections import defaultdict
 
 
-__version__ = '0.0.7'
+__version__ = '0.0.8.dev'
 
 
 class Color(object):
