@@ -47,11 +47,13 @@ class WIFReader(object):
         else:
             warp_color_map = None
 
+        # get backup color if not in [WARP COLORS]
         warp_color = None
+        if 'Color' in self.config['WARP']:
+             warp_color = self.config.getint('WARP', 'Color')
         if not warp_color_map:
             # try to get warp color from WARP section
             has_warp_colors = False
-            warp_color = self.config.getint('WARP', 'Color')
 
         has_threading = self.getbool('CONTENTS', 'THREADING')
 
@@ -68,7 +70,10 @@ class WIFReader(object):
             # has threading specified: otherwise it's unused.
             if thread_no in threading_map:
                 if has_warp_colors:
-                    color = wif_palette[warp_color_map[thread_no]]
+                    if thread_no in warp_color_map.keys():
+                        color = wif_palette[warp_color_map[thread_no]]
+                    else:
+                        color = wif_palette[warp_color]
                 else:
                     color = wif_palette[warp_color]
 
@@ -100,11 +105,13 @@ class WIFReader(object):
         else:
             weft_color_map = None
 
+        # get backup color if not in [WEFT COLORS]
         weft_color = None
+        if 'Color' in self.config['WEFT']:
+            weft_color = self.config.getint('WEFT', 'Color')
         if not weft_color_map:
             # try to get weft color from WEFT section
             has_weft_colors = False
-            weft_color = self.config.getint('WEFT', 'Color')
 
         has_liftplan = self.getbool('CONTENTS', 'LIFTPLAN')
 
@@ -130,7 +137,10 @@ class WIFReader(object):
             if (has_liftplan and (thread_no in liftplan_map)) or \
                     (has_treadling and (thread_no in treadling_map)):
                 if has_weft_colors:
-                    color = wif_palette[weft_color_map[thread_no]]
+                    if thread_no in weft_color_map.keys():
+                        color = wif_palette[weft_color_map[thread_no]]
+                    else:
+                        color = wif_palette[weft_color]
                 else:
                     color = wif_palette[weft_color]
 
