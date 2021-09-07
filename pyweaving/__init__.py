@@ -131,6 +131,9 @@ class Draft(object):
         self.telephone = telephone
         self.fax = fax
         self.notes = notes
+        
+        self.source_program = None
+        self.source_version = None
 
     @classmethod
     def from_json(cls, s):

@@ -73,7 +73,8 @@ def stats(opts):
     print("Telephone:", draft.telephone)
     print("Fax:", draft.fax)
     print("Notes:", draft.notes)
-    print("Date:", draft.date)
+    print("Date:", draft.date)  # not sure to display this as generally date of wif file spec
+    print("Source program:", draft.source_program, "version:",draft.source_version)
     print("***")
     print("Warp Threads:", len(draft.warp))
     print("Weft Threads:", len(draft.weft))

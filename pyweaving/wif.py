@@ -29,8 +29,22 @@ class WIFReader(object):
             return False
 
     def put_metadata(self, draft):
-        draft.date = self.config.get('WIF', 'Date')
-        # XXX Name, author, notes, etc.
+        # generally date is always 1997 date of wif spec.
+        #draft.date = self.config.get('WIF', 'Date')
+        # Name, author, notes, etc.
+        draft.title = self.config.get('TEXT', 'Title', fallback="")
+        draft.author = self.config.get('TEXT', 'Author', fallback="")
+        draft.address = self.config.get('TEXT', 'Address', fallback="")
+        draft.email = self.config.get('TEXT', 'EMail', fallback="")
+        draft.telephone = self.config.get('TEXT', 'Telephone', fallback="")
+        draft.fax = self.config.get('TEXT', 'FAX', fallback="")
+        # Notes
+        if self.getbool('CONTENTS', 'NOTES'):
+            for line_no, note in self.config.items('NOTES'):
+                draft.notes += note + "\n"
+        # Source program
+        draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
+        draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
 
     def put_warp(self, draft, wif_palette):
         warp_thread_count = self.config.getint('WARP', 'Threads')
