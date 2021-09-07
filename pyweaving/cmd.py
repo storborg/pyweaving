@@ -124,7 +124,6 @@ def main(argv=sys.argv):
         'tieup',
         help='Show tie-up instructions for a draft.')
     p_tieup.add_argument('infile')
-    p_tieup.set_defaults(function=tieup)
 
     p_stats = subparsers.add_parser(
         'stats',
