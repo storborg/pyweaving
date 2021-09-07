@@ -164,11 +164,12 @@ class WIFReader(object):
 
     def put_tieup(self, draft):
         for treadle_no, value in self.config.items('TIEUP'):
-            treadle = draft.treadles[int(treadle_no) - 1]
-            shaft_nos = [int(sn) for sn in value.split(',')]
-            for shaft_no in shaft_nos:
-                shaft = draft.shafts[shaft_no - 1]
-                treadle.shafts.add(shaft)
+            if int(treadle_no)-1 < len(draft.treadles):
+                treadle = draft.treadles[int(treadle_no) - 1]
+                shaft_nos = [int(sn) for sn in value.split(',')]
+                for shaft_no in shaft_nos:
+                    shaft = draft.shafts[shaft_no - 1]
+                    treadle.shafts.add(shaft)
 
     def read(self):
         """
