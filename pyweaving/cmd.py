@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import sys
 import argparse
+import io
 
 from . import Draft, instructions
 from .wif import WIFReader, WIFWriter
@@ -13,7 +14,7 @@ def load_draft(infile):
     if infile.endswith('.wif'):
         return WIFReader(infile).read()
     elif infile.endswith('.json'):
-        with open(infile) as f:
+        with open(infile, 'r') as f: #!! opt mode
             return Draft.from_json(f.read())
     else:
         raise ValueError(
@@ -37,7 +38,7 @@ def convert(opts):
     if opts.outfile.endswith('.wif'):
         WIFWriter(draft).write(opts.outfile)
     elif opts.outfile.endswith('.json'):
-        with open(opts.outfile, 'w') as f:
+        with io.open(opts.outfile, 'w', encoding='utf-8') as f:
             f.write(draft.to_json())
 
 

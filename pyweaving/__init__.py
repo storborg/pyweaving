@@ -37,11 +37,12 @@ class WarpThread(object):
     """
     Represents a single warp thread.
     """
-    def __init__(self, color=None, shaft=None):
+    def __init__(self, color=None, shaft=None, spacing=None):
         if color and not isinstance(color, Color):
             color = Color(color)
         self.color = color
         self.shaft = shaft
+        self.spacing = spacing
 
     def __repr__(self):
         return '<WarpThread color:%s shaft:%s>' % (self.color.rgb, self.shaft)
@@ -51,14 +52,18 @@ class WeftThread(object):
     """
     Represents a single weft thread.
     """
-    def __init__(self, color=None, shafts=None, treadles=None):
+    def __init__(self, color=None, shafts=None, treadles=None, spacing=None):
         if color and not isinstance(color, Color):
             color = Color(color)
         self.color = color
-        assert not (shafts and treadles), \
-            "can't have both shafts (liftplan) and treadles specified"
+        # print("huh",shafts)
+        # print("huh",treadles)
+        # !! when loading from json we DO have both... Hmmm what to do
+        # assert not (shafts and treadles), \
+            # "can't have both shafts (liftplan) and treadles specified"
         self.treadles = treadles or set()
         self.shafts = shafts or set()
+        self.spacing = spacing
 
     @property
     def connected_shafts(self):
@@ -106,7 +111,8 @@ class Draft(object):
     def __init__(self, num_shafts, num_treadles=0, liftplan=False,
                  rising_shed=True, start_at_lowest_thread=True,
                  date=None, title='', author='', address='',
-                 email='', telephone='', fax='', notes=''):
+                 email='', telephone='', fax='', notes='',
+                 weft_units=None, warp_units=None):
         self.liftplan = liftplan or (num_treadles == 0)
         self.rising_shed = rising_shed
         self.start_at_lowest_thread = start_at_lowest_thread
@@ -121,6 +127,9 @@ class Draft(object):
 
         self.warp = []
         self.weft = []
+        
+        self.warp_units = warp_units
+        self.weft_units = weft_units
 
         self.date = date or datetime.date.today().strftime('%b %d, %Y')
 
@@ -152,6 +161,7 @@ class Draft(object):
             draft.add_warp_thread(
                 color=thread_obj['color'],
                 shaft=draft.shafts[thread_obj['shaft']],
+                spacing=thread_obj['spacing'],
             )
 
         for thread_obj in weft:
@@ -160,6 +170,7 @@ class Draft(object):
                 shafts=set(draft.shafts[n] for n in thread_obj['shafts']),
                 treadles=set(draft.treadles[n] for n in
                              thread_obj['treadles']),
+                spacing=thread_obj['spacing'],
             )
 
         for ii, shaft_nos in enumerate(tieup):
@@ -177,9 +188,12 @@ class Draft(object):
             'rising_shed': self.rising_shed,
             'num_shafts': len(self.shafts),
             'num_treadles': len(self.treadles),
+            'warp_units':self.warp_units,
+            'weft_units':self.weft_units,
             'warp': [{
                 'color': thread.color.rgb,
                 'shaft': self.shafts.index(thread.shaft),
+                'spacing': thread.spacing,
             } for thread in self.warp],
             'weft': [{
                 'color': thread.color.rgb,
@@ -187,6 +201,7 @@ class Draft(object):
                              for tr in thread.treadles],
                 'shafts': [self.shafts.index(sh)
                            for sh in thread.connected_shafts],
+                'spacing': thread.spacing,
             } for thread in self.weft],
             'tieup': [
                 [self.shafts.index(sh) for sh in treadle.shafts]
@@ -200,7 +215,7 @@ class Draft(object):
             'telephone': self.telephone,
             'fax': self.fax,
             'notes': self.notes,
-        })
+        }, ensure_ascii=False)
 
     def copy(self):
         """
@@ -208,7 +223,7 @@ class Draft(object):
         """
         return deepcopy(self)
 
-    def add_warp_thread(self, color=None, index=None, shaft=0):
+    def add_warp_thread(self, color=None, index=None, shaft=0, spacing=None):
         """
         Add a warp thread to this draft.
         """
@@ -217,6 +232,7 @@ class Draft(object):
         thread = WarpThread(
             color=color,
             shaft=shaft,
+            spacing=spacing,
         )
         if index is None:
             self.warp.append(thread)
@@ -224,7 +240,7 @@ class Draft(object):
             self.warp.insert(index, thread)
 
     def add_weft_thread(self, color=None, index=None,
-                        shafts=None, treadles=None):
+                        shafts=None, treadles=None, spacing=None):
         """
         Add a weft thread to this draft.
         """
@@ -244,6 +260,7 @@ class Draft(object):
             color=color,
             shafts=shaft_objs,
             treadles=treadle_objs,
+            spacing=spacing,
         )
         if index is None:
             self.weft.append(thread)

@@ -51,6 +51,7 @@ class WIFReader(object):
         warp_units = self.config.get('WARP', 'Units').lower()
         assert warp_units in self.allowed_units, \
             "Warp Units of %r is not understood" % warp_units
+        draft.warp_units = warp_units
 
         has_warp_colors = self.getbool('CONTENTS', 'WARP COLORS')
 
@@ -77,6 +78,21 @@ class WIFReader(object):
                 threading_map[int(thread_no)] = \
                     [int(sn) for sn in value.split(',')]
 
+        warp_spacing = None
+        has_warp_spacing = self.getbool('CONTENTS', 'WARP SPACING')
+        # get backup spacing if thread not in [WARP SPACING]
+        if 'Spacing' in self.config['WARP']:
+            warp_spacing = self.config.getfloat('WARP', 'Spacing')
+        if not warp_spacing:
+            # try to get weft color from WEFT section
+            has_warp_spacing = False
+        if has_warp_spacing:
+            warp_spacing_map = {}
+            for thread_no, value in self.config.items('WARP SPACING'):
+                warp_spacing_map[int(thread_no)] = float(value)
+        else:
+            warp_spacing_map = False
+
         for thread_no in range(1, warp_thread_count + 1):
             # NOTE: Some crappy software will generate WIFs with way more
             # threads in the warp or weft section than mentioned in the
@@ -99,9 +115,17 @@ class WIFReader(object):
                 else:
                     shaft = None
 
+                if has_warp_spacing:
+                    if thread_no in warp_spacing_map.keys():
+                        spacing = warp_spacing_map[thread_no]
+                    else:
+                        spacing = warp_spacing
+                else: spacing = None
+    
                 draft.add_warp_thread(
                     color=color,
                     shaft=shaft,
+                    spacing=spacing,
                 )
 
     def put_weft(self, draft, wif_palette):
@@ -109,6 +133,7 @@ class WIFReader(object):
         weft_units = self.config.get('WEFT', 'Units').lower()
         assert weft_units in self.allowed_units, \
             "Weft Units of %r is not understood" % weft_units
+        draft.weft_units = weft_units
 
         has_weft_colors = self.getbool('CONTENTS', 'WEFT COLORS')
 
@@ -147,6 +172,21 @@ class WIFReader(object):
                 else:
                     treadling_map[int(thread_no)] = treadles
 
+        weft_spacing = None
+        has_weft_spacing = self.getbool('CONTENTS', 'WEFT SPACING')
+        # get backup spacing if thread not in [WEFT SPACING]
+        if 'Spacing' in self.config['WEFT']:
+            weft_spacing = self.config.getfloat('WEFT', 'Spacing')
+        if not weft_spacing:
+            # try to get weft color from WEFT section
+            has_weft_spacing = False
+        if has_weft_spacing:
+            weft_spacing_map = {}
+            for thread_no, value in self.config.items('WEFT SPACING'):
+                weft_spacing_map[int(thread_no)] = float(value)
+        else:
+            weft_spacing_map = False
+
         for thread_no in range(1, weft_thread_count + 1):
             if (has_liftplan and (thread_no in liftplan_map)) or \
                     (has_treadling and (thread_no in treadling_map)):
@@ -169,11 +209,19 @@ class WIFReader(object):
                                    for treadle_no in treadling_map[thread_no])
                 else:
                     treadles = set()
-
+                
+                if has_weft_spacing:
+                    if thread_no in weft_spacing_map.keys():
+                        spacing = weft_spacing_map[thread_no]
+                    else:
+                        spacing = weft_spacing
+                else: spacing = None
+                
                 draft.add_weft_thread(
                     color=color,
                     shafts=shafts,
                     treadles=treadles,
+                    spacing=spacing,
                 )
 
     def put_tieup(self, draft):
@@ -252,14 +300,15 @@ class WIFWriter(object):
         config.set('WIF', 'Source Program', 'PyWeaving')
         config.set('WIF', 'Source Version', __version__)
 
-        config.set('CONTENTS', 'WEAVING', 1)
+        config.add_section('CONTENTS')
+        config.set('CONTENTS', 'WEAVING', True)
         config.add_section('WEAVING')
         config.set('WEAVING', 'Rising Shed', self.draft.rising_shed)
         config.set('WEAVING', 'Shafts', len(self.draft.shafts))
         config.set('WEAVING', 'Treadles',
                    0 if liftplan else len(self.draft.treadles))
 
-        config.set('CONTENTS', 'TEXT', 1)
+        config.set('CONTENTS', 'TEXT', True)
         config.add_section('TEXT')
         config.set('TEXT', 'Title', self.draft.title)
         config.set('TEXT', 'Author', self.draft.author)
@@ -269,7 +318,7 @@ class WIFWriter(object):
         config.set('TEXT', 'FAX', self.draft.fax)
 
         if self.draft.notes:
-            config.set('CONTENTS', 'NOTES', 1)
+            config.set('CONTENTS', 'NOTES', True)
             config.add_section('NOTES')
             for ii, line in enumerate(self.draft.notes.split('\n')):
                 config.set('NOTES', str(ii), line)
@@ -280,14 +329,14 @@ class WIFWriter(object):
         colors = set(thread.color.rgb for thread in
                      self.draft.warp + self.draft.weft)
         wif_palette = {}
-        config.set('CONTENTS', 'COLOR TABLE', 1)
+        config.set('CONTENTS', 'COLOR TABLE', True)
         config.add_section('COLOR TABLE')
         for ii, color in enumerate(colors, start=1):
             val = '%d,%d,%d' % color
             config.set('COLOR TABLE', str(ii), val)
             wif_palette[color] = ii
 
-        config.set('CONTENTS', 'COLOR PALETTE', 1)
+        config.set('CONTENTS', 'COLOR PALETTE', True)
         config.add_section('COLOR PALETTE')
         config.set('COLOR PALETTE', 'Form', 'RGB')
         config.set('COLOR PALETTE', 'Range', '0,255')
@@ -297,13 +346,17 @@ class WIFWriter(object):
         assert dir in ('warp', 'weft')
         threads = getattr(self.draft, dir)
         dir = dir.upper()
-        config.set('CONTENTS', dir, 1)
+        config.set('CONTENTS', dir, True)
         config.add_section(dir)
         config.set(dir, 'Threads', len(threads))
         # XXX This should actually be stored in the draft.
-        config.set(dir, 'Units', 'Inches')
+        #config.set(dir, 'Units', 'Inches')
+        if dir == 'WARP':
+            config.set(dir, 'Units', self.draft.warp_units)
+        if dir == 'WEFT':
+            config.set(dir, 'Units', self.draft.weft_units)
 
-        config.set('CONTENTS', '%s COLORS' % dir, 1)
+        config.set('CONTENTS', '%s COLORS' % dir, True)
         config.add_section('%s COLORS' % dir)
         for ii, thread in enumerate(threads, start=1):
             config.set('%s COLORS' % dir,
@@ -311,7 +364,7 @@ class WIFWriter(object):
                        wif_palette[thread.color.rgb])
 
     def write_threading(self, config):
-        config.set('CONTENTS', 'THREADING', 1)
+        config.set('CONTENTS', 'THREADING', True)
         config.add_section('THREADING')
 
         for ii, thread in enumerate(self.draft.warp, start=1):
@@ -319,7 +372,7 @@ class WIFWriter(object):
             config.set('THREADING', str(ii), shaft_string)
 
     def write_liftplan(self, config):
-        config.set('CONTENTS', 'LIFTPLAN', 1)
+        config.set('CONTENTS', 'LIFTPLAN', True)
         config.add_section('LIFTPLAN')
 
         for ii, thread in enumerate(self.draft.weft, start=1):
@@ -329,7 +382,7 @@ class WIFWriter(object):
             config.set('LIFTPLAN', str(ii), shaft_string)
 
     def write_treadling(self, config):
-        config.set('CONTENTS', 'TREADLING', 1)
+        config.set('CONTENTS', 'TREADLING', True)
         config.add_section('TREADLING')
 
         for ii, thread in enumerate(self.draft.weft, start=1):
@@ -340,7 +393,7 @@ class WIFWriter(object):
             config.set('TREADLING', str(ii), treadle_string)
 
     def write_tieup(self, config):
-        config.set('CONTENTS', 'TIEUP', 1)
+        config.set('CONTENTS', 'TIEUP', True)
         config.add_section('TIEUP')
 
         for ii, treadle in enumerate(self.draft.treadles, start=1):
@@ -354,8 +407,7 @@ class WIFWriter(object):
 
         config = RawConfigParser()
         config.optionxform = str
-        config.add_section('CONTENTS')
-
+        
         self.write_metadata(config, liftplan=liftplan)
 
         wif_palette = self.write_palette(config)
@@ -369,5 +421,5 @@ class WIFWriter(object):
             self.write_treadling(config)
             self.write_tieup(config)
 
-        with open(filename, 'wb') as f:
+        with open(filename, 'w') as f:
             config.write(f)
