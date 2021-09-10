@@ -4,12 +4,22 @@ from __future__ import (absolute_import, division, print_function,
 import sys
 import argparse
 import io
+import os.path
 
 from . import Draft, instructions
 from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
+from .generators.tartan import tartan
+from .generators.twill import twill
 
-
+def gen_tartan(opts):
+    wif = tartan(opts.sett, opts.repeats)
+    WIFWriter(wif).write(opts.outfile)
+    
+def gen_twill(opts):
+    wif = twill(opts.size)
+    WIFWriter(wif).write(opts.outfile)
+    
 def load_draft(infile):
     if infile.endswith('.wif'):
         return WIFReader(infile).read()
@@ -84,9 +94,19 @@ def stats(opts):
     print("Longest Float (Warp):", warp_longest)
     print("Longest Float (Weft):", weft_longest)
 
-
+def outfile_if_missing_dir(infile, outfile):
+    " pull dir from infile if not in outfile "
+    indir, inbase = os.path.split(infile)
+    outdir, outbase = os.path.split(outfile)
+    if infile and outfile and not outdir:
+        outfile = os.path.join(indir,outbase)
+    return outfile
+    
+    
 def main(argv=sys.argv):
-    p = argparse.ArgumentParser(description='Weaving utilities.')
+    p = argparse.ArgumentParser(description='Weaving utilities.',
+                                # can supply a file of args instead of commandline
+                                fromfile_prefix_chars='@')
 
     subparsers = p.add_subparsers(help='sub-command help')
 
@@ -133,6 +153,24 @@ def main(argv=sys.argv):
         help='Print stats for a draft.')
     p_stats.add_argument('infile')
     p_stats.set_defaults(function=stats)
+    
+    p_tartan = subparsers.add_parser(
+        'tartan', 
+        help='Create a wif from the tartan generator.')
+    p_tartan.add_argument('sett')
+    p_tartan.add_argument('--repeats', type=int, default=1)
+    p_tartan.add_argument('outfile')
+    p_tartan.set_defaults(function=gen_tartan)
+
+    p_twill  = subparsers.add_parser(
+        'twill', 
+        help='Create a wif from the twill generator.')
+    p_twill.add_argument('size', type=int, default=2)
+    p_twill.add_argument('outfile')
+    p_twill.set_defaults(function=gen_twill)
 
     opts, args = p.parse_known_args(argv[1:])
+    # copy directory to outfile if not supplied
+    if  "outfile" in opts and "infile" in opts:
+        opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)
     return opts.function(opts)

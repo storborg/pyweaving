@@ -48,7 +48,7 @@ class WIFReader(object):
 
     def put_warp(self, draft, wif_palette):
         warp_thread_count = self.config.getint('WARP', 'Threads')
-        warp_units = self.config.get('WARP', 'Units').lower()
+        warp_units = self.config.get('WARP', 'Units', fallback='centimeters').lower()
         assert warp_units in self.allowed_units, \
             "Warp Units of %r is not understood" % warp_units
         draft.warp_units = warp_units
@@ -130,7 +130,7 @@ class WIFReader(object):
 
     def put_weft(self, draft, wif_palette):
         weft_thread_count = self.config.getint('WEFT', 'Threads')
-        weft_units = self.config.get('WEFT', 'Units').lower()
+        weft_units = self.config.get('WEFT', 'Units', fallback='centimeters').lower()
         assert weft_units in self.allowed_units, \
             "Weft Units of %r is not understood" % weft_units
         draft.weft_units = weft_units
@@ -248,8 +248,9 @@ class WIFReader(object):
         treadling = self.getbool('CONTENTS', 'TREADLING')
         assert not (liftplan and treadling), \
             "WIF contains both liftplan and treadling"
-        assert not (liftplan and (num_treadles > 0)), \
-            "WIF contains liftplan and non-zero treadle count"
+        #!! just ignore them if included
+        # assert not (liftplan and (num_treadles > 0)), \
+            # "WIF contains liftplan and non-zero treadle count"
 
         if self.getbool('CONTENTS', 'COLOR PALETTE'):
             palette_range = self.config.get('COLOR PALETTE', 'Range')

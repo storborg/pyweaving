@@ -112,7 +112,7 @@ class Draft(object):
                  rising_shed=True, start_at_lowest_thread=True,
                  date=None, title='', author='', address='',
                  email='', telephone='', fax='', notes='',
-                 weft_units=None, warp_units=None):
+                 weft_units='centimeters', warp_units='centimeters'):
         self.liftplan = liftplan or (num_treadles == 0)
         self.rising_shed = rising_shed
         self.start_at_lowest_thread = start_at_lowest_thread
