@@ -246,6 +246,7 @@ class WIFReader(object):
 
         liftplan = self.getbool('CONTENTS', 'LIFTPLAN')
         treadling = self.getbool('CONTENTS', 'TREADLING')
+        # ideally TREADLING and LIFTPLAN are mutually exclusive,
         assert not (liftplan and treadling), \
             "WIF contains both liftplan and treadling"
         #!! just ignore them if included
@@ -271,7 +272,8 @@ class WIFReader(object):
 
         draft = Draft(num_shafts=num_shafts,
                       num_treadles=num_treadles,
-                      rising_shed=rising_shed)
+                      rising_shed=rising_shed,
+                      liftplan = liftplan)
 
         self.put_metadata(draft)
         self.put_warp(draft, wif_palette)

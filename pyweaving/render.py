@@ -35,9 +35,18 @@ class ImageRenderer(object):
     # - Add option to change thread spacing
     # - Support variable thickness threads
     # - Add option to render heddle count on each shaft
+        
+    # - Show liftplan at same time
+    # - show treadles from L or from right
+    # - Visualise floats with color
+    # - render style choice for lighting
+    # - Show back or front (invert tieup)
+    # - shaft 1 at the back and treddle 1 on the right (sw) or...
+    # - threading option to print numbers and no picks
+    
     def __init__(self, draft, liftplan=None, margin_pixels=20, scale=10,
                  foreground=(127, 127, 127), background=(255, 255, 255),
-                 markers=(0, 0, 0), numbering=(200, 0, 0)):
+                 marker_color=(0, 0, 0), number_color=(200, 0, 0)):
         self.draft = draft
 
         self.liftplan = liftplan
@@ -47,8 +56,8 @@ class ImageRenderer(object):
 
         self.background = background
         self.foreground = foreground
-        self.markers = markers
-        self.numbering = numbering
+        self.marker_color = marker_color
+        self.number_color = number_color
 
         self.font_size = int(round(scale * 1.2))
 
@@ -113,7 +122,7 @@ class ImageRenderer(object):
             (endx, starty),
             (startx + (self.pixels_per_square // 2), endy),
         ]
-        draw.polygon(vertices, fill=self.markers)
+        draw.polygon(vertices, fill=self.marker_color)
 
     def paint_warp(self, draw):
         starty = 0
@@ -130,7 +139,7 @@ class ImageRenderer(object):
     def paint_fill_marker(self, draw, box):
         startx, starty, endx, endy = box
         draw.rectangle((startx + 2, starty + 2, endx - 2, endy - 2),
-                       fill=self.markers)
+                       fill=self.marker_color)
 
     def paint_threading(self, draw):
         num_threads = len(self.draft.warp)
@@ -160,12 +169,12 @@ class ImageRenderer(object):
                 starty = 3 * self.pixels_per_square
                 endy = (5 * self.pixels_per_square) - 1
                 draw.line((startx, starty, endx, endy),
-                          fill=self.numbering)
+                          fill=self.number_color)
                 # draw text
                 draw.text((startx + 2, starty + 2),
                           str(thread_no),
                           font=self.font,
-                          fill=self.numbering)
+                          fill=self.number_color)
 
     def paint_weft(self, draw):
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
@@ -188,7 +197,6 @@ class ImageRenderer(object):
 
     def paint_liftplan(self, draw):
         num_threads = len(self.draft.weft)
-
         offsetx = (1 + len(self.draft.warp)) * self.pixels_per_square
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
         for ii, thread in enumerate(self.draft.weft):
@@ -216,12 +224,12 @@ class ImageRenderer(object):
                 endx = startx + (2 * self.pixels_per_square)
                 endy = starty
                 draw.line((startx, starty, endx, endy),
-                          fill=self.numbering)
+                          fill=self.number_color)
                 # draw text
                 draw.text((startx + 2, starty - 2 - self.font_size),
                           str(thread_no),
                           font=self.font,
-                          fill=self.numbering)
+                          fill=self.number_color)
 
     def paint_tieup(self, draw):
         offsetx = (1 + len(self.draft.warp)) * self.pixels_per_square
@@ -257,11 +265,11 @@ class ImageRenderer(object):
                         line_starty = line_endy = starty
                         draw.line((line_startx, line_starty,
                                    line_endx, line_endy),
-                                  fill=self.numbering)
+                                  fill=self.number_color)
                         draw.text((line_startx + 2, line_starty + 2),
                                   str(shaft_no),
                                   font=self.font,
-                                  fill=self.numbering)
+                                  fill=self.number_color)
 
             # paint the number if it's a multiple of 4 and not the first one
             if (treadle_no != 0) and (treadle_no % 4 == 0):
@@ -270,13 +278,13 @@ class ImageRenderer(object):
                 starty = 3 * self.pixels_per_square
                 endy = (5 * self.pixels_per_square) - 1
                 draw.line((startx, starty, endx, endy),
-                          fill=self.numbering)
+                          fill=self.number_color)
                 # draw text on left side, right justified
                 textw, texth = draw.textsize(str(treadle_no), font=self.font)
                 draw.text((startx - textw - 2, starty + 2),
                           str(treadle_no),
                           font=self.font,
-                          fill=self.numbering)
+                          fill=self.number_color)
 
     def paint_treadling(self, draw):
         num_threads = len(self.draft.weft)
@@ -308,12 +316,12 @@ class ImageRenderer(object):
                 endx = startx + (2 * self.pixels_per_square)
                 endy = starty
                 draw.line((startx, starty, endx, endy),
-                          fill=self.numbering)
+                          fill=self.number_color)
                 # draw text
                 draw.text((startx + 2, starty - 2 - self.font_size),
                           str(thread_no),
                           font=self.font,
-                          fill=self.numbering)
+                          fill=self.number_color)
 
     def paint_drawdown(self, draw):
         offsety = (6 + len(self.draft.shafts)) * self.pixels_per_square
@@ -364,7 +372,7 @@ SVG = TagGenerator()
 class SVGRenderer(object):
     def __init__(self, draft, liftplan=None, scale=10,
                  foreground='#7f7f7f', background='#ffffff',
-                 markers='#000000', numbering='#c80000'):
+                 marker_color='#000000', number_color='#c80000'):
         self.draft = draft
 
         self.liftplan = liftplan
@@ -373,8 +381,8 @@ class SVGRenderer(object):
 
         self.background = background
         self.foreground = foreground
-        self.markers = markers
-        self.numbering = numbering
+        self.marker_color = marker_color
+        self.number_color = number_color
 
         self.font_family = 'Arial, sans-serif'
         self.font_size = 12
@@ -459,7 +467,7 @@ class SVGRenderer(object):
             y=starty + 2,
             width=self.scale - 4,
             height=self.scale - 4,
-            style='fill:%s' % self.markers))
+            style='fill:%s' % self.marker_color))
 
     def paint_threading(self, doc):
         num_threads = len(self.draft.warp)
@@ -497,7 +505,7 @@ class SVGRenderer(object):
                     y1=starty,
                     x2=endx,
                     y2=endy,
-                    style='stroke:%s' % self.numbering))
+                    style='stroke:%s' % self.number_color))
                 # draw text
                 grp.append(SVG.text(
                     str(thread_no),
@@ -506,7 +514,7 @@ class SVGRenderer(object):
                     style='font-family:%s; font-size:%s; fill:%s' % (
                         self.font_family,
                         self.font_size,
-                        self.numbering)))
+                        self.number_color)))
         doc.append(SVG.g(*grp))
 
     def paint_liftplan(self, doc):
@@ -550,7 +558,7 @@ class SVGRenderer(object):
                     y1=starty,
                     x2=endx,
                     y2=endy,
-                    style='stroke:%s' % self.numbering))
+                    style='stroke:%s' % self.number_color))
                 # draw text
                 grp.append(SVG.text(
                     str(thread_no),
@@ -559,7 +567,7 @@ class SVGRenderer(object):
                     style='font-family:%s; font-size:%s; fill:%s' % (
                         self.font_family,
                         self.font_size,
-                        self.numbering)))
+                        self.number_color)))
         doc.append(SVG.g(*grp))
 
     def paint_tieup(self, doc):
@@ -605,7 +613,7 @@ class SVGRenderer(object):
                             y1=line_starty,
                             x2=line_endx,
                             y2=line_endy,
-                            style='stroke:%s' % self.numbering))
+                            style='stroke:%s' % self.number_color))
                         grp.append(SVG.text(
                             str(shaft_no),
                             x=(line_startx + 3),
@@ -613,7 +621,7 @@ class SVGRenderer(object):
                             style='font-family:%s; font-size:%s; fill:%s' % (
                                 self.font_family,
                                 self.font_size,
-                                self.numbering)))
+                                self.number_color)))
 
             # paint the number if it's a multiple of 4 and not the first one
             if (treadle_no != 0) and (treadle_no % 4 == 0):
@@ -626,7 +634,7 @@ class SVGRenderer(object):
                     y1=starty,
                     x2=endx,
                     y2=endy,
-                    style='stroke:%s' % self.numbering))
+                    style='stroke:%s' % self.number_color))
                 # draw text on left side, right justified
                 grp.append(SVG.text(
                     str(treadle_no),
@@ -636,7 +644,7 @@ class SVGRenderer(object):
                     style='font-family:%s; font-size:%s; fill:%s' % (
                         self.font_family,
                         self.font_size,
-                        self.numbering)))
+                        self.number_color)))
         doc.append(SVG.g(*grp))
 
     def paint_treadling(self, doc):
@@ -680,7 +688,7 @@ class SVGRenderer(object):
                     y1=starty,
                     x2=endx,
                     y2=endy,
-                    style='stroke:%s' % self.numbering))
+                    style='stroke:%s' % self.number_color))
                 # draw text
                 grp.append(SVG.text(
                     str(thread_no),
@@ -689,7 +697,7 @@ class SVGRenderer(object):
                     style='font-family:%s; font-size:%s; fill:%s' % (
                         self.font_family,
                         self.font_size,
-                        self.numbering)))
+                        self.number_color)))
         doc.append(SVG.g(*grp))
 
     def paint_drawdown(self, doc):
