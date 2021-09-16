@@ -168,6 +168,9 @@ class Drawstyle(object):
     @property
     def floats_color(self):
         return self.floats_style['color']
+    def set_floats(self, count):
+        self.floats_style['show'] = True
+        self.floats_style['count'] = count
 
 
 class WarpThread(object):
