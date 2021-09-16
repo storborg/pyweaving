@@ -5,9 +5,9 @@ import os.path
 
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
+from . import WHITE, BLACK
 
 __here__ = os.path.dirname(__file__)
-
 font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 
 
@@ -109,7 +109,7 @@ class ImageRenderer(object):
             offsety = self.style.tick_length
         offsety += self.style.warp_start + len(self.draft.shafts)+self.style.drawdown_gap
         offsety *= self.pixels_per_square
-        starty = (offsety - (self.pixels_per_square // 2))
+        starty = (offsety - (self.pixels_per_square / 2))
         
         if self.draft.start_at_lowest_thread:
             # right side
@@ -122,7 +122,7 @@ class ImageRenderer(object):
         vertices = [
             (startx, starty),
             (endx, starty),
-            (startx + (self.pixels_per_square // 2), offsety),
+            (startx + (self.pixels_per_square / 2), offsety),
         ]
         draw.polygon(vertices, fill=self.boxfill_color.rgb)
 
@@ -140,43 +140,52 @@ class ImageRenderer(object):
                            outline=self.outline_color.rgb,
                            fill=thread.color.rgb)
 
-    def paint_fill_marker(self, draw, box, blobcolor, style, label=None, bgcolor=None):
+    def paint_fill_marker(self, draw, box, blobcolor, style, label=None, yarncolor=None):
         startx, starty, endx, endy = box
-        # if bgcolor same as thread color then we have to override with a blob
-        if bgcolor and bgcolor.close(self.style.background):
-            style = 'blob'
-            bgcolor = None
+        textcol = BLACK
         margin = 1
 
-        if bgcolor:
+        if yarncolor:
+            if yarncolor.close(self.style.background) and style=='solid':
+                # yarn color is too close to background and so not visible
+                # so  if 'solid' override to draw 'blob' style instead
+                style = 'blob'
+                bgcolor = None
+            else:
+                draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
+                                fill=yarncolor.rgb)
+            if yarncolor.intensity < 0.5:
+                textcol = WHITE
+		
+        if style == 'blob' and not yarncolor:
+            margin = floor((endx-startx)/5)
             draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                       fill=bgcolor.rgb)
-        else: # Foreground (blob, solid)
-            if style == 'blob' and not bgcolor:
-                margin = floor((endx-startx)/5)
-                draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                                fill=blobcolor.rgb)
-            elif style == 'solid' and not bgcolor:
-                draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                                fill=blobcolor.rgb)
-        # Foreground (number,letter)
-        if style == 'number' or style == 'XO': # lettter or number
+                            fill=blobcolor.rgb)
+        elif style == 'solid' and not yarncolor:
+            draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
+                            fill=blobcolor.rgb)
+        elif style == 'number' or style == 'XO':
             if style == 'number':
-                # extract thread number, place text usin label
-                pass
-            else: # style = letter
-                # choose X,O based on rising shed
-                pass
-            # Draw  text
-            pass
+                center_adj = len(label) * self.thread_font_size/4
+            else: # "XO"
+                center_adj = self.thread_font_size/3
+            draw.text((startx+ (endx-startx)/2-center_adj, starty+(self.style.box_size/10)-1),
+                      label,
+                      align='center',
+                      font=self.thread_font,
+                      fill=textcol.rgb)
             
 
     def paint_threading(self, draw):
         num_threads = len(self.draft.warp)
         num_shafts = len(self.draft.shafts)
         bgcolor = None
+        label = 'O' # default to rising shaft
+        if not self.draft.rising_shed:
+            label = 'X'
+        
         start_tick_y = self.style.warp_start
-        tick_length = self.style.tick_length #tick_gap
+        tick_length = self.style.tick_length
         end_tick = start_tick_y + tick_length
         if self.style.warp_tick_active or self.style.tieup_tick_active:
             start_warp_y = start_tick_y + tick_length -1
@@ -198,9 +207,11 @@ class ImageRenderer(object):
 
                 if shaft == thread.shaft:
                     # draw threading marker
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.warp_style, None,bgcolor)
+                    if self.style.warp_style == 'number':
+                        label = str(jj+1)
+                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.warp_style, label, bgcolor)
 
-            # paint tick, number if it's a multiple of tick_mod and not the first one
+            # horizontal tick, number if it's a multiple of tick_mod and not the first one
             if self.style.warp_tick_active:
                 thread_no = ii + 1
                 if ((thread_no != num_threads) and
@@ -245,15 +256,16 @@ class ImageRenderer(object):
     def paint_liftplan(self, draw):
         num_threads = len(self.draft.weft)
         bgcolor = None
+        label = 'O' # default to rising shaft
+        if not self.draft.rising_shed:
+            label = 'X'
+        
         offsety = 0
         if self.style.warp_tick_active or self.style.tieup_tick_active:
             offsety = self.style.tick_length
         offsety += self.style.warp_start + len(self.draft.shafts)+self.style.drawdown_gap
         offsety *= self.pixels_per_square
         offsetx = (self.style.drawdown_gap + len(self.draft.warp)) * self.pixels_per_square
-        
-        if self.style.weft_use_thread_color:
-                bgcolor = thread.color
                 
         for ii, thread in enumerate(self.draft.weft):
             starty = (ii * self.pixels_per_square) + offsety
@@ -267,9 +279,13 @@ class ImageRenderer(object):
 
                 if shaft in thread.connected_shafts:
                     # draw liftplan marker
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, None,bgcolor)
+                    if self.style.weft_use_thread_color:
+                        bgcolor = thread.color
+                    if self.style.weft_style == 'number':
+                        label = str(jj+1)
+                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
 
-            # paint tick, number if it's a multiple of tick_mod and not the first one
+            # vertical tick, number if it's a multiple of tick_mod and not the first one
             thread_no = ii + 1
             if ((thread_no != num_threads) and
                 (thread_no != 0) and
@@ -277,18 +293,21 @@ class ImageRenderer(object):
                 # draw line
                 startx = endx
                 starty = endy
-                endx = startx + (2 * self.pixels_per_square)
+                endx = startx + (self.style.tick_length * self.pixels_per_square)
                 endy = starty
                 draw.line((startx, starty, endx, endy),
                           fill=self.tick_color)
                 # draw text
-                draw.text((startx + 2, starty - 2 - self.tick_font_size),
+                draw.text((startx + self.tick_font_size/4, starty - 2 - self.tick_font_size),
                           str(thread_no),
                           font=self.tick_font,
                           fill=self.tick_color)
 
     def paint_tieup(self, draw):
         offsetx = (self.style.drawdown_gap + len(self.draft.warp)) * self.pixels_per_square
+        label = 'O' # default to rising shaft
+        if not self.draft.rising_shed:
+            label = 'X'
         
         start_tick_y = self.style.warp_start
         tick_length = self.style.tick_length
@@ -314,26 +333,28 @@ class ImageRenderer(object):
                                outline=self.outline_color.rgb)
 
                 if shaft in treadle.shafts:
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.tieup_style, None,None)
+                    if self.style.tieup_style == 'number':
+                        label = str(jj+1)
+                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.tieup_style, label, None)
 
-                # paint tick, number if it's a multiple of tick_mod and not the first one
+                # vertical tick, number if it's a multiple of tick_mod and not the first one
                 if self.style.tieup_tick_active:
                     if treadle_no == num_treadles:
                         shaft_no = jj + 1
                         if (shaft_no != 0) and (shaft_no % self.style.tick_mod == 0):
                             # draw line
                             line_startx = endx
-                            line_endx = line_startx + (2 * self.pixels_per_square)
+                            line_endx = line_startx + (self.style.tick_length * self.pixels_per_square)
                             line_starty = line_endy = starty
                             draw.line((line_startx, line_starty,
                                        line_endx, line_endy),
-                                      fill=self.tick_color)
-                            draw.text((line_startx + 2, line_starty + 2),
-                                      str(shaft_no),
-                                      font=self.tick_font,
-                                      fill=self.tick_color)
+                                       fill=self.tick_color)
+                            draw.text((line_startx + 2, line_starty),
+                                       str(shaft_no),
+                                       font=self.tick_font,
+                                       fill=self.tick_color)
             
-            # paint tick, number if it's a multiple of tick_mod and not the first one
+            # horizontal ticks, number if it's a multiple of tick_mod and not the first one
             if self.style.tieup_tick_active:
                 if (treadle_no != 0) and (treadle_no % self.style.tick_mod == 0):
                     # draw line
@@ -343,8 +364,8 @@ class ImageRenderer(object):
                     draw.line((startx, starty, endx, endy),
                               fill=self.tick_color)
                     # draw text on left side, right justified
-                    textw, texth = draw.textsize(str(treadle_no), font=self.tick_font)
-                    draw.text((startx - textw - 2, starty + 2),
+                    textw, texth = draw.textsize(str(treadle_no), font=self.thread_font)
+                    draw.text((startx - textw*1.6, starty + 2),
                               str(treadle_no),
                               font=self.tick_font,
                               fill=self.tick_color)
@@ -352,6 +373,9 @@ class ImageRenderer(object):
     def paint_treadling(self, draw):
         num_threads = len(self.draft.weft)
         bgcolor = None
+        label = 'O' # default to rising shaft
+        if not self.draft.rising_shed:
+            label = 'X'
         
         offsety = 0
         if self.style.warp_tick_active or self.style.tieup_tick_active:
@@ -374,8 +398,10 @@ class ImageRenderer(object):
 
                 if treadle in thread.treadles:
                     # draw treadling marker
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, None,bgcolor)
-            # paint tick, number if it's a multiple of tick_mod and not the first one
+                    if self.style.weft_style == 'number':
+                        label = str(jj+1)
+                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
+            # vertical tick, number if it's a multiple of tick_mod and not the first one
             if self.style.weft_tick_active:
                 thread_no = ii + 1
                 if ((thread_no != num_threads) and
@@ -384,12 +410,12 @@ class ImageRenderer(object):
                     # draw line
                     startx = endx
                     starty = endy
-                    endx = startx + (2 * self.pixels_per_square)
+                    endx = startx + (self.style.tick_length * self.pixels_per_square)
                     endy = starty
                     draw.line((startx, starty, endx, endy),
                               fill=self.tick_color)
                     # draw text
-                    draw.text((startx + 2, starty - 2 - self.tick_font_size),
+                    draw.text((startx + self.tick_font_size/4, starty - 2 - self.tick_font_size),
                               str(thread_no),
                               font=self.tick_font,
                               fill=self.tick_color)

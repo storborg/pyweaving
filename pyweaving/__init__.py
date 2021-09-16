@@ -29,7 +29,13 @@ class Color(object):
         return self.rgb != other.rgb
     
     def close(self, other):
+        " rtb distance between two rgb colors "
         return abs(sum(self.rgb) - sum(other.rgb)) < 60
+        
+    @property
+    def intensity(self):
+        " Perceived intensity calc "
+        return (0.299*self.rgb[0]/255 + 0.587*self.rgb[1]/255 + 0.114*self.rgb[2]/255)
 
     @property
     def css(self):
@@ -40,6 +46,9 @@ class Color(object):
 
     def __str__(self):
         return str(self.rgb)
+
+WHITE = Color((255,255,255))
+BLACK = Color((0,0,0))
 
 class Drawstyle(object):
     """ Series of style flags for how to draw the Layout.
@@ -61,11 +70,11 @@ class Drawstyle(object):
     
     def __init__(self, layout='american', hide=None, show=None,
                  tick_style={'mod':4, 'color':(200, 0, 0), 'length':2},
-                 tieupstyle={'ticks': False, 'style': 'blob'},
-                 warpstyle={'ticks':True, 'usethread_color':True, 'style': 'solid', 'row_length':None},
-                 weftstyle={'ticks':True, 'usethread_color':True, 'style': 'solid'},
+                 tieupstyle={'ticks': True, 'style': 'number'},
+                 warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number', 'row_length':None},
+                 weftstyle={'ticks':True, 'usethread_color':True, 'style': 'number'},
                  drawdown_style="solid",
-                 boxstyle={'size':10, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
+                 boxstyle={'size':20, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
                  background=(240, 240, 240),
                  border_pixels=20,
