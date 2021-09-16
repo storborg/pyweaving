@@ -13,9 +13,12 @@ __version__ = '0.0.8.dev'
 class Color(object):
     """
     A color type. Internally stored as RGB, and does not support transparency.
+    self.rgb, self.css, self.hex
     """
     def __init__(self, rgb):
-        if not isinstance(rgb, tuple):
+        if  isinstance(rgb,type(self)):
+            rgb = rgb.rgb
+        elif not isinstance(rgb, tuple):
             rgb = tuple(rgb)
         self.rgb = rgb
 
@@ -24,13 +27,138 @@ class Color(object):
 
     def __ne__(self, other):
         return self.rgb != other.rgb
+    
+    def close(self, other):
+        return abs(sum(self.rgb) - sum(other.rgb)) < 60
 
     @property
     def css(self):
         return 'rgb(%d, %d, %d)' % self.rgb
+    @property
+    def hex(self):
+        return '#%02x%02x%02x' % self.rgb
 
     def __str__(self):
         return str(self.rgb)
+
+class Drawstyle(object):
+    """ Series of style flags for how to draw the Layout.
+        - layout = [swedish | american]
+        - hide = [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor]
+        - show = [stats, groupings, ]
+        #
+        - tieupstyle = [ticks, border, style]
+          - where style = [solid|dot|number|XO]
+        - drawdownstyle = [solid | box | intersect | boxshaded | solidshaded]
+        - warpstyle,weftstyle = {ticks, usethread_color, style: [solid|dot|number|XO]}
+          - where style = [solid|dot|number|XO]
+          - for warp row_length is howmany threads before a line break to spread down page
+        - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
+          - where size is an integer(10), outline is rgb, fill is rgb
+        - tick_style=[mod:4, color:(200, 0, 0)],
+        - floats_color = (R,G,B)
+    """
+    
+    def __init__(self, layout='american', hide=None, show=None,
+                 tick_style={'mod':4, 'color':(200, 0, 0), 'length':2},
+                 tieupstyle={'ticks': False, 'style': 'blob'},
+                 warpstyle={'ticks':True, 'usethread_color':True, 'style': 'solid', 'row_length':None},
+                 weftstyle={'ticks':True, 'usethread_color':True, 'style': 'solid'},
+                 drawdown_style="solid",
+                 boxstyle={'size':10, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
+                 floats_style={'show':False, 'count':3, 'color':(200,0,0)},
+                 background=(240, 240, 240),
+                 border_pixels=20,
+                 warp_start = 2,
+                 drawdown_gap = 1,
+                 weft_gap = 1,
+                 tick_gap = 1
+                 ):
+        # Color prep
+        tick_style['color'] = Color(tick_style['color'])
+        boxstyle['outline_color'] = Color(boxstyle['outline_color'])
+        boxstyle['fill_color'] = Color(boxstyle['fill_color'])
+        floats_style['color'] = Color(floats_style['color'])
+        background = Color(background)
+        #
+        self.layout = layout
+        self.tick_style = tick_style
+        self.tieupstyle = tieupstyle
+        self.warpstyle = warpstyle
+        self.weftstyle = weftstyle
+        self.drawdown_style = drawdown_style
+        self.boxstyle = boxstyle
+        self.floats_style = floats_style
+        self.background = background
+        self.border_pixels = border_pixels
+        self.warp_start = warp_start
+        self.drawdown_gap = drawdown_gap
+        self.tick_gap = tick_gap
+        self.weft_gap = weft_gap
+    
+    # ticks
+    @property
+    def tick_mod(self):
+        return self.tick_style['mod']
+    @property
+    def tick_length(self):
+        return self.tick_style['length']
+    @property
+    def tick_color_rgb(self):
+        return self.tick_style['color'].rgb
+    @property
+    def tick_color_hex(self):
+        return self.tick_style['color'].hex
+    # tieups
+    @property
+    def tieup_tick_active(self):
+        return self.tieupstyle['ticks']
+    @property
+    def tieup_style(self):
+        return self.tieupstyle['style']
+    # warps
+    @property
+    def warp_tick_active(self):
+        return self.warpstyle['ticks']
+    @property
+    def warp_use_thread_color(self):
+        return self.warpstyle['usethread_color']
+    @property
+    def warp_style(self):
+        return self.warpstyle['style']
+    @property
+    def warp_row_length(self):
+        return self.warpstyle['row_length']
+    # wefts 
+    @property
+    def weft_tick_active(self):
+        return self.weftstyle['ticks']
+    @property
+    def weft_use_thread_color(self):
+        return self.weftstyle['usethread_color']
+    @property
+    def weft_style(self):
+        return self.weftstyle['style']        
+    # boxstyle
+    @property
+    def box_size(self):
+        return self.boxstyle['size']
+    @property
+    def outline_color(self):
+        return self.boxstyle['outline_color']
+    @property
+    def boxfill_color(self):
+        return self.boxstyle['fill_color']
+    # floats
+    @property
+    def show_floats(self):
+        return self.floats_style['show']
+    @property
+    def floats_count(self):
+        return self.floats_style['count']
+    @property
+    def floats_color(self):
+        return self.floats_style['color']
 
 
 class WarpThread(object):

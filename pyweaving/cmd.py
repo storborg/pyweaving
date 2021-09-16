@@ -6,7 +6,7 @@ import argparse
 import io
 import os.path
 
-from . import Draft, instructions
+from . import Draft, instructions, Drawstyle
 from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
@@ -34,11 +34,12 @@ def load_draft(infile):
 
 def render(opts):
     draft = load_draft(opts.infile)
+    style = Drawstyle()
     if opts.outfile:
         if opts.outfile.endswith('.svg'):
             SVGRenderer(draft).save(opts.outfile)
         else:
-            ImageRenderer(draft).save(opts.outfile)
+            ImageRenderer(draft, style).save(opts.outfile)
     else:
         ImageRenderer(draft).show()
 
