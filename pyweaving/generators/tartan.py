@@ -5,56 +5,119 @@ import re
 
 from .. import Draft
 
+# test here:
+# - https://www.tartanregister.gov.uk/searchDesigns#TartanDisplay
+
 
 color_map = {
-    'A': (92, 140, 168),  # azure / light blue
-    'G': (0, 104, 24),  # green
-    'B': (44, 44, 128),  # blue
-    'K': (0, 0, 0),  # black
-    'W': (224, 224, 224),  # white
-    'Y': (232, 192, 0),  # yellow
-    'R': (200, 0, 44),  # red
-    'P': (120, 0, 120),  # purple
-    'C': (208, 80, 84),  # ??? light red of some kind
-    'LP': (180, 104, 172),  # light purple
+    'A' : (92,  140, 168),  # azure / light blue
+    'G' : (0,   104,  24),  # green
+    'LG': (134, 198, 124),  # light green
+    'DG': (0,    64,  40),  # dark green
+    'B' : (44,   44, 128),  # blue
+    'LB': (152, 200, 232),  # light blue
+    'DB': (0,     0, 100),  # dark blue
+    'K' : (0,     0,   0),  # black
+    'W' : (248, 248, 248),  # white
+    'LN': (224, 224, 224),  # light neutral (gray)
+    'N' : (176, 176, 176),  # neutral (gray)
+    'DN': (20,   40,  60),  # dark neutral
+    'Y' : (232, 192,   0),  # yellow
+    'LY': (249, 245, 200),  # light yellow
+    'DY': (208, 152,   0),  # dark yellow
+    'R' : (200,   0,  44),  # red
+    'LR': (232, 120, 120),  # light red
+    'DR': (128,   0,  40),  # dark red
+    'O' : (128,   0,  40),  # orange
+    'DO': (190, 220,  50),  # dark orange
+    'P' : (120,   0, 120),  # purple
+    'C' : (208,  80,  84),  # ??? light red of some kind
+    'P' : (90,    0, 140),  # purple
+    'LP': (196, 156, 216),  # light purple
+    'DP': (68,    0,  68),  # dark purple
+    'LT': (160, 124,  88),  # light brown (Tan)
+    'T' : (96,   64,   0),  # Brown (Tan)
+    'DT': (76,   52,  40),  # dark Brown
 }
 
-
-def tartan(sett, repeats=1):
+def extract_colors(sett):
+    """ get color sequence for the tartan sett
+        - mirror if required
+    """
     colors = []
-    for piece in sett.split(', '):
-        m = re.match('([A-Z]+)(\d+)', piece)
-        colors.append((
-            color_map[m.group(1)],
-            int(m.group(2)),
-        ))
+    sett_simple = sett.replace("/","").upper()
+    for piece in re.split('[,_ ]', sett_simple):
+        m = re.match('([A-Z]+)(\d+)', piece.strip())
+        if m.group(1) in color_map.keys():
+            colors.append( ( color_map[m.group(1)],
+                             int(m.group(2))
+                            ))
+        else:
+            print("Color indicator",m.group(1),"not defined in color_map")
+    # if / in the pattern then reflect it.
+    if sett.find('/') > -1:
+        # tartan is same design mirrored
+        colors.extend(reversed(colors[1:-1]))
+    return colors
 
-    # tartan is always the same design mirrored once
-    colors.extend(reversed(colors))
+def tartan(sett, repeats=1, direction="s"):
+    colors = []
+    direction = direction.upper()
+    warp_colors = []
+    weft_colors = []
+    
+    # are there separate warp and weft threadcounts
+    if sett.find(".") > -1:
+        # two parts warp+weft
+        warpsett, weftsett = sett.split(".")
+        warpsett = warpsett.strip()
+        weftsett = weftsett.strip()
+    else:
+        warpsett = sett.strip()
+        weftsett = None
+    #
+    warp_colors = extract_colors(warpsett)
+    if weftsett:
+        weft_colors = extract_colors(weftsett)
 
     print("Threads per repeat: %d" %
-          sum(count for color, count in colors))
+          sum(count for color, count in warp_colors))
 
-    # tartan is always 2/2 twill
-    # we'll need 4 shafts and 4 treadles
-    draft = Draft(num_shafts=4, num_treadles=4)
+    # Tartan is always 2/2 twill
+    # - need 4 shafts and 4 treadles
+    shaft_count = 4
+    draft = Draft(num_shafts=shaft_count, num_treadles=shaft_count)
 
     # do tie-up
-    for ii in range(4):
-        draft.treadles[3 - ii].shafts.add(draft.shafts[ii])
-        draft.treadles[3 - ii].shafts.add(draft.shafts[(ii + 1) % 4])
+    for ii in range(shaft_count):
+        draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[ii])
+        draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[(ii + 1) % shaft_count])
 
     thread_no = 0
+    # warp
     for ii in range(repeats):
-        for color, count in colors:
-            for jj in range(count):
+        for color, count in warp_colors:
+            for jj in range(count): # (count//2) for visualisation
+                s = thread_no % shaft_count
+                if direction=="Z":
+                    s = shaft_count - s -1
                 draft.add_warp_thread(
                     color=color,
-                    shaft=thread_no % 4,
+                    shaft=s,
                 )
+                thread_no += 1
+    # weft
+    thread_no = 0
+    if not weft_colors:
+        weft_colors = warp_colors
+    #
+    for ii in range(repeats):
+        for color, count in weft_colors:
+            for jj in range(count): # (count//2) for visualisation
+                t = thread_no % shaft_count
                 draft.add_weft_thread(
                     color=color,
-                    treadles=[thread_no % 4],
+                    treadles=[t],
                 )
                 thread_no += 1
 
@@ -100,3 +163,6 @@ gordon_aberdeen_district = ('W4, LG8, K32, W4, P12, A8, W4, A8, P12, W4, P6, '
                             'LR6, W4')
 
 gordon_huntly = 'R4, MB6, FB24, K22, MG22, Y4'
+
+kincardine_tweed = 'B/4 DY15 R1 DY/30 . G/4 O15 R1 O/30'
+MacMillan_Ancient = "G2_K1_G18_K1_G2_K1_R12_G4_Y6_K1_Y6_K1"

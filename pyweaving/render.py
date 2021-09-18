@@ -37,14 +37,14 @@ class ImageRenderer(object):
     # - Add option to render heddle count on each shaft
         
     
-    def __init__(self, draft, style):
+    def __init__(self, draft, style, show_liftplan=False):
                  # liftplan=None, margin_pixels=20, scale=10,
                  # foreground=(127, 127, 127), background=(255, 255, 255),
                  # marker_color=(0, 0, 0), number_color=(200, 0, 0)):
         self.draft = draft
         self.style = style
 
-        self.liftplan = None #!!liftplan is defined in the draft by wifreader
+        self.show_liftplan = show_liftplan #force liftplan display
 
         self.border_pixels = style.border_pixels #border_pixels
         self.pixels_per_square = style.box_size #scale
@@ -70,7 +70,7 @@ class ImageRenderer(object):
 
     def make_pil_image(self):
         width_squares = len(self.draft.warp) + 6
-        if self.liftplan or self.draft.liftplan:
+        if self.show_liftplan or self.draft.liftplan:
             width_squares += len(self.draft.shafts)
         else:
             width_squares += len(self.draft.treadles)
@@ -90,7 +90,7 @@ class ImageRenderer(object):
         self.paint_threading(draw)
 
         self.paint_weft(draw)
-        if self.liftplan or self.draft.liftplan:
+        if self.show_liftplan or self.draft.liftplan:
             self.paint_liftplan(draw)
         else:
             self.paint_tieup(draw)
@@ -237,7 +237,7 @@ class ImageRenderer(object):
         offsety *= self.pixels_per_square
         
         offsetx = len(self.draft.warp) + self.style.drawdown_gap + self.style.tick_length + self.style.weft_gap
-        if self.liftplan or self.draft.liftplan:
+        if self.show_liftplan or self.draft.liftplan:
             offsetx += len(self.draft.shafts)
         else:
             offsetx += len(self.draft.treadles)

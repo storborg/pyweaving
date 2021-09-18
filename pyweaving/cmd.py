@@ -5,6 +5,7 @@ import sys
 import argparse
 import io
 import os.path
+from os import getcwd
 
 from . import Draft, instructions, Drawstyle
 from .wif import WIFReader, WIFWriter
@@ -12,9 +13,56 @@ from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
 
+def outfile_if_missing_dir(infile, outfile):
+    " use dir from infile if not in outfile "
+    indir, inbase = os.path.split(infile)
+    outdir, outbase = os.path.split(outfile)
+    if infile and outfile and not outdir:
+        outfile = os.path.join(indir,outbase)
+    return outfile
+
+def ensure_ext(filename, ext):
+    " replace or add ext as required onto filename "
+    return os.path.splitext(filename)[0]+"."+ext
+    
+def generate_unique_filename(label, directory, ext):
+    " generate autoname and increment suffix until unique in directory "
+    result = label.replace(",","_")
+    result = result.replace(" ","_")
+    # print("generating",result)
+    # check directory for same named file (+ext)
+    # if so then try to parse 3 digit number at end and increment
+    return result
+
 def gen_tartan(opts):
-    wif = tartan(opts.sett, opts.repeats)
+    """ create a tartan pattern from a pattern 
+        - save as wif and optionally render as png
+    """
+    wif = tartan(opts.sett, opts.repeats, "Z")
+    opts.sett = opts.sett.replace("/","")
+    cwd = getcwd()+"\\"
+    
+    if opts.outfile == 'auto':
+        opts.outfile = generate_unique_filename('gen_tartan_'+opts.sett.upper(), cwd, "wif")
+    opts.outfile = ensure_ext(opts.outfile, 'wif')
+    # force cwd if not supplied
+    opts.outfile = outfile_if_missing_dir(cwd, opts.outfile)
     WIFWriter(wif).write(opts.outfile)
+    
+    if opts.render: # render png to file as well
+        if opts.renderfile == "auto":
+            # generate filename from sett and cwd directory
+            opts.renderfile = generate_unique_filename('gen_tartan_'+opts.sett.upper(), cwd, "png")
+        opts.renderfile = ensure_ext(opts.renderfile, 'png')
+        # force pwd if not supplied
+        opts.renderfile = outfile_if_missing_dir(cwd, opts.renderfile)
+        # set the renderstyle
+        style = Drawstyle()
+        # override renderstyle
+        pass
+        ImageRenderer(wif, style).save(opts.renderfile)
+    # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
+    
     
 def gen_twill(opts):
     wif = twill(opts.size)
@@ -41,7 +89,7 @@ def render(opts):
         if opts.outfile.endswith('.svg'):
             SVGRenderer(draft).save(opts.outfile)
         else:
-            ImageRenderer(draft, style).save(opts.outfile)
+            ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
     else:
         ImageRenderer(draft).show()
 
@@ -97,17 +145,12 @@ def stats(opts):
     print("Longest Float (Warp):", warp_longest)
     print("Longest Float (Weft):", weft_longest)
 
-def outfile_if_missing_dir(infile, outfile):
-    " pull dir from infile if not in outfile "
-    indir, inbase = os.path.split(infile)
-    outdir, outbase = os.path.split(outfile)
-    if infile and outfile and not outdir:
-        outfile = os.path.join(indir,outbase)
-    return outfile
+
     
     
 def main(argv=sys.argv):
-    p = argparse.ArgumentParser(description='Weaving utilities.',
+    p = argparse.ArgumentParser(prog='pyweaving', description='Weaving utilities.',
+                                epilog='Generators like "tartan","twill","satin" have a --render option in addition to outfile',
                                 # can supply a file of args instead of commandline
                                 fromfile_prefix_chars='@')
 
@@ -158,17 +201,21 @@ def main(argv=sys.argv):
     p_stats.add_argument('infile')
     p_stats.set_defaults(function=stats)
     
+    # tartan "K8, B46, K46, G44, Y6, G6, Y12" --render --renderstyle solids --renderfile foo outfile
     p_tartan = subparsers.add_parser(
         'tartan', 
-        help='Create a wif from the tartan generator.')
-    p_tartan.add_argument('sett')
-    p_tartan.add_argument('--repeats', type=int, default=1)
-    p_tartan.add_argument('outfile')
+        help='Create a wif from the tartan generator (and optionally render).')
+    p_tartan.add_argument('sett', help='The Tartan pattern "B46,G3,Y1,G4".')
+    p_tartan.add_argument('--repeats', type=int, default=1,help='How many times to repeat the sett.')
+    p_tartan.add_argument('--render', action='store_true',help='Also render to file.')
+    p_tartan.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
+    p_tartan.add_argument('--renderstyle', default='blobs', choices=['solids', 'blobs', 'colors', 'numbers'])
+    p_tartan.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
     p_twill  = subparsers.add_parser(
         'twill', 
-        help='Create a wif from the twill generator.')
+        help='Create a wif from the twill generator (and optionally render).')
     p_twill.add_argument('size', type=int, default=2)
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
