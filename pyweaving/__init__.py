@@ -78,7 +78,7 @@ class Drawstyle(object):
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
                  background=(240, 240, 240),
                  border_pixels=20,
-                 warp_start = 2,
+                 warp_gap = 1,
                  drawdown_gap = 1,
                  weft_gap = 1,
                  tick_gap = 1
@@ -100,7 +100,7 @@ class Drawstyle(object):
         self.floats_style = floats_style
         self.background = background
         self.border_pixels = border_pixels
-        self.warp_start = warp_start
+        self.warp_gap = warp_gap
         self.drawdown_gap = drawdown_gap
         self.tick_gap = tick_gap
         self.weft_gap = weft_gap

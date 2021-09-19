@@ -83,7 +83,7 @@ def load_draft(infile):
 def render(opts):
     draft = load_draft(opts.infile)
     style = Drawstyle()
-    if opts.floats:
+    if opts.floats > 0:
         style.set_floats(opts.floats)
     if opts.outfile:
         if opts.outfile.endswith('.svg'):
@@ -161,7 +161,7 @@ def main(argv=sys.argv):
     p_render.add_argument('infile')
     p_render.add_argument('outfile', nargs='?')
     p_render.add_argument('--liftplan', action='store_true')
-    p_render.add_argument('--floats', type=int, default=4)
+    p_render.add_argument('--floats', type=int, default=0)
     p_render.set_defaults(function=render)
 
     p_convert = subparsers.add_parser(
