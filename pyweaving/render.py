@@ -56,11 +56,14 @@ class ImageRenderer(object):
 
         self.tick_font_size = int(round(self.pixels_per_square * 1.2))
         self.thread_font_size = int(round(self.pixels_per_square * 0.8))
+        self.title_font_size = int(round(self.pixels_per_square * 2))
 
         self.tick_font = ImageFont.truetype(font_path, self.tick_font_size)
         self.thread_font = ImageFont.truetype(font_path, self.thread_font_size)
+        self.title_font = ImageFont.truetype(font_path, self.title_font_size)
 
     def pad_image(self, im):
+        " final image has border added "
         w, h = im.size
         desired_w = w + (self.border_pixels * 2)
         desired_h = h + (self.border_pixels * 2)
@@ -76,10 +79,11 @@ class ImageRenderer(object):
         else:
             width_squares_estimate += len(self.draft.treadles)
 
-        height_squares_estimate = len(self.draft.weft) + len(self.draft.shafts) + self.style.weft_gap  + self.style.drawdown_gap
+        height_squares_estimate = len(self.draft.weft) + len(self.draft.shafts) + \
+                                  self.style.weft_gap  + self.style.drawdown_gap + \
+                                  len(self.draft.draft_title) * 4
 
-        # XXX Not totally sure why the +1 is needed here, but otherwise the
-        # contents overflows the canvas
+        # outline width of +1 is added otherwise contents overflow
         width = (width_squares_estimate * self.pixels_per_square) + 1
         height = (height_squares_estimate * self.pixels_per_square) + 1
         startpos = (0,0) # in squares
@@ -88,7 +92,9 @@ class ImageRenderer(object):
         draw = ImageDraw.Draw(im)
         
         # Layout
-        warpstart = startpos
+        titlestart = startpos
+        titleend = self.paint_title(titlestart, draw, self.draft.draft_title)
+        warpstart = (startpos[0], titleend[1])
         warpend = self.paint_warp_colors(warpstart, draw)
         
         threadingstart = (warpstart[0], warpend[1]+self.style.warp_gap)
@@ -114,6 +120,25 @@ class ImageRenderer(object):
         im = self.pad_image(im)
         return im
 
+    def paint_title(self, startpos, draw, titles):
+        offsetx,offsety = startpos
+        longest = titles[0]
+        for t in titles:
+            if len(t) > len(longest): longest = t
+        textw, texth = draw.textsize(longest, font=self.title_font)
+        lineheight = 2.2 # text is 2 high + 0.2 gap
+        
+        endwidth = offsetx + textw/self.style.box_size
+        endheight = int(offsety + lineheight * len(titles))+1
+        for i,title in enumerate(titles):
+            draw.text((offsetx, (offsety + i*lineheight) * self.pixels_per_square),
+                       title,
+                       align='left',
+                       font=self.title_font,
+                       fill=BLACK.rgb)
+        
+        return (endwidth, endheight)
+    
     def paint_start_indicator(self, startpos, draw):
         offsetx,offsety = startpos
         starty = offsety * self.pixels_per_square
@@ -138,15 +163,16 @@ class ImageRenderer(object):
     def paint_warp_colors(self, startpos, draw):
         """ paint each thread as an outlined box, filled with thread color
         """
+        print(startpos)
         offsetx,offsety = startpos # upper left corner position
         endy = (offsety+1) * self.pixels_per_square
         num_threads = len(self.draft.warp)
         endx = 0
         
         for ii, thread in enumerate(self.draft.warp):
-            startx = (num_threads - ii - 1 +offsetx) * self.pixels_per_square
+            startx = (num_threads - ii - 1 + offsetx) * self.pixels_per_square
             endx = startx + self.pixels_per_square
-            draw.rectangle((startx, offsety, endx, endy),
+            draw.rectangle((startx, offsety* self.pixels_per_square, endx, endy),
                            outline=self.outline_color.rgb,
                            fill=thread.color.rgb)
         

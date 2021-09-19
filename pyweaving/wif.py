@@ -45,6 +45,9 @@ class WIFReader(object):
         # Source program
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
+        # setup  draft_title
+        if draft.title: draft.draft_title.append(draft.title)
+        if self.filename: draft.draft_title.append("from: "+self.filename)
 
     def put_warp(self, draft, wif_palette):
         warp_thread_count = self.config.getint('WARP', 'Threads')

@@ -280,6 +280,7 @@ class Draft(object):
         self.telephone = telephone
         self.fax = fax
         self.notes = notes
+        self.draft_title = []
         
         self.source_program = None
         self.source_version = None
