@@ -86,16 +86,11 @@ class WIFReader(object):
         # get backup spacing if thread not in [WARP SPACING]
         if 'Spacing' in self.config['WARP']:
             warp_spacing = self.config.getfloat('WARP', 'Spacing')
-        if not warp_spacing:
-            # try to get weft color from WEFT section
-            has_warp_spacing = False
+        warp_spacing_map = {}
         if has_warp_spacing:
-            warp_spacing_map = {}
             for thread_no, value in self.config.items('WARP SPACING'):
                 warp_spacing_map[int(thread_no)] = float(value)
-        else:
-            warp_spacing_map = False
-
+        
         for thread_no in range(1, warp_thread_count + 1):
             # NOTE: Some crappy software will generate WIFs with way more
             # threads in the warp or weft section than mentioned in the
@@ -118,7 +113,7 @@ class WIFReader(object):
                 else:
                     shaft = None
 
-                if has_warp_spacing:
+                if warp_spacing:
                     if thread_no in warp_spacing_map.keys():
                         spacing = warp_spacing_map[thread_no]
                     else:
@@ -180,15 +175,10 @@ class WIFReader(object):
         # get backup spacing if thread not in [WEFT SPACING]
         if 'Spacing' in self.config['WEFT']:
             weft_spacing = self.config.getfloat('WEFT', 'Spacing')
-        if not weft_spacing:
-            # try to get weft color from WEFT section
-            has_weft_spacing = False
+        weft_spacing_map = {}
         if has_weft_spacing:
-            weft_spacing_map = {}
             for thread_no, value in self.config.items('WEFT SPACING'):
                 weft_spacing_map[int(thread_no)] = float(value)
-        else:
-            weft_spacing_map = False
 
         for thread_no in range(1, weft_thread_count + 1):
             if (has_liftplan and (thread_no in liftplan_map)) or \
@@ -213,7 +203,7 @@ class WIFReader(object):
                 else:
                     treadles = set()
                 
-                if has_weft_spacing:
+                if weft_spacing:
                     if thread_no in weft_spacing_map.keys():
                         spacing = weft_spacing_map[thread_no]
                     else:
@@ -283,7 +273,8 @@ class WIFReader(object):
         self.put_weft(draft, wif_palette)
         if treadling:
             self.put_tieup(draft)
-
+        draft.gather_metrics()
+        
         return draft
 
 

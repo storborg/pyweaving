@@ -22,6 +22,9 @@ class Color(object):
             rgb = tuple(rgb)
         self.rgb = rgb
 
+    def __repr__(self):
+        return "<Color: %s>" %(str(self))
+        
     def __eq__(self, other):
         return self.rgb == other.rgb
 
@@ -76,7 +79,9 @@ class Drawstyle(object):
                  drawdown_style="solid",
                  boxstyle={'size':20, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
+                 spacing_style="clarity",
                  background=(240, 240, 240),
+                 title_font_size_factor = 1.5,
                  border_pixels=20,
                  warp_gap = 1,
                  drawdown_gap = 1,
@@ -98,6 +103,9 @@ class Drawstyle(object):
         self.drawdown_style = drawdown_style
         self.boxstyle = boxstyle
         self.floats_style = floats_style
+        self.spacing_style = spacing_style
+        self.clarity_factor = 0.8
+        self.title_font_size_factor = title_font_size_factor
         self.background = background
         self.border_pixels = border_pixels
         self.warp_gap = warp_gap
@@ -265,8 +273,10 @@ class Draft(object):
         for __ in range(num_treadles):
             self.treadles.append(Treadle())
 
-        self.warp = []
-        self.weft = []
+        self.warp = [] # holds the WarpThreads
+        self.weft = [] # holds the WeftThreads
+         # unique yarn spacing,color stats
+        self.thread_stats = {"weft":[],"warp":[]}
         
         self.warp_units = warp_units
         self.weft_units = weft_units
@@ -407,6 +417,53 @@ class Draft(object):
             self.weft.append(thread)
         else:
             self.weft.insert(index, thread)
+
+    def _count_colour_spacings(self, threads):
+        " threads are self.weft or self.warp "
+        # extract weft color, spacing numbers
+        stats = [] # pairs of (thread color, spacing)
+        counter = []
+        for thread in threads:
+            t_data = (thread.color, thread.spacing)
+            if t_data not in stats:
+                stats.append(t_data)
+                counter.append(1)
+            else:
+                index = stats.index(t_data)
+                counter[index] += 1
+        return [(c,s,i) for (c,s),i in zip(stats,counter)]
+        
+    def _count_spacings(self, thread_stats):
+        " simplify thread_stats (c,s,i) to pairs of (spacing,count) "
+        spacings = []
+        counter = []
+        for c,s,i in thread_stats:
+            if s not in spacings:
+                spacings.append(s)
+                counter.append(i)
+            else:
+                index = spacings.index(s)
+                counter[index] += i
+        return list(zip(spacings, counter))
+        
+    def gather_metrics(self):
+        """ loop through warp and weft threads gathering unique spacings and colors
+            so we can show spacings in drawdowns and use in stats
+        """
+        # extract weft color, spacing numbers
+        self.thread_stats["weft"] = self._count_colour_spacings(self.weft)
+        # simplify to pairs of (spacing,count)
+        self.thread_stats["weft_spacings"] = sorted(self._count_spacings(self.thread_stats["weft"]))
+        # warp
+        self.thread_stats["warp"] = self._count_colour_spacings(self.warp)
+        # simplify
+        self.thread_stats["warp_spacings"] = sorted(self._count_spacings(self.thread_stats["warp"]))
+        # summary
+        all_spacings = [ s for (s,i) in self.thread_stats["weft_spacings"] if s]
+        for (s,i) in self.thread_stats["warp_spacings"]:
+            if s and s not in all_spacings:
+                all_spacings.append(s)
+        self.thread_stats["summary"] = sorted(all_spacings)
 
     def compute_drawdown_at(self, position):
         """

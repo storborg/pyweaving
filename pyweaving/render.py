@@ -56,12 +56,44 @@ class ImageRenderer(object):
 
         self.tick_font_size = int(round(self.pixels_per_square * 1.2))
         self.thread_font_size = int(round(self.pixels_per_square * 0.8))
-        self.title_font_size = int(round(self.pixels_per_square * 2))
+        self.title_font_size = int(round(self.pixels_per_square * self.style.title_font_size_factor))
 
         self.tick_font = ImageFont.truetype(font_path, self.tick_font_size)
         self.thread_font = ImageFont.truetype(font_path, self.thread_font_size)
         self.title_font = ImageFont.truetype(font_path, self.title_font_size)
 
+    def calculate_box_sizing(self):
+        all_spacings = self.draft.thread_stats["summary"]
+        basicbox = self.style.box_size
+        clarity_factor = self.style.clarity_factor
+        sizing = []
+        if all_spacings: 
+            ratios = [b/all_spacings[0] for b in all_spacings]
+            for i,r in enumerate(ratios):
+                if self.style.spacing_style == "clarity":
+                    # print(i, r, basicbox, basicbox + (i*0.3*basicbox))
+                    sizing.append([all_spacings[i],basicbox  + (i*clarity_factor*basicbox)])
+                else: # "accuracy"
+                    sizing.append([all_spacings[i],all_spacings[i]*basicbox])
+
+        # store this info in all the threads for easy rendering later (thread.yarn_width)
+        if sizing:
+            for thread in self.draft.warp:
+                spacing = thread.spacing
+                for (s,dist) in sizing:
+                    if s == spacing:
+                        thread.yarn_width = dist
+                        break # stop looking
+            for thread in self.draft.weft:
+                spacing = thread.spacing
+                for (s,dist) in sizing:
+                    if s == spacing:
+                        thread.yarn_width = dist
+                        break # stop looking
+        return sizing
+                    
+        
+        
     def pad_image(self, im):
         " final image has border added "
         w, h = im.size
@@ -73,19 +105,48 @@ class ImageRenderer(object):
 
     def make_pil_image(self):
         # calculate image size estimate (yarn spacing makes this a maximal number)
-        width_squares_estimate = len(self.draft.warp) + 1 + self.style.tick_length + self.style.weft_gap  + self.style.drawdown_gap
+        box_sizing = self.calculate_box_sizing() # incorporate spacing
+        # print(box_sizing, self.draft.thread_stats["summary"])
+        # print(" ",self.draft.thread_stats["warp_spacings"])
+        # print(" ",self.draft.thread_stats["weft_spacings"])
+        warp_est = 0
+        if box_sizing:
+            for spacing,count in self.draft.thread_stats["warp_spacings"]:
+                distance = 0
+                for (s,dist) in box_sizing:
+                    if s == spacing:
+                        distance = dist*count
+                        break # stop looking
+                warp_est += distance
+            warp_est = int(warp_est / self.style.box_size) # distance in box units (floatingpoint)
+        else: # no spacing data
+            warp_est = len(self.draft.warp)
+        width_squares_estimate = warp_est + 1 + self.style.tick_length + self.style.weft_gap  + self.style.drawdown_gap
         if self.show_liftplan or self.draft.liftplan:
             width_squares_estimate += len(self.draft.shafts)
         else:
             width_squares_estimate += len(self.draft.treadles)
 
-        height_squares_estimate = len(self.draft.weft) + len(self.draft.shafts) + \
-                                  self.style.weft_gap  + self.style.drawdown_gap + \
-                                  len(self.draft.draft_title) * 4
+        weft_est = 0
+        if box_sizing:
+            for spacing,count in self.draft.thread_stats["weft_spacings"]:
+                distance = 0
+                for s,dist in box_sizing:
+                    if s == spacing:
+                        distance = dist*count
+                        break # stop looking
+                weft_est += distance
+            weft_est = int(weft_est / self.style.box_size) # distance in box units (floatingpoint)
+        else: # no spacing data
+            weft_est = len(self.draft.weft)
+        # print("weft est", weft_est)
+        height_squares_estimate = weft_est + len(self.draft.shafts) + \
+                                  self.style.warp_gap  + self.style.drawdown_gap + \
+                                  len(self.draft.draft_title) * 2 + 1 +self.style.tick_length
 
         # outline width of +1 is added otherwise contents overflow
-        width = (width_squares_estimate * self.pixels_per_square) + 1
-        height = (height_squares_estimate * self.pixels_per_square) + 1
+        width = width_squares_estimate * self.pixels_per_square + 1
+        height = height_squares_estimate * self.pixels_per_square + 1
         startpos = (0,0) # in squares
         
         im = Image.new('RGB', (width, height), self.background.rgb)
@@ -110,7 +171,7 @@ class ImageRenderer(object):
             treadlingend = self.paint_treadling(treadlingstart, draw)
             
         weftstart = (max(treadlingend[0],tieupend[0])+self.style.weft_gap, threadingend[1]+self.style.drawdown_gap)
-        weftend = self.paint_weft(weftstart, draw)
+        weftend = self.paint_weft_colors(weftstart, draw)
         
         drawdownstart = (warpstart[0], threadingend[1]+self.style.drawdown_gap)
         drawdownend = self.paint_drawdown(drawdownstart, draw)
@@ -126,7 +187,7 @@ class ImageRenderer(object):
         for t in titles:
             if len(t) > len(longest): longest = t
         textw, texth = draw.textsize(longest, font=self.title_font)
-        lineheight = 2.2 # text is 2 high + 0.2 gap
+        lineheight = self.style.title_font_size_factor *1.1 #(spacing)
         
         endwidth = offsetx + textw/self.style.box_size
         endheight = int(offsety + lineheight * len(titles))+1
@@ -163,20 +224,29 @@ class ImageRenderer(object):
     def paint_warp_colors(self, startpos, draw):
         """ paint each thread as an outlined box, filled with thread color
         """
-        print(startpos)
         offsetx,offsety = startpos # upper left corner position
+        starty = offsety * self.pixels_per_square
         endy = (offsety+1) * self.pixels_per_square
-        num_threads = len(self.draft.warp)
-        endx = 0
+        endx = offsetx * self.pixels_per_square # start here
+        previous = endx
         
-        for ii, thread in enumerate(self.draft.warp):
-            startx = (num_threads - ii - 1 + offsetx) * self.pixels_per_square
-            endx = startx + self.pixels_per_square
-            draw.rectangle((startx, offsety* self.pixels_per_square, endx, endy),
+        index = len(self.draft.warp)-1
+        while index != -1:
+            thread = self.draft.warp[index]
+            if thread.spacing:
+                endx += thread.yarn_width
+            else:
+                endx += self.style.box_size
+            startx = previous
+            draw.rectangle((startx, starty, endx, endy),
                            outline=self.outline_color.rgb,
                            fill=thread.color.rgb)
-        
-        return (endx, offsety+1) # endpos
+            previous = endx
+            index -= 1
+        #
+        endwidth = int(endx/self.pixels_per_square)
+        endheight = offsety + 1
+        return (endwidth, endheight)
 
     def paint_fill_marker(self, draw, box, blobcolor, style, label=None, yarncolor=None):
         startx, starty, endx, endy = box
@@ -204,10 +274,11 @@ class ImageRenderer(object):
                             fill=blobcolor.rgb)
         elif style == 'number' or style == 'XO':
             if style == 'number':
-                center_adj = len(label) * self.thread_font_size/4
+                hcenter_adj = len(label) * self.thread_font_size/4
             else: # "XO"
-                center_adj = self.thread_font_size/3
-            draw.text((startx+ (endx-startx)/2-center_adj, starty+(self.style.box_size/10)-1),
+                hcenter_adj = self.thread_font_size/3
+            vcenter_adj = (self.style.box_size/10) -1 + (box[3]-box[1]-self.thread_font_size)/2
+            draw.text((startx+ (endx-startx)/2-hcenter_adj, starty+vcenter_adj),
                       label,
                       align='center',
                       font=self.thread_font,
@@ -224,21 +295,29 @@ class ImageRenderer(object):
         
         # position
         offsetx,offsety = startpos # upper left corner position
-        endwidth = len(self.draft.warp) + offsetx
         endheight = len(self.draft.shafts) + offsety
         
         start_tick_y = offsety
         tick_length = self.style.tick_length
-        end_tick = start_tick_y + tick_length
+        # end_tick = start_tick_y + tick_length
         if self.style.warp_tick_active or self.style.tieup_tick_active:
             start_warp_y = start_tick_y + tick_length -1
             endheight += tick_length
         else:
             start_warp_y = start_tick_y -1
         
-        for ii, thread in enumerate(self.draft.warp):
-            startx = (num_threads - ii - 1 + offsetx) * self.pixels_per_square
-            endx = startx + self.pixels_per_square
+        distance = offsetx * self.pixels_per_square
+        previous = distance
+        t_index = len(self.draft.warp)-1 # count this down and use where we see ii
+        while t_index != -1:
+            thread = self.draft.warp[t_index]
+            if thread.spacing:
+                distance += thread.yarn_width
+            else:
+                distance += self.style.box_size
+            startx = previous
+            endx = distance
+            
             if self.style.warp_use_thread_color:
                 bgcolor = thread.color
 
@@ -256,43 +335,53 @@ class ImageRenderer(object):
 
             # horizontal tick, number if it's a multiple of tick_mod and not the first one
             if self.style.warp_tick_active:
-                thread_no = ii + 1
+                # ii = t_index
+                thread_no = t_index + 1
                 if ((thread_no != num_threads) and
                     (thread_no != 0) and
                         (thread_no % self.style.tick_mod == 0)):
                     # draw line
-                    startx = endx = (num_threads - ii - 1) * self.pixels_per_square
-                    starty = start_tick_y * self.pixels_per_square
-                    tendy = (end_tick * self.pixels_per_square) - 1
-                    draw.line((startx, starty, endx, tendy),
+                    # tstartx = (num_threads - t_index) * self.pixels_per_square
+                    tstarty = start_tick_y * self.pixels_per_square
+                    tendy = ((start_tick_y + tick_length) * self.pixels_per_square) - 1
+                    draw.line((startx, tstarty, startx, tendy),
                               fill=self.tick_color)
                     # draw text
-                    draw.text((startx + 2, starty + 2),
+                    draw.text((startx + 2, tstarty + 2),
                               str(thread_no),
                               font=self.tick_font,
                               fill=self.tick_color)
+            previous = distance
+            t_index -= 1
         #
+        endwidth = int(distance/self.pixels_per_square)
         return (endwidth, endheight)
-
-    def paint_weft(self, startpos, draw):
+        
+    def paint_weft_colors(self, startpos, draw):
         offsetx,offsety = startpos
         endwidth = offsetx + 1
         if self.style.weft_tick_active:
             endwidth += self.style.tick_length
-        endheight = len(self.draft.weft) + offsety
         startx = offsetx * self.pixels_per_square
         endx = startx + self.pixels_per_square
-
-        for ii, thread in enumerate(self.draft.weft):
-            # paint box, outlined with foreground color, filled with thread
-            # color
-            starty = (ii + offsety) * self.pixels_per_square
-            endy = starty + self.pixels_per_square
-            draw.rectangle((startx, starty, endx, endy),
+        
+        endy = offsety * self.pixels_per_square # steps down along the weft
+        previous = endy
+        index = 0
+        while index != len(self.draft.weft):
+            thread = self.draft.weft[index]
+            if thread.spacing:
+                endy += thread.yarn_width
+            else:
+                endy += self.style.box_size
+            draw.rectangle((startx, previous, endx, endy),
                            outline=self.outline_color.rgb,
                            fill=thread.color.rgb)
+            previous = endy
+            index += 1
         #
-        return (endwidth, endheight) 
+        endheight = int(endy/self.pixels_per_square)
+        return (endwidth, endheight)
 
     def paint_liftplan(self, startpos, draw):
         num_threads = len(self.draft.weft)
@@ -305,16 +394,21 @@ class ImageRenderer(object):
         endwidth = len(self.draft.shafts) + offsetx
         if self.style.weft_tick_active:
             endwidth += self.style.tick_length
-        endheight = len(self.draft.shafts) + offsety
         
-        for ii, thread in enumerate(self.draft.weft):
-            starty = (ii + offsety) * self.pixels_per_square
-            endy = starty + self.pixels_per_square
-
+        endy = offsety * self.pixels_per_square # steps down along the weft
+        previous = endy
+        index = 0
+        while index != len(self.draft.weft):
+            thread = self.draft.weft[index]
+            if thread.spacing:
+                endy += thread.yarn_width
+            else:
+                endy += self.style.box_size
+            
             for jj, shaft in enumerate(self.draft.shafts):
                 startx = (jj + offsetx) * self.pixels_per_square
                 endx = startx + self.pixels_per_square
-                draw.rectangle((startx, starty, endx, endy),
+                draw.rectangle((startx, previous, endx, endy),
                                outline=self.outline_color.rgb)
 
                 if shaft in thread.connected_shafts:
@@ -323,27 +417,28 @@ class ImageRenderer(object):
                         bgcolor = thread.color
                     if self.style.weft_style == 'number':
                         label = str(jj+1)
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
+                    self.paint_fill_marker(draw, (startx, previous, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
 
             # vertical tick, number if it's a multiple of tick_mod and not the first one
             if self.style.weft_tick_active:
-                thread_no = ii + 1
+                thread_no = index+1 #ii + 1
                 if ((thread_no != num_threads) and
                     (thread_no != 0) and
                         (thread_no % self.style.tick_mod == 0)):
                     # draw line
-                    startx = endx
-                    starty = endy
-                    endx = startx + (self.style.tick_length * self.pixels_per_square)
-                    endy = starty
-                    draw.line((startx, starty, endx, endy),
+                    tick_endx = startx + (self.style.tick_length * self.pixels_per_square)
+                    draw.line((endx, endy, tick_endx, endy),
                               fill=self.tick_color)
                     # draw text
-                    draw.text((startx + self.tick_font_size/4, starty - 2 - self.tick_font_size),
+                    draw.text((endx + self.tick_font_size/4, endy - 2 - self.tick_font_size),
                               str(thread_no),
                               font=self.tick_font,
                               fill=self.tick_color)
+            #
+            previous = endy
+            index += 1
         #
+        endheight = int(endy/self.pixels_per_square)
         return (endwidth, endheight) 
 
     def paint_tieup(self, startpos, draw):
@@ -429,46 +524,96 @@ class ImageRenderer(object):
         endwidth = len(self.draft.treadles) + offsetx
         if self.style.weft_tick_active:
             endwidth += self.style.tick_length
-        endheight = len(self.draft.weft) + offsety
         
-        for ii, thread in enumerate(self.draft.weft):
-            starty = (ii + offsety) * self.pixels_per_square
-            endy = starty + self.pixels_per_square
+        endy = offsety * self.pixels_per_square # steps down along the weft
+        previous = endy
+        index = 0
+        while index != len(self.draft.weft):
+            thread = self.draft.weft[index]
+            if thread.spacing:
+                endy += thread.yarn_width
+            else:
+                endy += self.style.box_size
             if self.style.weft_use_thread_color:
                 bgcolor = thread.color
 
             for jj, treadle in enumerate(self.draft.treadles):
                 startx = (jj + offsetx) * self.pixels_per_square
                 endx = startx + self.pixels_per_square
-                draw.rectangle((startx, starty, endx, endy),
+                draw.rectangle((startx, previous, endx, endy),
                                outline=self.outline_color.rgb)
 
                 if treadle in thread.treadles:
                     # draw treadling marker
                     if self.style.weft_style == 'number':
                         label = str(jj+1)
-                    self.paint_fill_marker(draw, (startx, starty, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
+                    self.paint_fill_marker(draw, (startx, previous, endx, endy), self.style.boxfill_color, self.style.weft_style, label, bgcolor)
             # vertical tick, number if it's a multiple of tick_mod and not the first one
             if self.style.weft_tick_active:
-                thread_no = ii + 1
+                # ii = index
+                thread_no = index + 1
                 if ((thread_no != num_threads) and
                     (thread_no != 0) and
                         (thread_no % self.style.tick_mod == 0)):
                     # draw line
-                    startx = endx
-                    starty = endy
-                    endx = startx + (self.style.tick_length * self.pixels_per_square)
-                    endy = starty
-                    draw.line((startx, starty, endx, endy),
+                    tick_endx = endx + (self.style.tick_length * self.pixels_per_square)
+                    draw.line((endx, endy, tick_endx, endy),
                               fill=self.tick_color)
                     # draw text
-                    draw.text((startx + self.tick_font_size/4, starty - 2 - self.tick_font_size),
+                    draw.text((endx + self.tick_font_size/4, endy - 2 - self.tick_font_size),
                               str(thread_no),
                               font=self.tick_font,
                               fill=self.tick_color)
+            #
+            previous = endy
+            index += 1
         #
+        endheight = int(endy/self.pixels_per_square)
         return (endwidth, endheight)
 
+    def get_position(self, thread, start, end, x_reversed=False):
+        " use warp spacing to find positions if available "
+        num_warp_threads = len(self.draft.warp)
+        # reversed for back of cloth
+        begin = num_warp_threads
+        step = -1
+        if x_reversed:
+            step = 1
+        
+        if thread.spacing:
+            # starty (step through the wefts) OK
+            w = 0
+            for i in range(start[1]):
+                w += self.draft.weft[i].yarn_width
+            starty = w
+            # endy OK
+            w = 0
+            for i in range(end[1]+1):
+                w += self.draft.weft[i].yarn_width
+            endy = w
+            
+            # startx (step through the warps)
+            w = 0
+            for i in range(num_warp_threads-1, end[0], -1):
+                w += self.draft.warp[i].yarn_width
+            startx = w
+            # endx
+            w = 0
+            for i in range(num_warp_threads-1, start[0]-1, -1):
+                w += self.draft.warp[i].yarn_width
+            endx = w
+
+        else: # no spacing info so use pixels_per_square
+            startx = (num_warp_threads - end[0]-1) * self.pixels_per_square 
+            starty = start[1] * self.pixels_per_square
+            endx = (num_warp_threads - start[0]) * self.pixels_per_square
+            endy = (end[1] + 1) * self.pixels_per_square
+        #
+        result_start = (startx, starty)
+        result_end   = (endx, endy)
+        return (result_start, result_end)
+
+        
     def paint_drawdown(self, startpos, draw):
         num_threads = len(self.draft.warp)
         floats = self.draft.compute_floats()
@@ -479,13 +624,18 @@ class ImageRenderer(object):
         show_float = self.style.show_floats
         
         offsetx,offsety = startpos
+        offsetx *= self.pixels_per_square
+        offsety *= self.pixels_per_square
         
         for start, end, visible, length, thread in floats:
             if visible:
-                startx = (num_threads - end[0]-1 + offsetx) * self.pixels_per_square
-                starty = (start[1] + offsety) * self.pixels_per_square
-                endx = (num_threads - start[0]) * self.pixels_per_square
-                endy = ((end[1] + 1 + offsety) * self.pixels_per_square)
+                realpos = self.get_position(thread, start, end, True)
+                (startx,starty), (endx,endy) = realpos
+                startx += offsetx
+                starty += offsety
+                endx += offsetx
+                endy += offsety
+                
                 outline_color = self.outline_color.rgb
                 fill_color = thread.color.rgb
                 if show_float and length >= float_cutoff:

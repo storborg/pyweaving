@@ -69,81 +69,91 @@ def gen_twill(opts):
     WIFWriter(wif).write(opts.outfile)
     
 def load_draft(infile):
-    if infile.endswith('.wif'):
-        return WIFReader(infile).read()
-    elif infile.endswith('.json'):
-        with open(infile, 'r') as f: #!! opt mode
-            return Draft.from_json(f.read())
+    if os.path.exists(infile):
+        if infile.endswith('.wif'):
+            return WIFReader(infile).read()
+        elif infile.endswith('.json'):
+            with open(infile, 'r') as f: #!! opt mode
+                return Draft.from_json(f.read())
+        else:
+            raise ValueError(
+                "filename %r unrecognized: .wif and .json are supported" %
+                infile)
     else:
-        raise ValueError(
-            "filename %r unrecognized: .wif and .json are supported" %
-            infile)
+        print("File not found:", infile)
+        return False
 
 
 def render(opts):
     draft = load_draft(opts.infile)
-    style = Drawstyle()
-    if opts.floats > 0:
-        style.set_floats(opts.floats)
-    if opts.outfile:
-        if opts.outfile.endswith('.svg'):
-            SVGRenderer(draft).save(opts.outfile)
+    if draft:
+        style = Drawstyle()
+        if opts.floats > 0:
+            style.set_floats(opts.floats)
+        if opts.outfile:
+            if opts.outfile.endswith('.svg'):
+                SVGRenderer(draft).save(opts.outfile)
+            else:
+                ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
         else:
-            ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
-    else:
-        ImageRenderer(draft).show()
+            ImageRenderer(draft).show()
 
 
 def convert(opts):
     draft = load_draft(opts.infile)
-    if opts.outfile.endswith('.wif'):
-        WIFWriter(draft).write(opts.outfile)
-    elif opts.outfile.endswith('.json'):
-        with io.open(opts.outfile, 'w', encoding='utf-8') as f:
-            f.write(draft.to_json())
+    if draft:
+        if opts.outfile.endswith('.wif'):
+            WIFWriter(draft).write(opts.outfile)
+        elif opts.outfile.endswith('.json'):
+            with io.open(opts.outfile, 'w', encoding='utf-8') as f:
+                f.write(draft.to_json())
 
 
 def thread(opts):
     draft = load_draft(opts.infile)
-    instructions.threading(draft, opts.repeats)
+    if draft:
+        instructions.threading(draft, opts.repeats)
 
 
 def weave(opts):
     draft = load_draft(opts.infile)
-    assert opts.liftplan, "only liftplan supported for now"
-    save_filename = '.' + opts.infile + '.save'
-    print("SAVE FILENAME is %r" % save_filename)
-    instructions.weaving(draft,
-                         repeats=opts.repeats,
-                         start_repeat=opts.start_repeat,
-                         start_pick=opts.start_pick,
-                         save_filename=save_filename)
+    if draft:
+        assert opts.liftplan, "only liftplan supported for now"
+        save_filename = '.' + opts.infile + '.save'
+        print("SAVE FILENAME is %r" % save_filename)
+        instructions.weaving(draft,
+                             repeats=opts.repeats,
+                             start_repeat=opts.start_repeat,
+                             start_pick=opts.start_pick,
+                             save_filename=save_filename)
 
 
 def tieup(opts):
     draft = load_draft(opts.infile)
-    instructions.tieup(draft)
+    if draft:
+        instructions.tieup(draft)
 
 
 def stats(opts):
     draft = load_draft(opts.infile)
-    warp_longest, weft_longest = draft.compute_longest_floats()
-    print("Title:", draft.title)
-    print("Author:", draft.author)
-    print("Address:", draft.address)
-    print("Email:", draft.email)
-    print("Telephone:", draft.telephone)
-    print("Fax:", draft.fax)
-    print("Notes:", draft.notes)
-    print("Date:", draft.date)  # not sure to display this as generally date of wif file spec
-    print("Source program:", draft.source_program, "version:",draft.source_version)
-    print("***")
-    print("Warp Threads:", len(draft.warp))
-    print("Weft Threads:", len(draft.weft))
-    print("Shafts:", len(draft.shafts))
-    print("Treadles:", len(draft.treadles))
-    print("Longest Float (Warp):", warp_longest)
-    print("Longest Float (Weft):", weft_longest)
+    if draft:
+        warp_longest, weft_longest = draft.compute_longest_floats()
+        print("Title:", draft.title)
+        print("Author:", draft.author)
+        print("Address:", draft.address)
+        print("Email:", draft.email)
+        print("Telephone:", draft.telephone)
+        print("Fax:", draft.fax)
+        print("Notes:", draft.notes)
+        print("Date:", draft.date)  # not sure to display this as generally date of wif file spec
+        print("Source program:", draft.source_program, "version:",draft.source_version)
+        print("***")
+        print("Warp Threads:", len(draft.warp))
+        print("Weft Threads:", len(draft.weft))
+        print("Shafts:", len(draft.shafts))
+        print("Treadles:", len(draft.treadles))
+        print("Longest Float (Warp):", warp_longest)
+        print("Longest Float (Weft):", weft_longest)
 
 
     
