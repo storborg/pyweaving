@@ -80,9 +80,10 @@ class Drawstyle(object):
                  boxstyle={'size':20, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
                  spacing_style="clarity",
+                 clarity_factor=0.8,
                  background=(240, 240, 240),
                  title_font_size_factor = 1.5,
-                 border_pixels=20,
+                 border_pixels = 20,
                  warp_gap = 1,
                  drawdown_gap = 1,
                  weft_gap = 1,
@@ -104,7 +105,7 @@ class Drawstyle(object):
         self.boxstyle = boxstyle
         self.floats_style = floats_style
         self.spacing_style = spacing_style
-        self.clarity_factor = 0.8
+        self.clarity_factor = clarity_factor
         self.title_font_size_factor = title_font_size_factor
         self.background = background
         self.border_pixels = border_pixels
@@ -179,6 +180,17 @@ class Drawstyle(object):
     def set_floats(self, count):
         self.floats_style['show'] = True
         self.floats_style['count'] = count
+    # general setters
+    def disable_tickmarks(self):
+        self.tieupstyle['ticks'] = False
+        self.warpstyle['ticks'] = False
+        self.weftstyle['ticks'] = False
+    def set_warp_weft_style(self, mode='solid'):
+        self.warpstyle['style'] = mode
+        self.weftstyle['style'] = mode
+    def disable_thread_color(self):
+        self.warpstyle['usethread_color'] = False
+        self.weftstyle['usethread_color'] = False
 
 
 class WarpThread(object):
@@ -419,7 +431,7 @@ class Draft(object):
             self.weft.insert(index, thread)
 
     def _count_colour_spacings(self, threads):
-        " threads are self.weft or self.warp "
+        " threads are self.weft or self.warp -usedby gather_metrics"
         # extract weft color, spacing numbers
         stats = [] # pairs of (thread color, spacing)
         counter = []
@@ -434,7 +446,7 @@ class Draft(object):
         return [(c,s,i) for (c,s),i in zip(stats,counter)]
         
     def _count_spacings(self, thread_stats):
-        " simplify thread_stats (c,s,i) to pairs of (spacing,count) "
+        " simplify thread_stats (c,s,i) to pairs of (spacing,count) -usedby gather_metrics"
         spacings = []
         counter = []
         for c,s,i in thread_stats:
@@ -449,6 +461,7 @@ class Draft(object):
     def gather_metrics(self):
         """ loop through warp and weft threads gathering unique spacings and colors
             so we can show spacings in drawdowns and use in stats
+            also warp/weft balance
         """
         # extract weft color, spacing numbers
         self.thread_stats["weft"] = self._count_colour_spacings(self.weft)
@@ -464,6 +477,24 @@ class Draft(object):
             if s and s not in all_spacings:
                 all_spacings.append(s)
         self.thread_stats["summary"] = sorted(all_spacings)
+        # warp/weft balance
+        floats = self.computed_floats
+        warp_count = sum([length+1 for start, end, visible, length, thread in floats
+                                   if visible==True and isinstance(thread, WarpThread)])
+        weft_count = sum([length+1 for start, end, visible, length, thread in floats
+                                   if visible==True and isinstance(thread, WeftThread)])
+        self.thread_stats["facings"] =  warp_count/weft_count
+        # Unique threads
+        unique_threads = [[t[0],t[1]] for t in self.thread_stats["warp"]]
+        for col2,sp2,_ in self.thread_stats["weft"]:
+            found = False
+            for color,spacing in unique_threads:
+                if col2 == color and sp2 == spacing:
+                    found = True
+                    break
+            if not found:
+                unique_threads.append((col2,sp2))
+        self.thread_stats["unique"] = unique_threads
 
     def compute_drawdown_at(self, position):
         """
@@ -491,6 +522,11 @@ class Draft(object):
                  for y in range(num_weft_threads)]
                 for x in range(num_warp_threads)]
 
+    def process_draft(self):
+        " after reading do these processes to fill in the remaining datastructure "
+        self.computed_floats = list(self.compute_floats())
+        self.metrics = self.gather_metrics()
+        
     def compute_floats(self):
         """
         Return an iterator over every float, yielding a tuple for each one::
@@ -534,21 +570,24 @@ class Draft(object):
             length = last[0] - this_start[0]
             yield this_start, last, this_vis_state, length, thread
 
-    def compute_longest_floats(self):
-        """
-        Return a tuple indicating the longest floats for warp, weft.
+    def _longest_float(self, floats, front=True, cls=WarpThread):
+        "  -usedby compute_longest_floats "
+        return max(length for start, end, visible, length, thread in floats
+                            if visible==front and isinstance(thread, cls))
 
-        FIXME This might be producing incorrect results.
+    def compute_longest_floats(self, front=True, back=False):
+        """ Return tuple containing pair of longest floats for warp, weft.
+             on one or both sides
         """
-        floats = list(self.compute_floats())
-        return (
-            max(length
-                for start, end, visible, length, thread in floats
-                if isinstance(thread, WarpThread)),
-            max(length
-                for start, end, visible, length, thread in floats
-                if isinstance(thread, WeftThread)),
-        )
+        floats = self.computed_floats
+        longest = []
+        if front:
+            longest.append(self._longest_float(floats, front, WarpThread))
+            longest.append(self._longest_float(floats, front, WeftThread))
+        if back:
+            longest.append(self._longest_float(floats, back, WarpThread))
+            longest.append(self._longest_float(floats, back, WeftThread))                             
+        return longest
 
     def reduce_shafts(self):
         """
@@ -731,6 +770,26 @@ class Draft(object):
         crossings in that row.
         """
         raise NotImplementedError
+        
+    def get_mini_stats(self):
+        """ gather list of:
+            - thread counts, longest floats, color count, warp/weft balance
+        """
+        stats = ["Threadcounts: Warp %d  Weft %d"%(len(self.warp), len(self.weft))]
+        unique_thread_count = len(self.thread_stats["unique"])
+        stats.append("%d unique yarns (color/weight)"%(unique_thread_count))
+        floats = self.compute_longest_floats(True, True)
+        front, back = floats[:2], floats[2:]
+        stats.append("Longest floats: (warp/back) %d/%d , (weft/back) %d/%d" % 
+                    (front[0], back[0], front[1], back[1]))
+        warp_ratio = self.thread_stats["facings"]
+        if 0.8 < warp_ratio < 1.2:
+            stats.append("Balanced weave warp:weft=1:{:.1f}".format(warp_ratio))
+        elif warp_ratio < 1:
+            stats.append("Weft dominant weave 1:{:.1f}".format(warp_ratio))
+        else: # weft 
+            stats.append("Warp dominant weave 1:{:.1f}".format(1/warp_ratio))
+        return stats
 
     def repeat(self, n):
         """

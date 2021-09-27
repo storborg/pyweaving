@@ -46,7 +46,10 @@ class WIFReader(object):
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
         # setup  draft_title
-        if draft.title: draft.draft_title.append(draft.title)
+        if draft.title == "":
+            draft.draft_title =[]
+        else:
+            draft.draft_title = draft.title.split("//")
         if self.filename: draft.draft_title.append("from: "+self.filename)
 
     def put_warp(self, draft, wif_palette):
@@ -273,7 +276,7 @@ class WIFReader(object):
         self.put_weft(draft, wif_palette)
         if treadling:
             self.put_tieup(draft)
-        draft.gather_metrics()
+        draft.process_draft()
         
         return draft
 
