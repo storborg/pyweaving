@@ -483,7 +483,7 @@ class Draft(object):
                                    if visible==True and isinstance(thread, WarpThread)])
         weft_count = sum([length+1 for start, end, visible, length, thread in floats
                                    if visible==True and isinstance(thread, WeftThread)])
-        self.thread_stats["facings"] =  warp_count/weft_count
+        self.thread_stats["facings"] =  warp_count/max(weft_count,1)
         # Unique threads
         unique_threads = [[t[0],t[1]] for t in self.thread_stats["warp"]]
         for col2,sp2,_ in self.thread_stats["weft"]:

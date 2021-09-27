@@ -66,7 +66,7 @@ def gen_tartan(opts):
     
     
 def gen_twill(opts):
-    wif = twill(opts.size)
+    wif = twill(opts.shape)
     WIFWriter(wif).write(opts.outfile)
     
 def load_draft(infile):
@@ -227,7 +227,7 @@ def main(argv=sys.argv):
     p_twill  = subparsers.add_parser(
         'twill', 
         help='Create a wif from the twill generator (and optionally render).')
-    p_twill.add_argument('size', type=int, default=2)
+    p_twill.add_argument('shape')
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 
