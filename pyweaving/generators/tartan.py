@@ -120,7 +120,9 @@ def tartan(sett, repeats=1, direction="s"):
                     treadles=[t],
                 )
                 thread_no += 1
-
+	#
+    draft.title = warpsett
+    draft.draft_title = [draft.title]
     return draft
 
 # Tartan Setts

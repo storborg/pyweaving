@@ -39,6 +39,7 @@ def gen_tartan(opts):
         - save as wif and optionally render as png
     """
     wif = tartan(opts.sett, opts.repeats, "Z")
+    wif.process_draft()
     opts.sett = opts.sett.replace("/","")
     cwd = getcwd()+"\\"
     
@@ -96,7 +97,7 @@ def render(opts):
             else:
                 ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
         else:
-            ImageRenderer(draft).show()
+            ImageRenderer(draft, style, opts.liftplan).show()
 
 
 def convert(opts):
@@ -232,6 +233,6 @@ def main(argv=sys.argv):
 
     opts, args = p.parse_known_args(argv[1:])
     # copy directory to outfile if not supplied
-    if  "outfile" in opts and "infile" in opts:
+    if  opts.outfile and "infile" in opts:
         opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)
     return opts.function(opts)
