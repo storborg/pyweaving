@@ -40,23 +40,27 @@ def gen_tartan(opts):
     """
     wif = tartan(opts.sett, opts.repeats, "Z")
     wif.process_draft()
-    opts.sett = opts.sett.replace("/","")
-    cwd = getcwd()+"\\"
     
+    # save wif file
+    autoname = opts.sett.replace("/","").upper() # new filename
+    current_dir = getcwd()+"\\"
     if opts.outfile == 'auto':
-        opts.outfile = generate_unique_filename('gen_tartan_'+opts.sett.upper(), cwd, "wif")
-    opts.outfile = ensure_ext(opts.outfile, 'wif')
-    # force cwd if not supplied
-    opts.outfile = outfile_if_missing_dir(cwd, opts.outfile)
+        opts.outfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "wif")
+    else:
+        opts.outfile = ensure_ext(opts.outfile, 'wif')
+        # force current_dir if not supplied
+        opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
     WIFWriter(wif).write(opts.outfile)
     
-    if opts.render: # render png to file as well
+    # render png to file as well
+    if opts.render:
         if opts.renderfile == "auto":
-            # generate filename from sett and cwd directory
-            opts.renderfile = generate_unique_filename('gen_tartan_'+opts.sett.upper(), cwd, "png")
-        opts.renderfile = ensure_ext(opts.renderfile, 'png')
-        # force pwd if not supplied
-        opts.renderfile = outfile_if_missing_dir(cwd, opts.renderfile)
+            # generate filename from sett and current_dir directory
+            opts.renderfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "png")
+        else:
+            opts.renderfile = ensure_ext(opts.renderfile, 'png')
+            # force pwd if not supplied
+            opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
         # set the renderstyle
         style = Drawstyle()
         # override renderstyle
@@ -67,9 +71,39 @@ def gen_tartan(opts):
     
 def gen_twill(opts):
     wif = twill(opts.shape)
+    wif.process_draft()
+    
+    current_dir = getcwd()+"\\"
+    autoname = opts.shape.replace("/","_").upper() # new filename
+    if opts.outfile == 'auto':
+        opts.outfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "wif")
+    else:
+        opts.outfile = ensure_ext(opts.outfile, 'wif')
+        # force current_dir if not supplied
+        opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
     WIFWriter(wif).write(opts.outfile)
     
+    # render png to file as well
+    if opts.render:
+        if opts.renderfile == "auto":
+            # generate filename from shape and current_dir directory
+            opts.renderfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "png")
+        else:
+            opts.renderfile = ensure_ext(opts.renderfile, 'png')
+            # force pwd if not supplied
+            opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
+        # set the renderstyle
+        style = Drawstyle()
+        # override renderstyle
+        pass
+        ImageRenderer(wif, style).save(opts.renderfile)
+    # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
+    
 def load_draft(infile):
+    """ Load the draft file in wif or json format.
+        - return the Draft or
+          false if not found or wrong type
+    """
     if os.path.exists(infile):
         if infile.endswith('.wif'):
             return WIFReader(infile).read()
@@ -86,11 +120,14 @@ def load_draft(infile):
 
 
 def render(opts):
+    """ Render to svg or png based on file extension
+        - if no outfile then show without saving
+    """
     draft = load_draft(opts.infile)
     if draft:
         style = Drawstyle()
         if opts.floats > 0:
-            style.set_floats(opts.floats)
+            style.set_floats(opts.floats-1)
         if opts.outfile:
             if opts.outfile.endswith('.svg'):
                 SVGRenderer(draft).save(opts.outfile)
@@ -101,6 +138,9 @@ def render(opts):
 
 
 def convert(opts):
+    """ Convert wif to json or back.
+        (Also can wif to wif if need to rewrite file)
+    """
     draft = load_draft(opts.infile)
     if draft:
         if opts.outfile.endswith('.wif'):
@@ -146,7 +186,7 @@ def stats(opts):
         print("Telephone:", draft.telephone)
         print("Fax:", draft.fax)
         print("Notes:", draft.notes)
-        print("Date:", draft.date)  # not sure to display this as generally date of wif file spec
+        print("Date:", draft.creation_date)  # not sure to display this as generally date of wif file spec
         print("Source program:", draft.source_program, "version:",draft.source_version)
         print("***")
         print("Warp Threads:", len(draft.warp))
@@ -167,10 +207,11 @@ def main(argv=sys.argv):
 
     subparsers = p.add_subparsers(help='sub-command help')
 
+    # Render a wif file
     p_render = subparsers.add_parser(
         'render', help='Render a draft.')
     p_render.add_argument('infile')
-    p_render.add_argument('outfile', nargs='?')
+    p_render.add_argument('outfile', nargs='?') # will just show() if not specified
     p_render.add_argument('--liftplan', action='store_true')
     p_render.add_argument('--floats', type=int, default=0)
     p_render.set_defaults(function=render)
@@ -212,7 +253,7 @@ def main(argv=sys.argv):
     p_stats.add_argument('infile')
     p_stats.set_defaults(function=stats)
     
-    # tartan "K8, B46, K46, G44, Y6, G6, Y12" --render --renderstyle solids --renderfile foo outfile
+    # Tartan generator
     p_tartan = subparsers.add_parser(
         'tartan', 
         help='Create a wif from the tartan generator (and optionally render).')
@@ -224,10 +265,14 @@ def main(argv=sys.argv):
     p_tartan.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
+    # Twill generator
     p_twill  = subparsers.add_parser(
         'twill', 
         help='Create a wif from the twill generator (and optionally render).')
     p_twill.add_argument('shape')
+    p_twill.add_argument('--render', action='store_true',help='Also render to file.')
+    p_twill.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
+    p_twill.add_argument('--renderstyle', default='blobs', choices=['solids', 'blobs', 'colors', 'numbers'])
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 

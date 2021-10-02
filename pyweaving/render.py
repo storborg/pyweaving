@@ -118,10 +118,6 @@ class ImageRenderer(object):
         """
         # gather spacings data for use in stats and to calc yarn widths to draw
         box_sizing = self.calculate_box_sizing() # incorporate spacing
-        # print(box_sizing, self.draft.thread_stats["summary"])
-        # print(" ",self.draft.thread_stats["warp_spacings"])
-        # print(" ",self.draft.thread_stats["weft_spacings"])
-        
         # calculate image size estimate (yarn spacing makes this a maximal number)
         warp_area_length = 0
         if box_sizing: # spacing data in wif file

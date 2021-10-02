@@ -18,9 +18,11 @@ class WIFReader(object):
     # RGB?)
 
     allowed_units = ('decipoints', 'inches', 'centimeters')
+    
 
     def __init__(self, filename):
         self.filename = filename
+        self.zerobased = False # at least one author uses 0 based counting for threading/treadlineg/color entries in WARP and WEFT
 
     def getbool(self, section, option):
         if self.config.has_option(section, option):
@@ -30,7 +32,7 @@ class WIFReader(object):
 
     def put_metadata(self, draft):
         # generally date is always 1997 date of wif spec.
-        #draft.date = self.config.get('WIF', 'Date')
+        draft.date = self.config.get('WIF', 'Date', fallback="April 20, 1997")
         # Name, author, notes, etc.
         draft.title = self.config.get('TEXT', 'Title', fallback="")
         draft.author = self.config.get('TEXT', 'Author', fallback="")
@@ -38,6 +40,9 @@ class WIFReader(object):
         draft.email = self.config.get('TEXT', 'EMail', fallback="")
         draft.telephone = self.config.get('TEXT', 'Telephone', fallback="")
         draft.fax = self.config.get('TEXT', 'FAX', fallback="")
+        # Creation date
+        # print(self.config.options("TEXT"))
+        # draft.creation_date = self.config.get('TEXT', ';')
         # Notes
         if self.getbool('CONTENTS', 'NOTES'):
             for line_no, note in self.config.items('NOTES'):
@@ -45,6 +50,9 @@ class WIFReader(object):
         # Source program
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
+        if draft.source_program.find("Glassner") and draft.source_version =="1.0":
+            self.zerobased = True
+            # alas these wif files use a mix of zero and one based thread counting :(
         # setup  draft_title
         if draft.title == "":
             draft.draft_title =[]
@@ -72,6 +80,7 @@ class WIFReader(object):
         warp_color = None
         if 'Color' in self.config['WARP']:
              warp_color = self.config.getint('WARP', 'Color')
+             if self.zerobased : warp_color+=1
         if not warp_color_map:
             # try to get warp color from WARP section
             has_warp_colors = False
@@ -81,6 +90,7 @@ class WIFReader(object):
         if has_threading:
             threading_map = {}
             for thread_no, value in self.config.items('THREADING'):
+                if self.zerobased : thread_no = str(int(thread_no)+1)
                 threading_map[int(thread_no)] = \
                     [int(sn) for sn in value.split(',')]
 
@@ -95,7 +105,7 @@ class WIFReader(object):
                 warp_spacing_map[int(thread_no)] = float(value)
         
         for thread_no in range(1, warp_thread_count + 1):
-            # NOTE: Some crappy software will generate WIFs with way more
+            # NOTE: Some software will generate WIFs with way more
             # threads in the warp or weft section than mentioned in the
             # threading. To ignore that, make sure that this thread actually
             # has threading specified: otherwise it's unused.
@@ -149,6 +159,7 @@ class WIFReader(object):
         weft_color = None
         if 'Color' in self.config['WEFT']:
             weft_color = self.config.getint('WEFT', 'Color')
+            if self.zerobased : weft_color+=1
         if not weft_color_map:
             # try to get weft color from WEFT section
             has_weft_colors = False
@@ -158,14 +169,17 @@ class WIFReader(object):
         if has_liftplan:
             liftplan_map = {}
             for thread_no, value in self.config.items('LIFTPLAN'):
+				# some wif files have illegal thread numbers
+				# so cutoff anything higher than found in THREADING
                 liftplan_map[int(thread_no)] = \
-                    [int(sn) for sn in value.split(',')]
+                    [int(sn) for sn in value.split(',') if int(sn)<=len(draft.shafts)] #ideally if not required
 
         has_treadling = self.getbool('CONTENTS', 'TREADLING')
 
         if has_treadling:
             treadling_map = {}
             for thread_no, value in self.config.items('TREADLING'):
+                if self.zerobased : thread_no = str(int(thread_no)+1)
                 try:
                     treadles = [int(tn) for tn in value.split(',')]
                 except ValueError:
@@ -233,12 +247,14 @@ class WIFReader(object):
         """
         Perform the actual parsing, and return a Draft instance.
         """
-        self.config = RawConfigParser()
+        # config like this so we can read the creationdate embedded in comments
+        self.config = RawConfigParser(comment_prefixes='/', allow_no_value=True)
+        self.config.optionxform = str
         self.config.read(self.filename)
 
         rising_shed = self.getbool('WEAVING', 'Rising Shed')
         num_shafts = self.config.getint('WEAVING', 'Shafts')
-        num_treadles = self.config.getint('WEAVING', 'Treadles')
+        num_treadles = self.config.getint('WEAVING', 'Treadles', fallback=0)
 
         liftplan = self.getbool('CONTENTS', 'LIFTPLAN')
         treadling = self.getbool('CONTENTS', 'TREADLING')
@@ -316,6 +332,7 @@ class WIFWriter(object):
         config.set('TEXT', 'EMail', self.draft.email)
         config.set('TEXT', 'Telephone', self.draft.telephone)
         config.set('TEXT', 'FAX', self.draft.fax)
+        config.set('TEXT', '; Creation %s'%(self.draft.creation_date))
 
         if self.draft.notes:
             config.set('CONTENTS', 'NOTES', True)
@@ -405,7 +422,7 @@ class WIFWriter(object):
     def write(self, filename, liftplan=False):
         assert self.draft.start_at_lowest_thread
 
-        config = RawConfigParser()
+        config = RawConfigParser(allow_no_value=True)#!!
         config.optionxform = str
         
         self.write_metadata(config, liftplan=liftplan)

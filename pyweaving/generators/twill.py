@@ -12,21 +12,21 @@ def twill(shape="2/2", warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
          - 4S means 4 straight, 4Z means 4 straight opp direction
          - 
     """
-    twill_shape = shape.strip() # remove extraneous spaces
+    shape = shape.strip() # remove extraneous spaces
     # is direction Z|S supplied
     direction = "Z"
-    if twill_shape[-1].upper() in ["S","Z"]:
-        direction = twill_shape[-1].upper()
-        twill_shape = twill_shape[:-1]
+    if shape[-1].upper() in ["S","Z"]:
+        direction = shape[-1].upper()
+        shape = shape[:-1]
     
     shapes = []
-    if len(twill_shape) > 3 and twill_shape.find(" ") > -1:
+    if len(shape) > 3 and shape.find(" ") > -1:
         # likely to be a sequence of twills
-        twills = twill_shape.split(" ")
+        twills = shape.split(" ")
         for twill in twills:
             shapes.append(twill.split("/"))
     else:
-        shapes = [twill_shape.split("/")]
+        shapes = [shape.split("/")]
     shapes = [[int(a), int(b)] for a,b in shapes]
     
     size = sum([a+b for a,b in shapes])
@@ -59,6 +59,6 @@ def twill(shape="2/2", warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
             treadles=[ii % shafts],
         )
 
-    draft.title = shape + " Twill"
+    draft.title = shape + " "+direction+" Twill"
     draft.draft_title = [draft.title]
     return draft
