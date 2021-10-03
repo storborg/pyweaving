@@ -29,6 +29,7 @@ def generate_unique_filename(label, directory, ext):
     " generate autoname and increment suffix until unique in directory "
     result = label.replace(",","_")
     result = result.replace(" ","_")
+    result = os.path.splitext(result)[0]+"."+ext
     # print("generating",result)
     # check directory for same named file (+ext)
     # if so then try to parse 3 digit number at end and increment
@@ -129,6 +130,11 @@ def render(opts):
         if opts.floats > 0:
             style.set_floats(opts.floats-1)
         if opts.outfile:
+            first4 = opts.outfile[:4]
+            imagetype = opts.outfile[4:]
+            if first4 == 'auto' and imagetype in ['svg','png']:
+                opts.outfile = generate_unique_filename(opts.infile, None, imagetype)
+            #
             if opts.outfile.endswith('.svg'):
                 SVGRenderer(draft).save(opts.outfile)
             else:
@@ -211,7 +217,8 @@ def main(argv=sys.argv):
     p_render = subparsers.add_parser(
         'render', help='Render a draft.')
     p_render.add_argument('infile')
-    p_render.add_argument('outfile', nargs='?') # will just show() if not specified
+    # will just show() if outfile not specified
+    p_render.add_argument('outfile', nargs='?', help='use autopng or autosvg for a safely autonamed image file')
     p_render.add_argument('--liftplan', action='store_true')
     p_render.add_argument('--floats', type=int, default=0)
     p_render.set_defaults(function=render)
@@ -270,7 +277,7 @@ def main(argv=sys.argv):
         'twill', 
         help='Create a wif from the twill generator (and optionally render).')
     p_twill.add_argument('shape')
-    p_twill.add_argument('--render', action='store_true',help='Also render to file.')
+    p_twill.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
     p_twill.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
     p_twill.add_argument('--renderstyle', default='blobs', choices=['solids', 'blobs', 'colors', 'numbers'])
     p_twill.add_argument('outfile')

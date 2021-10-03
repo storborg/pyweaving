@@ -30,8 +30,6 @@ def twill(shape="2/2", warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
     shapes = [[int(a), int(b)] for a,b in shapes]
     
     size = sum([a+b for a,b in shapes])
-    print(shapes,size)
-    
 
     shafts = size
     draft = Draft(num_shafts=shafts, num_treadles=shafts)
