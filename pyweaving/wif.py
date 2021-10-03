@@ -46,7 +46,7 @@ class WIFReader(object):
         # Notes
         if self.getbool('CONTENTS', 'NOTES'):
             for line_no, note in self.config.items('NOTES'):
-                draft.notes += note + "\n"
+                draft.notes.append(note)
         # Source program
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
@@ -169,8 +169,8 @@ class WIFReader(object):
         if has_liftplan:
             liftplan_map = {}
             for thread_no, value in self.config.items('LIFTPLAN'):
-				# some wif files have illegal thread numbers
-				# so cutoff anything higher than found in THREADING
+                # some wif files have illegal thread numbers
+                # so cutoff anything higher than found in THREADING
                 liftplan_map[int(thread_no)] = \
                     [int(sn) for sn in value.split(',') if int(sn)<=len(draft.shafts)] #ideally if not required
 
@@ -337,7 +337,7 @@ class WIFWriter(object):
         if self.draft.notes:
             config.set('CONTENTS', 'NOTES', True)
             config.add_section('NOTES')
-            for ii, line in enumerate(self.draft.notes.split('\n')):
+            for ii, line in enumerate(self.draft.notes):
                 config.set('NOTES', str(ii), line)
 
     def write_palette(self, config):

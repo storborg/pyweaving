@@ -159,6 +159,16 @@ class ImageRenderer(object):
         stats = self.draft.get_mini_stats()
         height_squares_estimate += int((len(stats) * self.tick_font_size * 1.5) / self.pixels_per_square) #(spacing)
 
+        # Notes
+        if self.draft.notes:
+            notes_size = len(self.draft.notes)
+            notes_size += 1 # Section title + gap
+            if self.draft.source_program:
+                notes_size += 1
+                # add source_program and version as last line
+                self.draft.notes.append("(source program: %s.  Version: %s)"%(self.draft.source_program,self.draft.source_version))
+            height_squares_estimate += int((notes_size * self.tick_font_size * 1.5) / self.pixels_per_square)
+            
         # outline width of +1 is added otherwise contents overflow
         width = width_squares_estimate * self.pixels_per_square + 1
         height = height_squares_estimate * self.pixels_per_square + 1
@@ -199,8 +209,12 @@ class ImageRenderer(object):
         drawdownstart = (heddleend[0], threadingend[1]+self.style.drawdown_gap)
         drawdownend = self.paint_drawdown(drawdownstart, draw)
         self.paint_start_indicator(drawdownstart, draw)
+        
+        notesend = drawdownend
+        if self.draft.notes:
+            notesend = self.paint_notes((drawdownstart[0],drawdownend[1]), self.draft.notes, draw)
+        
         del draw
-
         im = self.pad_image(im)
         return im
 
@@ -223,7 +237,7 @@ class ImageRenderer(object):
         for t in titles:
             if len(t) > len(longest): longest = t
         textw, texth = draw.textsize(longest, font=self.title_font)
-        lineheight = self.style.title_font_size_factor *1.1 #(for spacing)
+        lineheight = self.style.title_font_size_factor *1.2 #(for spacing)
         
         endwidth = offsetx + textw/self.style.box_size
         endheight = int(offsety + lineheight * len(titles))+1
@@ -241,6 +255,7 @@ class ImageRenderer(object):
         return (endwidth, endheight)
         
     def paint_ministats(self, startpos, stats, draw):
+        """ Short series of hopefully useful observations """
         offsetx,offsety = startpos
         longest = stats[0]
         for t in stats:
@@ -255,7 +270,29 @@ class ImageRenderer(object):
                        stat,align='left',
                        font=self.tick_font, fill=BLACK.rgb)
         return (endwidth, endheight)
-    
+
+    def paint_notes(self, startpos, notes, draw):
+        """ The Notes from the wif file.
+            - Also show creation date and s/w used
+        """
+        # notes are one string broken by newlines
+        offsetx,offsety = startpos
+        longest = ""
+        lines = ["Notes:"]
+        for note in notes:
+            lines.append(note)
+            if len(note) > len(longest): longest = note
+        textw, texth = draw.textsize(longest, font=self.tick_font)
+        endwidth = offsetx + textw/self.pixels_per_square
+        lineheight = self.style.title_font_size_factor *1.02 #(for spacing)
+        endheight = int(offsety + lineheight * len(lines)) + 1
+        
+        for i,line in enumerate(lines):
+            draw.text((offsetx, (offsety + (i+1)*lineheight) * self.pixels_per_square),
+                       line,align='left',
+                       font=self.tick_font, fill=BLACK.rgb)
+        return (endwidth, endheight)
+            
     def paint_start_indicator(self, startpos, draw):
         offsetx,offsety = startpos
         starty = offsety * self.pixels_per_square
@@ -725,6 +762,10 @@ class ImageRenderer(object):
                 draw.rectangle((startx, starty, endx, endy),
                                outline=outline_color,
                                fill=fill_color)
+        #
+        endwidth = int(endx/self.pixels_per_square)
+        endheight = int(endy/self.pixels_per_square)
+        return (endwidth, endheight)
 
     def show(self):
         """ Used if no outfile defined. Show it

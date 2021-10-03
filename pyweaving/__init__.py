@@ -271,7 +271,7 @@ class Draft(object):
     def __init__(self, num_shafts, num_treadles=0, liftplan=False,
                  rising_shed=True, start_at_lowest_thread=True,
                  date=None, title='', author='', address='',
-                 email='', telephone='', fax='', notes='',
+                 email='', telephone='', fax='', notes=[],
                  weft_units='centimeters', warp_units='centimeters'):
         self.liftplan = liftplan or (num_treadles == 0)
         self.rising_shed = rising_shed
@@ -785,7 +785,8 @@ class Draft(object):
         
     def get_mini_stats(self):
         """ gather list of:
-            - thread counts, longest floats, color count, warp/weft balance
+            - thread counts, longest floats, color count,
+            - warp/weft ratio, floating selvedge status
         """
         # Threadcounts
         stats = ["Threadcounts: Warp %d  Weft %d"%(len(self.warp), len(self.weft))]
