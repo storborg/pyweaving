@@ -132,8 +132,11 @@ def render(opts):
         if opts.outfile:
             first4 = opts.outfile[:4]
             imagetype = opts.outfile[4:]
-            if first4 == 'auto' and imagetype in ['svg','png']:
-                opts.outfile = generate_unique_filename(opts.infile, None, imagetype)
+            if first4 == 'auto':
+                if imagetype in ['svg','png']:
+                    opts.outfile = generate_unique_filename(opts.infile, None, imagetype)
+                else: # force to png
+                    opts.outfile = generate_unique_filename(opts.infile, None, 'png')
             #
             if opts.outfile.endswith('.svg'):
                 SVGRenderer(draft).save(opts.outfile)

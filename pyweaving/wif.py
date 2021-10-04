@@ -46,7 +46,8 @@ class WIFReader(object):
         # Notes
         if self.getbool('CONTENTS', 'NOTES'):
             for line_no, note in self.config.items('NOTES'):
-                draft.notes.append(note)
+                if line_no not in [';','#']: # check for comments ourselves
+                    draft.notes.append(note)
         # Source program
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
@@ -72,7 +73,8 @@ class WIFReader(object):
         if has_warp_colors:
             warp_color_map = {}
             for thread_no, value in self.config.items('WARP COLORS'):
-                warp_color_map[int(thread_no)] = int(value)
+                if thread_no not in [';','#']: # check for comments ourselves
+                    warp_color_map[int(thread_no)] = int(value)
         else:
             warp_color_map = None
 
@@ -86,13 +88,15 @@ class WIFReader(object):
             has_warp_colors = False
 
         has_threading = self.getbool('CONTENTS', 'THREADING')
-
+        if not has_threading:
+            print("WARNING: This wif file indicates it has no THREADING section. Please edit it to be true")
+        threading_map = {}
         if has_threading:
-            threading_map = {}
             for thread_no, value in self.config.items('THREADING'):
-                if self.zerobased : thread_no = str(int(thread_no)+1)
-                threading_map[int(thread_no)] = \
-                    [int(sn) for sn in value.split(',')]
+                if thread_no not in [';','#']: # check for comments ourselves
+                    if self.zerobased : thread_no = str(int(thread_no)+1)
+                    threading_map[int(thread_no)] = \
+                        [int(sn) for sn in value.split(',')]
 
         warp_spacing = None
         has_warp_spacing = self.getbool('CONTENTS', 'WARP SPACING')
@@ -102,7 +106,8 @@ class WIFReader(object):
         warp_spacing_map = {}
         if has_warp_spacing:
             for thread_no, value in self.config.items('WARP SPACING'):
-                warp_spacing_map[int(thread_no)] = float(value)
+                if thread_no not in [';','#']: # check for comments ourselves
+                    warp_spacing_map[int(thread_no)] = float(value)
         
         for thread_no in range(1, warp_thread_count + 1):
             # NOTE: Some software will generate WIFs with way more
@@ -151,7 +156,8 @@ class WIFReader(object):
         if has_weft_colors:
             weft_color_map = {}
             for thread_no, value in self.config.items('WEFT COLORS'):
-                weft_color_map[int(thread_no)] = int(value)
+                if thread_no not in [';','#']: # check for comments ourselves
+                    weft_color_map[int(thread_no)] = int(value)
         else:
             weft_color_map = None
 
@@ -169,23 +175,25 @@ class WIFReader(object):
         if has_liftplan:
             liftplan_map = {}
             for thread_no, value in self.config.items('LIFTPLAN'):
-                # some wif files have illegal thread numbers
-                # so cutoff anything higher than found in THREADING
-                liftplan_map[int(thread_no)] = \
-                    [int(sn) for sn in value.split(',') if int(sn)<=len(draft.shafts)] #ideally if not required
+                if thread_no not in [';','#']: # check for comments ourselves
+                    # some wif files have illegal thread numbers
+                    # so cutoff anything higher than found in THREADING
+                    liftplan_map[int(thread_no)] = \
+                        [int(sn) for sn in value.split(',') if int(sn)<=len(draft.shafts)] #ideally if not required
 
         has_treadling = self.getbool('CONTENTS', 'TREADLING')
 
         if has_treadling:
             treadling_map = {}
             for thread_no, value in self.config.items('TREADLING'):
-                if self.zerobased : thread_no = str(int(thread_no)+1)
-                try:
-                    treadles = [int(tn) for tn in value.split(',')]
-                except ValueError:
-                    pass
-                else:
-                    treadling_map[int(thread_no)] = treadles
+                if thread_no not in [';','#']: # check for comments ourselves
+                    if self.zerobased : thread_no = str(int(thread_no)+1)
+                    try:
+                        treadles = [int(tn) for tn in value.split(',')]
+                    except ValueError:
+                        pass
+                    else:
+                        treadling_map[int(thread_no)] = treadles
 
         weft_spacing = None
         has_weft_spacing = self.getbool('CONTENTS', 'WEFT SPACING')
@@ -195,7 +203,8 @@ class WIFReader(object):
         weft_spacing_map = {}
         if has_weft_spacing:
             for thread_no, value in self.config.items('WEFT SPACING'):
-                weft_spacing_map[int(thread_no)] = float(value)
+                if thread_no not in [';','#']: # check for comments ourselves
+                    weft_spacing_map[int(thread_no)] = float(value)
 
         for thread_no in range(1, weft_thread_count + 1):
             if (has_liftplan and (thread_no in liftplan_map)) or \
@@ -236,22 +245,34 @@ class WIFReader(object):
 
     def put_tieup(self, draft):
         for treadle_no, value in self.config.items('TIEUP'):
-            if int(treadle_no)-1 < len(draft.treadles):
-                treadle = draft.treadles[int(treadle_no) - 1]
-                shaft_nos = [int(sn) for sn in value.split(',')]
-                for shaft_no in shaft_nos:
-                    shaft = draft.shafts[shaft_no - 1]
-                    treadle.shafts.add(shaft)
+            if treadle_no not in [';','#']: # check for comments ourselves
+                if int(treadle_no)-1 < len(draft.treadles):
+                    treadle = draft.treadles[int(treadle_no) - 1]
+                    shaft_nos = [int(sn) for sn in value.split(',')]
+                    for shaft_no in shaft_nos:
+                        shaft = draft.shafts[shaft_no - 1]
+                        treadle.shafts.add(shaft)
 
     def read(self):
         """
         Perform the actual parsing, and return a Draft instance.
         """
-        # config like this so we can read the creationdate embedded in comments
+        # Config like this so we can read the creation date embedded in comments
         self.config = RawConfigParser(comment_prefixes='/', allow_no_value=True)
-        self.config.optionxform = str
-        self.config.read(self.filename)
-
+        #  but because we override comments from ;,# to / we will have to parse comments outrselves.
+        #  we did this because creation date is embedded in fiberworks files as a comment in TEXT section.
+        # We need to deal with special case where the config file starts with a comment line. (TempoFiber)
+        #  in this case the simple approach will fail when reading from the file.
+        # So we need to read the file into a string and use self.config.read_string() instead of self.config.read()
+        self.config.optionxform = str # does not force everything to lowercase
+        with open(self.filename, 'r') as f:
+            file_content = f.read() # Read whole file in the file_content string
+        # skip initial comment lines
+        commentline_end = file_content.find("\n")
+        while file_content[:commentline_end][0] in [';','#']:
+            file_content = file_content[commentline_end+1:]
+        self.config.read_string(file_content)
+        
         rising_shed = self.getbool('WEAVING', 'Rising Shed')
         num_shafts = self.config.getint('WEAVING', 'Shafts')
         num_treadles = self.config.getint('WEAVING', 'Treadles', fallback=0)
@@ -270,15 +291,16 @@ class WIFReader(object):
             rstart, rend = palette_range.split(',')
             palette_range = int(rstart), int(rend)
         else:
-            palette_range = 0, 255
+            palette_range = 0, 255 # Assume regular 8bit rgb if no range defined
 
         if self.getbool('CONTENTS', 'COLOR TABLE'):
             wif_palette = {}
             for color_no, value in self.config.items('COLOR TABLE'):
-                channels = [int(ch) for ch in value.split(',')]
-                channels = [int(round(ch * (255. / palette_range[1])))
-                            for ch in channels]
-                wif_palette[int(color_no)] = channels
+                if color_no not in [';','#']: # check for comments ourselves
+                    channels = [int(ch) for ch in value.split(',')]
+                    channels = [int(round(ch * (255. / palette_range[1])))
+                                for ch in channels]
+                    wif_palette[int(color_no)] = channels
         else:
             wif_palette = None
 
