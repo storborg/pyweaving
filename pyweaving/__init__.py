@@ -9,6 +9,9 @@ from collections import defaultdict
 
 __version__ = '0.0.8.dev'
 
+from pathlib import Path
+def get_project_root():
+    return Path(__file__).parent
 
 class Color(object):
     """
@@ -46,6 +49,12 @@ class Color(object):
     @property
     def hex(self):
         return '#%02x%02x%02x' % self.rgb
+        
+    # save a hex into rgb tuple
+    @hex.setter
+    def hex(self, hexstring):
+        h = hexstring.lstrip('#')
+        self.rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
     def __str__(self):
         return str(self.rgb)

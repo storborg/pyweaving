@@ -2,15 +2,15 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import re
+import os.path
 
-from .. import Draft
+from .. import Draft, get_project_root, Color
 
 # test here:
 # - https://www.tartanregister.gov.uk/searchDesigns#TartanDisplay
 
-
-color_map = {
-    'A' : (92,  140, 168),  # azure / light blue
+# standard colors from Tartan register
+STR_colors = {
     'G' : (0,   104,  24),  # green
     'LG': (134, 198, 124),  # light green
     'DG': (0,    64,  40),  # dark green
@@ -30,27 +30,35 @@ color_map = {
     'DR': (128,   0,  40),  # dark red
     'O' : (128,   0,  40),  # orange
     'DO': (190, 220,  50),  # dark orange
-    'P' : (120,   0, 120),  # purple
-    'C' : (208,  80,  84),  # ??? light red of some kind
     'P' : (90,    0, 140),  # purple
     'LP': (196, 156, 216),  # light purple
     'DP': (68,    0,  68),  # dark purple
     'LT': (160, 124,  88),  # light brown (Tan)
     'T' : (96,   64,   0),  # Brown (Tan)
     'DT': (76,   52,  40),  # dark Brown
+    # should these even be here ?? (not in STR definition)
+    'A' : (92,  140, 168),  # azure / light blue
+    'C' : (208,  80,  84),  # ??? light red of some kind
 }
 
-def extract_colors(sett):
-    """ get color sequence for the tartan sett
+homedir = get_project_root()
+collected_tartans_filename = os.path.join(homedir, 'generators','collected_tartans.txt')
+
+def lookup_colors(sett, override_colors=None):
+    """ return sequence of color, count pairs from tartan sett
         - mirror if required
     """
     colors = []
+    if override_colors:
+        color_map = override_colors
+    else:
+        color_map = STR_colors
     sett_simple = sett.replace("/","").upper()
     for piece in re.split('[,_ ]', sett_simple):
         m = re.match('([A-Z]+)(\d+)', piece.strip())
         if m.group(1) in color_map.keys():
-            colors.append( ( color_map[m.group(1)],
-                             int(m.group(2))
+            colors.append( ( color_map[m.group(1)],  # color (tuple)
+                             int(m.group(2))         # count
                             ))
         else:
             print("Color indicator",m.group(1),"not defined in color_map")
@@ -60,96 +68,159 @@ def extract_colors(sett):
         colors.extend(reversed(colors[1:-1]))
     return colors
 
-def tartan(sett, repeats=1, direction="s"):
-    colors = []
+def tartan(sett, repeats=1, direction="z"):
     direction = direction.upper()
     warp_colors = []
     weft_colors = []
+    override_colors= False
+    name = sett
     
-    # are there separate warp and weft threadcounts
-    if sett.find(".") > -1:
-        # two parts warp+weft
-        warpsett, weftsett = sett.split(".")
-        warpsett = warpsett.strip()
-        weftsett = weftsett.strip()
+    # sett is either a pattern or a name. 
+    # - hard to guess so assume its a name and then if fail - a sett
+    found, sett, override_colors, pattern = find_named_tartan(sett)
+    # if found then use pattern, colors
+    # else use sett and ignore the rest
+    if found:
+        sett = pattern
+    if sett: # will be zeroed if some matches found in names but not unique
+        # are there separate warp and weft threadcounts
+        if sett.find(".") > -1:
+            # two parts warp+weft
+            warpsett, weftsett = sett.split(".")
+            warpsett = warpsett.strip()
+            weftsett = weftsett.strip()
+        else:
+            warpsett = sett.strip()
+            weftsett = None
+        #
+        warp_colors = lookup_colors(warpsett, override_colors)
+        if weftsett:
+            weft_colors = lookup_colors(weftsett, override_colors)
+
+        print("Threads per repeat: %d" %
+              sum(count for color, count in warp_colors))
+
+        # Tartan is always 2/2 twill
+        # - need 4 shafts and 4 treadles
+        shaft_count = 4
+        draft = Draft(num_shafts=shaft_count, num_treadles=shaft_count)
+
+        # do tie-up
+        for ii in range(shaft_count):
+            draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[ii])
+            draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[(ii + 1) % shaft_count])
+
+        thread_no = 0
+        # warp
+        for ii in range(repeats):
+            for color, count in warp_colors:
+                for jj in range(count): # (count//2) for visualisation
+                    s = thread_no % shaft_count
+                    if direction=="Z":
+                        s = shaft_count - s -1
+                    draft.add_warp_thread(
+                        color=color,
+                        shaft=s,
+                    )
+                    thread_no += 1
+        # weft
+        thread_no = 0
+        if not weft_colors:
+            weft_colors = warp_colors
+        #
+        for ii in range(repeats):
+            for color, count in weft_colors:
+                for jj in range(count): # (count//2) for visualisation
+                    t = thread_no % shaft_count
+                    draft.add_weft_thread(
+                        color=color,
+                        treadles=[t],
+                    )
+                    thread_no += 1
+        #
+        draft.title = name.replace(",","_").replace(" ","_")
+        draft.draft_title = [draft.title]
+        draft.notes.append("from:"+sett)
+        return draft
+
+def find_named_tartan(desired_name):
+    """ Search the file for a unique 'name' and 
+        - return the tdf style string.
+        If more than one then print out the names of the possibles
+         for user selection next time.
+    """
+    found = False
+    matching = []
+    colors = None
+    pattern = None
+    inf = open(collected_tartans_filename, 'r')
+    for line in inf:
+        namepos = line.find("=>")
+        if namepos > -1:
+            name = line[:namepos].strip()
+            if name.find(desired_name) > -1:
+                # found one possibly imperfect match
+                matching.append(name) # remove \n
+                pattern = line[:-1]
+    # unique ?
+    if len(matching) == 1:
+        # process it
+        found = True
+        colors, pattern = _parse_tartan_description(pattern[pattern.find("=")+2:])
+    elif len(matching) > 1: # several found
+        print("Found %d tartans. Choose the one you want to see."%(len(matching)))
+        for n in matching:
+            print("",n)
+        desired_name = False
     else:
-        warpsett = sett.strip()
-        weftsett = None
-    #
-    warp_colors = extract_colors(warpsett)
-    if weftsett:
-        weft_colors = extract_colors(weftsett)
+        # either its a name we did not find, or its a sett
+        pass
+    # return sett_or_name, None if no file found (might have been a sett)
+    # return newsett, colors if from a file
+    # print(found, pattern, colors)
+    return (found, desired_name, colors, pattern)
+    
 
-    print("Threads per repeat: %d" %
-          sum(count for color, count in warp_colors))
+def _parse_tartan_description(sett_or_name):
+    """ in form: name = colors = format
+        tartan_name=>y#aaaa00k#000000w#aaaaaa=w1(y6k6)y1
+        Return colors - a dictionary like STR_colors above,
+        and pattern - which is an STR tartan string
+    """
+    hexcolors, pattern = sett_or_name.split("=")
+    colors = {}
+    for i in range(len(hexcolors)//8):
+        col = hexcolors[i*8:i*8+8]
+        hex = col[2:]
+        rgb = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+        colors[col[0].upper()] = rgb
+    # colors = { hexcolors[i*8:i*8+8][0]: Color((0,0,0)).set_hex(hexcolors[i*8:i*8+8][1:]) for i in range(len(hexcolors)//8) }
+    weftpattern = None
+    # print(colors, pattern)
+    symm = pattern.find("(") > -1 # are we mirroring
+    pattern = pattern.replace("(","").replace(")","") # remove the mirroring features
+    if pattern.find("]") > -1:
+        # two parts
+        pattern, weftpattern = pattern.split("]")
+    warpparts = re.split(r"([a-z]+)",pattern) # find all the bits
+    warpparts = [p.strip().upper() for p in warpparts if p] # clean spaces and cap colors
+    warpparts = [warpparts[i]+warpparts[i+1] for i in range(0,len(warpparts),2)] # pair up letter,count
+    if weftpattern:
+        weftparts = re.split(r"([a-z]+)",weftpattern) # find all the bits
+        weftparts = [p.strip().upper() for p in weftparts if p]
+        weftparts = [weftparts[i]+weftparts[i+1] for i in range(0,len(weftparts),2)] # pair up letter,count
+    # All in letter,number sequence
+    # reconstruct
+    tartan = ""
+    if symm: tartan += "/"
+    tartan += " ".join(warpparts)
+    if weftpattern:
+        tartan += " . "
+        tartan +=" ".join(weftparts)
+        if symm: tartan += "/"
+    # print(tartan)
+    return colors, tartan
 
-    # Tartan is always 2/2 twill
-    # - need 4 shafts and 4 treadles
-    shaft_count = 4
-    draft = Draft(num_shafts=shaft_count, num_treadles=shaft_count)
 
-    # do tie-up
-    for ii in range(shaft_count):
-        draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[ii])
-        draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[(ii + 1) % shaft_count])
-
-    thread_no = 0
-    # warp
-    for ii in range(repeats):
-        for color, count in warp_colors:
-            for jj in range(count): # (count//2) for visualisation
-                s = thread_no % shaft_count
-                if direction=="Z":
-                    s = shaft_count - s -1
-                draft.add_warp_thread(
-                    color=color,
-                    shaft=s,
-                )
-                thread_no += 1
-    # weft
-    thread_no = 0
-    if not weft_colors:
-        weft_colors = warp_colors
-    #
-    for ii in range(repeats):
-        for color, count in weft_colors:
-            for jj in range(count): # (count//2) for visualisation
-                t = thread_no % shaft_count
-                draft.add_weft_thread(
-                    color=color,
-                    treadles=[t],
-                )
-                thread_no += 1
-	#
-    draft.title = sett.replace(",","_").replace(" ","_")
-    draft.draft_title = [draft.title]
-    return draft
-
-# Tartan Setts
-gordon_red = "A12 G12 R18 K12 R18 B18 W4 C16 W4 K32 A12 W4 B32 W4 G36"
-gordon_modern = "B24 K4 B4 K4 B4 K24 G24 Y4 G24 K24 B24 K4 B4"
-gordon_old = "B24 K4 B4 K4 B4 K24 G24 Y4 G24 K24 B24 K4 B4"
-gordon_red_muted = "A12 G12 R18 K12 R18 B18 W4 C16 W4 K32 A12 W4 B32 W4 G36"
-gordon_old_ancient = "K8 B46 K46 G44 Y6 G6 Y12"
-gordon_of_abergeldie = "G36 Y2 LP12 K2 W2 R40"
-gordon_of_esselmont = "K8 P46 K46 G44 Y6 G6 Y12"
-gordon_roxburgh_district = "B4 R2 G32 B16 W2 B2 W2 B32"
-gordon_roxburgh_red = "B6 DG52 B6 R6 B40 R6 B6 R52 DG10 W6"
-gordon_roxburgh_red_muted = "B6 DG52 B6 R6 B40 R6 B6 R52 DG10 W6"
-gordon_dress = ("W4 B2 W24 B4 W4 K16 B16 K4 B4 K4 B16 K16 "
-                "G16 K2 Y4 K2 G16 K16 W4 B4 W24 B2 W4")
-gordon_red_old_huntly = ("B28 W2 G16 W2 DG32 A12 W2 B28 W2 G28 "
-                         "A12 G12 R16 DG12 R16 DG2")
-gordon_huntly_district = ("G16 R4 G16 R24 B2 R2 B4 R2 B2 R24 B2 "
-                          "R2 B4 R2 B2 R24 W2 R6 Y2 B24 R6 B24 "
-                          "Y2 R6 W2 R24 G4 R6 G4 R24 G16 R4 G16")
-
-gordon_aberdeen_district = ("W4 LG8 K32 W4 P12 A8 W4 A8 P12 W4 P6 "
-                            "R16 LR6 W4 LR6 R16 P6 W4 K24 LG8 K24 "
-                            "W4 P6 R16 LR6 W4 LR6 R16 P6 W4 A20 W4 "
-                            "R12 LR6 W2 LR6 R12 W4 LG8 K32 W4 R46 "
-                            "LR6 W4")
-
-gordon_huntly = "R4 MB6 FB24 K22 MG22 Y4"
-kincardine_tweed = "B/4 DY15 R1 DY/30 . G/4 O15 R1 O/30"
-MacMillan_Ancient = "G2_K1_G18_K1_G2_K1_R12_G4_Y6_K1_Y6_K1"
+# kincardine_tweed = "B/4 DY15 R1 DY/30 . G/4 O15 R1 O/30"
+# MacMillan_Ancient = "G2_K1_G18_K1_G2_K1_R12_G4_Y6_K1_Y6_K1"

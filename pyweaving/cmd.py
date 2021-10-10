@@ -38,36 +38,37 @@ def generate_unique_filename(label, directory, ext):
 def gen_tartan(opts):
     """ create a tartan pattern from a pattern 
         - save as wif and optionally render as png
+        - incoming sett is a pattern or name of a tartan
     """
-    wif = tartan(opts.sett, opts.repeats, "Z")
-    wif.process_draft()
+    wif = tartan(opts.sett, opts.repeats, opts.direction)
+    if wif:
+        wif.process_draft()
     
-    # save wif file
-    autoname = opts.sett.replace("/","").upper() # new filename
-    current_dir = getcwd()+"\\"
-    if opts.outfile == 'auto':
-        opts.outfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "wif")
-    else:
-        opts.outfile = ensure_ext(opts.outfile, 'wif')
-        # force current_dir if not supplied
-        opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
-    WIFWriter(wif).write(opts.outfile)
-    
-    # render png to file as well
-    if opts.render:
-        if opts.renderfile == "auto":
-            # generate filename from sett and current_dir directory
-            opts.renderfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "png")
+        # save wif file
+        autoname = opts.sett.replace("/","").upper() # new filename
+        current_dir = getcwd()+"\\"
+        if opts.outfile == 'auto':
+            opts.outfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "wif")
         else:
-            opts.renderfile = ensure_ext(opts.renderfile, 'png')
-            # force pwd if not supplied
-            opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
-        # set the renderstyle
-        style = Drawstyle()
-        # override renderstyle
-        pass
-        ImageRenderer(wif, style).save(opts.renderfile)
-    # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
+            opts.outfile = ensure_ext(opts.outfile, 'wif')
+            # force current_dir if not supplied
+            opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
+        WIFWriter(wif).write(opts.outfile)
+        
+        # render png to file as well
+        if opts.render:
+            if opts.renderfile == "auto":
+                # generate filename from sett and current_dir directory
+                opts.renderfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "png")
+            else:
+                opts.renderfile = ensure_ext(opts.renderfile, 'png')
+                # force pwd if not supplied
+                opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
+            # set the renderstyle
+            style = Drawstyle()
+            # override renderstyle
+            pass
+            ImageRenderer(wif, style).save(opts.renderfile)
     
     
 def gen_twill(opts):
@@ -267,7 +268,8 @@ def main(argv=sys.argv):
     p_tartan = subparsers.add_parser(
         'tartan', 
         help='Create a wif from the tartan generator (and optionally render).')
-    p_tartan.add_argument('sett', help='The Tartan pattern "B46,G3,Y1,G4".')
+    p_tartan.add_argument('sett', help='The Tartan pattern "B46,G3,Y1,G4" or a tartan name.')
+    p_tartan.add_argument('--direction', default="Z",help='Twill direction S, Z(default).')
     p_tartan.add_argument('--repeats', type=int, default=1,help='How many times to repeat the sett.')
     p_tartan.add_argument('--render', action='store_true',help='Also render to file.')
     p_tartan.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
