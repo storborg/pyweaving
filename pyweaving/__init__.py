@@ -9,21 +9,29 @@ from collections import defaultdict
 
 __version__ = '0.0.8.dev'
 
+
+# The bulk tartans description file is held in the generators code subdirectory.
+#  - need a way to find the code directory
 from pathlib import Path
 def get_project_root():
+    " return path to this file's parent directory on the machine "
     return Path(__file__).parent
 
 class Color(object):
     """
     A color type. Internally stored as RGB, and does not support transparency.
+    - can accept, Color(), rgb tuples, or #rrggbb string
     self.rgb, self.css, self.hex
     """
-    def __init__(self, rgb):
-        if  isinstance(rgb,type(self)):
-            rgb = rgb.rgb
-        elif not isinstance(rgb, tuple):
-            rgb = tuple(rgb)
-        self.rgb = rgb
+    def __init__(self, rgb_or_hex):
+        if  isinstance(rgb_or_hex,type("")) and rgb_or_hex[0] =='#' and len(rgb_or_hex)==7:
+            self.hex(rgb_or_hex)
+        elif  isinstance(rgb_or_hex,type(self)):
+            self.rgb = rgb_or_hex.rgb
+        elif not isinstance(rgb_or_hex, tuple):
+            self.rgb = tuple(rgb_or_hex)
+        else:
+            self.rgb = rgb_or_hex
 
     def __repr__(self):
         return "<Color: %s>" %(str(self))
@@ -80,7 +88,9 @@ class Drawstyle(object):
         - floats_color = (R,G,B)
     """
     
-    def __init__(self, layout='american', hide=None, show=None,
+    def __init__(self, name = 'Default',
+                 derived_from=None,
+                 layout='american', hide=None, show=None,
                  tick_style={'mod':4, 'color':(200, 0, 0), 'length':2},
                  tieupstyle={'ticks': True, 'style': 'number'},
                  warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number', 'row_length':None},
@@ -105,6 +115,8 @@ class Drawstyle(object):
         floats_style['color'] = Color(floats_style['color'])
         background = Color(background)
         #
+        self.name = name
+        self.derived_from = derived_from
         self.layout = layout
         self.tick_style = tick_style
         self.tieupstyle = tieupstyle
@@ -201,6 +213,37 @@ class Drawstyle(object):
         self.warpstyle['usethread_color'] = False
         self.weftstyle['usethread_color'] = False
 
+    # Loading and saving
+    def to_json(self):
+        """ Serialize a DrawStyle to its JSON representation.
+            Counterpart to from_json()
+        """
+        self.tick_style['color'] = self.tick_style['color'].rgb
+        self.boxstyle['outline_color'] = self.boxstyle['outline_color'].rgb
+        self.boxstyle['fill_color'] = self.boxstyle['fill_color'].rgb
+        self.floats_style['color'] = self.floats_style['color'].rgb
+        self.background = self.background.rgb
+        return json.dumps({
+            'name'         : self.name,
+            'derived_from' : self.derived_from,
+            'layout'       : self.layout,
+            'tick_style'   : self.tick_style,       #!
+            'tieupstyle'   : self.tieupstyle,
+            'warpstyle'    : self.warpstyle,
+            'weftstyle'    : self.weftstyle,
+            'drawdown_style' : self.drawdown_style,
+            'boxstyle'       : self.boxstyle,      #!
+            'floats_style'   : self.floats_style,  #!
+            'spacing_style'  : self.spacing_style,
+            'clarity_factor' : self.clarity_factor,
+            'background'     : self.background,    #!
+            'title_font_size_factor' : self.title_font_size_factor,
+            'border_pixels'  : self.border_pixels,
+            'warp_gap'       : self.warp_gap,
+            'drawdown_gap'   : self.drawdown_gap,
+            'weft_gap'       : self.weft_gap,
+            'tick_gap'       : self.tick_gap
+           }, ensure_ascii=False)
 
 class WarpThread(object):
     """

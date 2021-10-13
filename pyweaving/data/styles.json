@@ -1,0 +1,30 @@
+{"Default": {"name": "Default",
+     "derived_from": null,
+     "layout": "american", 
+     "tick_style": {"mod": 4, "color": [200, 0, 0], "length": 2},
+     "tieupstyle": {"ticks": true, "style": "number"},
+     "warpstyle": {"ticks": true, "usethread_color": true, "style": "number", "row_length": null},
+     "weftstyle": {"ticks": true, "usethread_color": true, "style": "number"},
+     "drawdown_style": "solid",
+	 "boxstyle": {"size": 20, "outline_color": [127, 127, 127], "fill_color": [0, 0, 0]},
+     "floats_style": {"show": false, "count": 3, "color": [200, 0, 0]},
+     "spacing_style": "clarity",
+     "clarity_factor": 0.8,
+     "background": [240, 240, 240],
+     "title_font_size_factor": 1.5,
+     "border_pixels": 20,
+     "warp_gap": 1,
+     "drawdown_gap": 1,
+     "weft_gap": 1,
+     "tick_gap": 1
+     },
+ "minimal" : {"name": "minimal",
+     "derived_from": "Default",
+     "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null}
+     },
+ "foo" : {"name": "foo",
+     "derived_from": "minimal",
+	 "tick_style": {"mod": 4, "color": [200, 0, 200], "length": 2},
+     "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null}
+     }
+}

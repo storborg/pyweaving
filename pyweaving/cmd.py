@@ -3,15 +3,20 @@ from __future__ import (absolute_import, division, print_function,
 
 import sys
 import argparse
-import io
+
+import io               # used in convert() to get around json.dumps issues in python3
 import os.path
-from os import getcwd
+from os import mkdir
+import json
+from os import getcwd   # for finding dup files when using the generators
 
 from . import Draft, instructions, Drawstyle
 from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
+
+Drawstyles = {} # loaded styles go in here
 
 def outfile_if_missing_dir(infile, outfile):
     " use dir from infile if not in outfile "
@@ -32,7 +37,7 @@ def generate_unique_filename(label, directory, ext):
     result = os.path.splitext(result)[0]+"."+ext
     # print("generating",result)
     # check directory for same named file (+ext)
-    # if so then try to parse 3 digit number at end and increment
+    #!! if so then try to parse 3 digit number at end and increment
     return result
 
 def gen_tartan(opts):
@@ -127,7 +132,7 @@ def render(opts):
     """
     draft = load_draft(opts.infile)
     if draft:
-        style = Drawstyle()
+        style = get_style(opts.style)
         if opts.floats > 0:
             style.set_floats(opts.floats-1)
         if opts.outfile:
@@ -207,7 +212,42 @@ def stats(opts):
         print("Longest Float (Weft):", weft_longest)
 
 
+def load_styles(filename='styles.json'):
+    " load the styles into Drawstyles dict "
+    global Drawstyles
+    platform = sys.platform
+    if platform.find('win') > -1: # windows
+        dir = os.path.join(os.path.expanduser('~'),'Documents','.pyweaving')
+    elif platform.find('dar'): # mac
+        dir = os.path.join(os.path.expanduser('~'),'.pyweaving')
+    else: # linux
+        dir = os.path.join(os.path.expanduser('~'),'.pyweaving')
+    if not os.path.exists(dir):
+        os.makedir(dir)
+    infile = os.path.join(dir, 'styles.json')
     
+    if os.path.exists(infile):
+        print("file exists",infile)
+        with open(infile, 'r') as file:
+            x = json.load(file)
+            for name, attributes in x.items():
+                #!! really want to make it with the derived_from style
+                #  then just insert the attributes defined
+                Drawstyles[name] = Drawstyle(**attributes)
+    else:
+        print("Could not find styles.json at:", infile)
+    
+def get_style(name):
+    """ load styles if not loaded and
+        return the named style
+    """
+    if not Drawstyles:
+        load_styles()
+    if name in Drawstyles.keys():
+        return Drawstyles[name]
+    else:
+        print("Could not find Style named:",name)
+        
     
 def main(argv=sys.argv):
     p = argparse.ArgumentParser(prog='pyweaving', description='Weaving utilities.',
@@ -225,6 +265,7 @@ def main(argv=sys.argv):
     p_render.add_argument('outfile', nargs='?', help='use autopng or autosvg for a safely autonamed image file')
     p_render.add_argument('--liftplan', action='store_true')
     p_render.add_argument('--floats', type=int, default=0)
+    p_render.add_argument('--style', default='Default')
     p_render.set_defaults(function=render)
 
     p_convert = subparsers.add_parser(
@@ -273,7 +314,7 @@ def main(argv=sys.argv):
     p_tartan.add_argument('--repeats', type=int, default=1,help='How many times to repeat the sett.')
     p_tartan.add_argument('--render', action='store_true',help='Also render to file.')
     p_tartan.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_tartan.add_argument('--renderstyle', default='blobs', choices=['solids', 'blobs', 'colors', 'numbers'])
+    p_tartan.add_argument('--style', default='default')
     p_tartan.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
@@ -284,7 +325,7 @@ def main(argv=sys.argv):
     p_twill.add_argument('shape')
     p_twill.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
     p_twill.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_twill.add_argument('--renderstyle', default='blobs', choices=['solids', 'blobs', 'colors', 'numbers'])
+    p_twill.add_argument('--style', default='default')
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 

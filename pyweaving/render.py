@@ -5,10 +5,13 @@ import os.path
 
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
-from . import WHITE, BLACK
+from . import get_project_root, WHITE, BLACK
 
-__here__ = os.path.dirname(__file__)
-font_path = os.path.join(__here__, 'data', 'Arial.ttf')
+
+# __here__ = os.path.dirname(__file__)
+# font_path = os.path.join(__here__, 'data', 'Arial.ttf')
+homedir = get_project_root()
+font_path = os.path.join(homedir, 'data','Arial.ttf')
 
 
 class ImageRenderer(object):
