@@ -6,38 +6,66 @@ import argparse
 
 import io               # used in convert() to get around json.dumps issues in python3
 import os.path
-from os import mkdir
+from os import getcwd
 import json
-from os import getcwd   # for finding dup files when using the generators
+import glob # finding numerically suffixed files in generate_unique_filename()
 
-from . import Draft, instructions, Drawstyle
+from . import Draft, instructions, Drawstyle, Color, get_project_root
 from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
 
+# support for local styles.json in ./pyweaving
+from shutil import copy2
+homedir = get_project_root()
+data_path = os.path.join(homedir, 'data') # original style.json file is here
+
 Drawstyles = {} # loaded styles go in here
+
 
 def outfile_if_missing_dir(infile, outfile):
     " use dir from infile if not in outfile "
     indir, inbase = os.path.split(infile)
     outdir, outbase = os.path.split(outfile)
     if infile and outfile and not outdir:
-        outfile = os.path.join(indir,outbase)
+        outfile = os.path.join(indir, outbase)
     return outfile
 
 def ensure_ext(filename, ext):
-    " replace or add ext as required onto filename "
+    " replace or add ext as required onto full filename "
     return os.path.splitext(filename)[0]+"."+ext
     
+def find_highest_suffixed_file(directory, stub, ext):
+    """ Look in dir for filenames with numeric suffix matching stub
+        and find highest count
+    """
+    stubname = stub+"-*"+"."+ext
+    files = glob.glob(os.path.join(directory, stubname))
+    
+    highest = 0
+    for f in files:
+        name,extn = os.path.splitext(f)
+        if name[-2:].isdigit():
+            count = int(name[-2:])
+            if highest < count:
+                highest = count
+    return highest
+
 def generate_unique_filename(label, directory, ext):
-    " generate autoname and increment suffix until unique in directory "
+    """ Generate autoname and increment suffix until unique in directory
+        - suffix is in form -NN where NN is a zero leading integer (max 99)
+    """
     result = label.replace(",","_")
     result = result.replace(" ","_")
-    result = os.path.splitext(result)[0]+"."+ext
-    # print("generating",result)
-    # check directory for same named file (+ext)
-    #!! if so then try to parse 3 digit number at end and increment
+    result,_ = os.path.splitext(result)
+    # does file exist already ?
+    if os.path.exists(result+"."+ext):
+        # dup so add suffix name
+        last = find_highest_suffixed_file(directory, result, ext)
+        # if we have a suffix increment the highest count
+        result += "-%02d"%(last+1)
+    result = result+"."+ext
     return result
 
 def gen_tartan(opts):
@@ -133,23 +161,25 @@ def render(opts):
     draft = load_draft(opts.infile)
     if draft:
         style = get_style(opts.style)
-        if opts.floats > 0:
-            style.set_floats(opts.floats-1)
-        if opts.outfile:
-            first4 = opts.outfile[:4]
-            imagetype = opts.outfile[4:]
-            if first4 == 'auto':
-                if imagetype in ['svg','png']:
-                    opts.outfile = generate_unique_filename(opts.infile, None, imagetype)
-                else: # force to png
-                    opts.outfile = generate_unique_filename(opts.infile, None, 'png')
-            #
-            if opts.outfile.endswith('.svg'):
-                SVGRenderer(draft).save(opts.outfile)
-            else:
-                ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
-        else:
-            ImageRenderer(draft, style, opts.liftplan).show()
+        if style:
+            if opts.floats > 0:
+                style.set_floats(opts.floats-1)
+            if opts.outfile:
+                first4 = opts.outfile[:4]    # is it 'auto'
+                imagetype = opts.outfile[4:] # and png or svg
+                if first4 == 'auto':
+                    current_dir = getcwd()+"\\"
+                    if imagetype in ['svg','png']:
+                        opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
+                    else: # force to png
+                        opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
+                #
+                if opts.outfile.endswith('.svg'):
+                    SVGRenderer(draft).save(opts.outfile)
+                else:
+                    ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
+            else: # no outfile specified - show it
+                ImageRenderer(draft, style, opts.liftplan).show()
 
 
 def convert(opts):
@@ -200,8 +230,10 @@ def stats(opts):
         print("Email:", draft.email)
         print("Telephone:", draft.telephone)
         print("Fax:", draft.fax)
-        print("Notes:", draft.notes)
-        print("Date:", draft.creation_date)  # not sure to display this as generally date of wif file spec
+        if draft.notes:
+            print("Notes:")
+            for n in draft.notes: print("",n)
+        print("Creation Date:", draft.creation_date)
         print("Source program:", draft.source_program, "version:",draft.source_version)
         print("***")
         print("Warp Threads:", len(draft.warp))
@@ -213,7 +245,10 @@ def stats(opts):
 
 
 def load_styles(filename='styles.json'):
-    " load the styles into Drawstyles dict "
+    """ Load the styles into Drawstyles dict.
+        If no .pyweaving dir create it and
+        copy original syles.json from /data
+    """
     global Drawstyles
     platform = sys.platform
     if platform.find('win') > -1: # windows
@@ -224,16 +259,30 @@ def load_styles(filename='styles.json'):
         dir = os.path.join(os.path.expanduser('~'),'.pyweaving')
     if not os.path.exists(dir):
         os.makedir(dir)
+        # copy styles.json master from data dir
+        copy2(os.path.join(data_path, 'styles.json'), dir)
     infile = os.path.join(dir, 'styles.json')
     
     if os.path.exists(infile):
-        print("file exists",infile)
         with open(infile, 'r') as file:
-            x = json.load(file)
-            for name, attributes in x.items():
-                #!! really want to make it with the derived_from style
-                #  then just insert the attributes defined
-                Drawstyles[name] = Drawstyle(**attributes)
+            styles = json.load(file)
+            for name, attributes in styles.items():
+                # Make the Drawstyle() or copy an existing is derived_from
+                attributes.pop('name') # pop so we won't be using these again
+                parent = attributes.pop('derived_from')
+                if parent:
+                    style = Drawstyles[parent].copy
+                    style.name = name
+                    style.derived_from = parent
+                else:
+                    style = Drawstyle()
+                    style.name = name
+                # Populate the class by copying defined fields from a temp Drawstyle
+                temp = Drawstyle(**attributes)
+                for a in attributes.keys(): # using string as accessor
+                    setattr(style, a, getattr(temp, a))
+				# save it
+                Drawstyles[name] = style
     else:
         print("Could not find styles.json at:", infile)
     
@@ -247,6 +296,7 @@ def get_style(name):
         return Drawstyles[name]
     else:
         print("Could not find Style named:",name)
+        return None
         
     
 def main(argv=sys.argv):
@@ -263,9 +313,9 @@ def main(argv=sys.argv):
     p_render.add_argument('infile')
     # will just show() if outfile not specified
     p_render.add_argument('outfile', nargs='?', help='use autopng or autosvg for a safely autonamed image file')
-    p_render.add_argument('--liftplan', action='store_true')
-    p_render.add_argument('--floats', type=int, default=0)
-    p_render.add_argument('--style', default='Default')
+    p_render.add_argument('--liftplan', action='store_true',help='Show draft as a liftplan even if defined with a Tieup.')
+    p_render.add_argument('--floats', type=int, default=0,help='Highlight floats above this size.')
+    p_render.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_render.set_defaults(function=render)
 
     p_convert = subparsers.add_parser(
@@ -314,7 +364,7 @@ def main(argv=sys.argv):
     p_tartan.add_argument('--repeats', type=int, default=1,help='How many times to repeat the sett.')
     p_tartan.add_argument('--render', action='store_true',help='Also render to file.')
     p_tartan.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_tartan.add_argument('--style', default='default')
+    p_tartan.add_argument('--style', default='default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_tartan.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
@@ -325,12 +375,12 @@ def main(argv=sys.argv):
     p_twill.add_argument('shape')
     p_twill.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
     p_twill.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_twill.add_argument('--style', default='default')
+    p_twill.add_argument('--style', default='default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 
     opts, args = p.parse_known_args(argv[1:])
     # copy directory to outfile if not supplied
-    if  opts.outfile and "infile" in opts:
+    if  'outfile' in opts and opts.outfile and "infile" in opts:
         opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)
     return opts.function(opts)

@@ -135,6 +135,11 @@ class Drawstyle(object):
         self.tick_gap = tick_gap
         self.weft_gap = weft_gap
     
+    def __repr__(self):
+        if self.derived_from:
+            return"<Drawstyle %s from: %s>"%(self.name, self.derived_from)
+        else:
+            return"<Drawstyle %s>"%(self.name)
     # ticks
     @property
     def tick_mod(self):
@@ -212,7 +217,11 @@ class Drawstyle(object):
     def disable_thread_color(self):
         self.warpstyle['usethread_color'] = False
         self.weftstyle['usethread_color'] = False
-
+    @property
+    def copy(self):
+        " Make a complete copy of this draft. "
+        return deepcopy(self)
+        
     # Loading and saving
     def to_json(self):
         """ Serialize a DrawStyle to its JSON representation.
@@ -839,6 +848,7 @@ class Draft(object):
         """ gather list of:
             - thread counts, longest floats, color count,
             - warp/weft ratio, floating selvedge status
+            (gather_metric gets most of these)
         """
         # Threadcounts
         stats = ["Threadcounts: Warp %d  Weft %d"%(len(self.warp), len(self.weft))]
@@ -853,7 +863,10 @@ class Draft(object):
         # Warp/Weft ratio
         warp_ratio = self.thread_stats["facings"]
         if 0.8 < warp_ratio < 1.2:
-            stats.append("Balanced weave warp:weft=1:{:.1f}".format(warp_ratio))
+            if warp_ratio == 1: # special case exact balanced weave
+                stats.append("Balanced weave warp:weft=1:{:d}".format(int(warp_ratio)))
+            else:
+                stats.append("Balanced weave warp:weft=1:{:.1f}".format(warp_ratio))
         elif warp_ratio < 1:
             stats.append("Weft dominant weave 1:{:.1f}".format(warp_ratio))
         else: # weft 

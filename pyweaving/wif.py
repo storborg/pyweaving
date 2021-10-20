@@ -259,8 +259,8 @@ class WIFReader(object):
         """
         # Config like this so we can read the creation date embedded in comments
         self.config = RawConfigParser(comment_prefixes='/', allow_no_value=True)
-        #  but because we override comments from ;,# to / we will have to parse comments outrselves.
-        #  we did this because creation date is embedded in fiberworks files as a comment in TEXT section.
+        #  but because we override comments from ;,# to / we will have to parse comments ourselves.
+        #  we did this because creation date is embedded in Fiberworks files as a comment in TEXT section.
         # We need to deal with special case where the config file starts with a comment line. (TempoFiber)
         #  in this case the simple approach will fail when reading from the file.
         # So we need to read the file into a string and use self.config.read_string() instead of self.config.read()
@@ -269,8 +269,10 @@ class WIFReader(object):
             file_content = f.read() # Read whole file in the file_content string
         # skip initial comment lines
         commentline_end = file_content.find("\n")
-        while file_content[:commentline_end][0] in [';','#']:
+        # print("!",commentline_end)
+        while commentline_end==0 or file_content[:commentline_end][0] in [';','#']:
             file_content = file_content[commentline_end+1:]
+            commentline_end = file_content.find("\n")
         self.config.read_string(file_content)
         
         rising_shed = self.getbool('WEAVING', 'Rising Shed')

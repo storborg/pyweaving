@@ -177,7 +177,6 @@ def find_named_tartan(desired_name):
         pass
     # return sett_or_name, None if no file found (might have been a sett)
     # return newsett, colors if from a file
-    # print(found, pattern, colors)
     return (found, desired_name, colors, pattern)
     
 

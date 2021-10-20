@@ -20,11 +20,14 @@
      },
  "minimal" : {"name": "minimal",
      "derived_from": "Default",
-     "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null}
+	 "tieupstyle": {"ticks": false, "style": "number"},
+	 "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null},
+     "weftstyle": {"ticks": false, "usethread_color": false, "style": "blob"},
+	 "boxstyle": {"size": 10, "outline_color": [127, 127, 127], "fill_color": [0, 0, 0]}
      },
- "foo" : {"name": "foo",
+ "mincolor" : {"name": "mincolor",
      "derived_from": "minimal",
-	 "tick_style": {"mod": 4, "color": [200, 0, 200], "length": 2},
-     "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null}
+	 "warpstyle": {"ticks": true, "usethread_color": true, "style": "blob", "row_length": null},
+     "weftstyle": {"ticks": true, "usethread_color": true, "style": "blob"}
      }
 }
