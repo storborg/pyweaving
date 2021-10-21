@@ -7,9 +7,6 @@ from PIL import Image, ImageDraw, ImageFont
 from math import floor
 from . import get_project_root, WHITE, BLACK
 
-
-# __here__ = os.path.dirname(__file__)
-# font_path = os.path.join(__here__, 'data', 'Arial.ttf')
 homedir = get_project_root()
 font_path = os.path.join(homedir, 'data','Arial.ttf')
 
@@ -163,13 +160,8 @@ class ImageRenderer(object):
         height_squares_estimate += int((len(stats) * self.tick_font_size * 1.5) / self.pixels_per_square) #(spacing)
 
         # Notes
-        if self.draft.notes:
-            notes_size = len(self.draft.notes)
-            notes_size += 1 # Section title + gap
-            if self.draft.source_program:
-                notes_size += 1
-                # add source_program and version as last line
-                self.draft.notes.append("(source program: %s.  Version: %s)"%(self.draft.source_program,self.draft.source_version))
+        if self.draft.collected_notes:
+            notes_size = len(self.draft.collected_notes) +2  #!! should be 1. Error somewhere else?
             height_squares_estimate += int((notes_size * self.tick_font_size * 1.5) / self.pixels_per_square)
             
         # outline width of +1 is added otherwise contents overflow
@@ -215,7 +207,7 @@ class ImageRenderer(object):
         
         notesend = drawdownend
         if self.draft.notes:
-            notesend = self.paint_notes((drawdownstart[0],drawdownend[1]), self.draft.notes, draw)
+            notesend = self.paint_notes((drawdownstart[0],drawdownend[1]), self.draft.collected_notes, draw)
         
         del draw
         im = self.pad_image(im)
@@ -278,7 +270,7 @@ class ImageRenderer(object):
         """ The Notes from the wif file.
             - Also show creation date and s/w used
         """
-        # notes are one string broken by newlines
+        # notes are a list of strings(lines)
         offsetx,offsety = startpos
         longest = ""
         lines = ["Notes:"]

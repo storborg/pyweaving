@@ -219,7 +219,7 @@ class Drawstyle(object):
         self.weftstyle['usethread_color'] = False
     @property
     def copy(self):
-        " Make a complete copy of this draft. "
+        " Make a complete copy of this Drawstyle. "
         return deepcopy(self)
         
     # Loading and saving
@@ -353,7 +353,8 @@ class Draft(object):
         
         self.warp_units = warp_units
         self.weft_units = weft_units
-
+        
+        # Only used when saving -overwritten on load
         self.creation_date = datetime.datetime.now().strftime("%A, %B %d, %Y, %H:%M")#'%b %d, %Y')
         
         self.date = date
@@ -364,10 +365,11 @@ class Draft(object):
         self.telephone = telephone
         self.fax = fax
         self.notes = notes
+        self.collected_notes = []
         self.draft_title = []
         
-        self.source_program = None
-        self.source_version = None
+        self.source_program = None#"PyWeaving" #! set when saving
+        self.source_version = None#__version__
 
     @classmethod
     def from_json(cls, s):
@@ -599,6 +601,14 @@ class Draft(object):
         " after reading do these processes to fill in some reporting datastructures "
         self.computed_floats = list(self.compute_floats())
         self.metrics = self.gather_metrics()
+        # collate notes
+        for n in self.notes:
+            if n and n.lower() != "nil":
+                self.collected_notes.append(n)
+        if self.source_program:
+            self.collected_notes.append("(source program: %s.  Version: %s)"%(self.source_program,self.source_version))
+        if self.creation_date:
+            self.collected_notes.append("(created on %s)"%(self.creation_date))
         
     def compute_floats(self):
         """

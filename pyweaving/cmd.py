@@ -78,7 +78,7 @@ def gen_tartan(opts):
         wif.process_draft()
     
         # save wif file
-        autoname = opts.sett.replace("/","").upper() # new filename
+        autoname = opts.sett.replace("/","") # new filename
         current_dir = getcwd()+"\\"
         if opts.outfile == 'auto':
             opts.outfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "wif")

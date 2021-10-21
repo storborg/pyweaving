@@ -67,6 +67,15 @@ def lookup_colors(sett, override_colors=None):
         # tartan is same design mirrored
         colors.extend(reversed(colors[1:-1]))
     return colors
+    
+def sett_in_STR_form(sett):
+    " is it likely this is an STR format Sett "
+    if sett:
+        # if we split it - how many groups in pattern
+        # print("Tartan guess", len(re.split('[,_ ]', sett)))
+        return len(re.split('[,_ ]', sett)) > 3 # a guestimate
+    else:
+        return False
 
 def tartan(sett, repeats=1, direction="z"):
     direction = direction.upper()
@@ -82,7 +91,9 @@ def tartan(sett, repeats=1, direction="z"):
     # else use sett and ignore the rest
     if found:
         sett = pattern
-    if sett: # will be zeroed if some matches found in names but not unique
+    if not sett_in_STR_form(sett): # will be zeroed if some matches found in names but not unique
+        print("Tartan not found")
+    else:
         # are there separate warp and weft threadcounts
         if sett.find(".") > -1:
             # two parts warp+weft
@@ -107,21 +118,18 @@ def tartan(sett, repeats=1, direction="z"):
 
         # do tie-up
         for ii in range(shaft_count):
-            draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[ii])
-            draft.treadles[shaft_count-1 - ii].shafts.add(draft.shafts[(ii + 1) % shaft_count])
+            draft.treadles[ii].shafts.add(draft.shafts[ii])
+            draft.treadles[ii].shafts.add(draft.shafts[(ii + 1) % shaft_count])
 
         thread_no = 0
         # warp
         for ii in range(repeats):
             for color, count in warp_colors:
-                for jj in range(count): # (count//2) for visualisation
+                for jj in range(count,0,-1): # (count//2) for visualisation
                     s = thread_no % shaft_count
-                    if direction=="Z":
+                    if direction=="S":
                         s = shaft_count - s -1
-                    draft.add_warp_thread(
-                        color=color,
-                        shaft=s,
-                    )
+                    draft.add_warp_thread(color=color, shaft=s)
                     thread_no += 1
         # weft
         thread_no = 0
@@ -138,15 +146,16 @@ def tartan(sett, repeats=1, direction="z"):
                     )
                     thread_no += 1
         #
-        draft.title = name.replace(",","_").replace(" ","_")
+        draft.title = name.replace(", ","_").replace(" ","_").replace("__","_")
+        draft.title = draft.title.replace(",","_").replace(" ","_")
         draft.draft_title = [draft.title]
-        draft.notes.append("from:"+sett)
+        draft.notes.append("from: %s in %s twill"%(sett, direction))
         return draft
 
 def find_named_tartan(desired_name):
     """ Search the file for a unique 'name' and 
-        - return the tdf style string.
-        If more than one then print out the names of the possibles
+        - return the STR style string.
+        If more than one, then print out the names of the possibles
          for user selection next time.
     """
     found = False
@@ -154,11 +163,12 @@ def find_named_tartan(desired_name):
     colors = None
     pattern = None
     inf = open(collected_tartans_filename, 'r')
+    uppername = desired_name.lower()
     for line in inf:
         namepos = line.find("=>")
         if namepos > -1:
             name = line[:namepos].strip()
-            if name.find(desired_name) > -1:
+            if name.lower().find(uppername) > -1:
                 # found one possibly imperfect match
                 matching.append(name) # remove \n
                 pattern = line[:-1]
@@ -193,9 +203,7 @@ def _parse_tartan_description(sett_or_name):
         hex = col[2:]
         rgb = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
         colors[col[0].upper()] = rgb
-    # colors = { hexcolors[i*8:i*8+8][0]: Color((0,0,0)).set_hex(hexcolors[i*8:i*8+8][1:]) for i in range(len(hexcolors)//8) }
     weftpattern = None
-    # print(colors, pattern)
     symm = pattern.find("(") > -1 # are we mirroring
     pattern = pattern.replace("(","").replace(")","") # remove the mirroring features
     if pattern.find("]") > -1:
@@ -217,7 +225,6 @@ def _parse_tartan_description(sett_or_name):
         tartan += " . "
         tartan +=" ".join(weftparts)
         if symm: tartan += "/"
-    # print(tartan)
     return colors, tartan
 
 

@@ -41,8 +41,12 @@ class WIFReader(object):
         draft.telephone = self.config.get('TEXT', 'Telephone', fallback="")
         draft.fax = self.config.get('TEXT', 'FAX', fallback="")
         # Creation date
-        # print(self.config.options("TEXT"))
-        # draft.creation_date = self.config.get('TEXT', ';')
+        # check for line starting "; Creation"
+        creation_date = None
+        if self.getbool('CONTENTS', 'TEXT'): 
+            creation_date = [a for a in self.config.options("TEXT") if a.find("; Creation")==0]
+        if creation_date:
+            draft.creation_date = creation_date[0][11:]
         # Notes
         if self.getbool('CONTENTS', 'NOTES'):
             for line_no, note in self.config.items('NOTES'):
