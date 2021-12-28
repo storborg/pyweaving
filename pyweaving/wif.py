@@ -55,7 +55,7 @@ class WIFReader(object):
         # Source program
         draft.source_program = self.config.get('WIF', 'Source Program', fallback="unknown")
         draft.source_version = self.config.get('WIF', 'Source Version', fallback="unknown")
-        if draft.source_program.find("Glassner") and draft.source_version =="1.0":
+        if draft.source_program.find("Glassner")>-1 and draft.source_version =="1.0":
             self.zerobased = True
             # alas these wif files use a mix of zero and one based thread counting :(
         # setup  draft_title

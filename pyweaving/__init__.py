@@ -5,6 +5,7 @@ import datetime
 import json
 from copy import deepcopy
 from collections import defaultdict
+from math import floor
 
 
 __version__ = '0.0.8.dev'
@@ -21,9 +22,11 @@ class Color(object):
     """
     A color type. Internally stored as RGB, and does not support transparency.
     - can accept, Color(), rgb tuples, or #rrggbb string
-    self.rgb, self.css, self.hex
+    Generates a highlight and shadow variant for shading
+    - will change B,W primary color to see this shading
+    self.rgb, self.css, self.hex, self.hsl, self.highlight, self.shadow
     """
-    def __init__(self, rgb_or_hex):
+    def __init__(self, rgb_or_hex, shadeable=False):
         if  isinstance(rgb_or_hex,type("")) and rgb_or_hex[0] =='#' and len(rgb_or_hex)==7:
             self.hex(rgb_or_hex)
         elif  isinstance(rgb_or_hex,type(self)):
@@ -32,6 +35,12 @@ class Color(object):
             self.rgb = tuple(rgb_or_hex)
         else:
             self.rgb = rgb_or_hex
+        self.rgb2hsl()
+        self.create_highlight()
+        self.create_shadow()
+        if shadeable:
+            self.check_self_shadeable()
+        
 
     def __repr__(self):
         return "<Color: %s>" %(str(self))
@@ -43,8 +52,85 @@ class Color(object):
         return self.rgb != other.rgb
     
     def close(self, other):
-        " rtb distance between two rgb colors "
+        " rgb distance between two rgb colors "
         return abs(sum(self.rgb) - sum(other.rgb)) < 60
+        
+    def rgb2hsl(self):
+        r,g,b = r,g,b = [i/255 for i in self.rgb]
+        maxc = max(r, g, b)
+        minc = min(r, g, b)
+        l = (maxc + minc) / 2
+        if(maxc == minc):
+            h = s = 0 # achromatic
+        else:
+            d = maxc - minc
+            if l > 0.5:
+                s = d / (2 - maxc - minc)
+            else:
+                s = d / (maxc + minc)
+            if maxc == r:
+                if g<b:
+                    h = (g - b) / d + 6
+                else:
+                    h = (g - b) / d 
+            elif maxc == g:
+                h = (b - r) / d + 2
+            else: # maxc==b
+                h = (r - g) / d + 4
+            h /= 6
+        self.hsl = (h, s, l)
+        
+    def _hue2rgb(self,p, q, t):
+        if t < 0: t += 1
+        if t > 1: t -= 1
+        if t < 1/6: return p + (q - p) * 6 * t
+        if t < 1/2: return q
+        if t < 2/3: return p + (q - p) * (2/3 - t) * 6
+        return p
+        
+    def hsl2rgb(self, h, s, l):
+        if s == 0:
+            r = g = b = l # achromatic
+        else:
+            if l < 0.5:
+                q = l * (1 + s)
+            else:
+                q = l + s - l * s
+            p = 2 * l - q
+            r = self._hue2rgb(p, q, h + 1/3)
+            g = self._hue2rgb(p, q, h)
+            b = self._hue2rgb(p, q, h - 1/3)
+        return (min(floor(r*256),255), min(floor(g*256),255), min(floor(b*256),255))
+        
+    def create_highlight(self, factor=1.2):
+        h,s,l = self.hsl
+        lighter = min(l*factor, 1.0)
+        self.highlight = self.hsl2rgb(h,s,lighter)
+        
+    def create_shadow(self, factor=0.7):
+        h,s,l = self.hsl
+        darker = l*factor
+        self.shadow = self.hsl2rgb(h,s,darker)
+    
+    def check_self_shadeable(self):
+        """ if white then can;t see shading so make dimmer.
+            Likewise for Black
+        """
+        if self.highlight == self.rgb:
+            # can't see highlight so replace colour with darker
+            self.create_shadow(0.92)
+            self.replace(self.shadow)
+            # self.replace((240,240,240))
+        if self.shadow == self.rgb:
+            # can't see shadow so replace colour with brighter
+            self.replace((35,35,35))
+    
+    def replace(self, newcol):
+        """ was white or black so change it so shading wil be visible """
+        self.rgb = newcol
+        self.rgb2hsl()
+        self.create_highlight()
+        self.create_shadow()
         
     @property
     def intensity(self):
@@ -63,12 +149,18 @@ class Color(object):
     def hex(self, hexstring):
         h = hexstring.lstrip('#')
         self.rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+        self.rgb2hsl()
+        self.create_highlight()
+        self.create_shadow()
+        if shadeable:
+            self.check_self_shadeable()
 
     def __str__(self):
         return str(self.rgb)
 
 WHITE = Color((255,255,255))
 BLACK = Color((0,0,0))
+MID   = Color((120,120,120))
 
 class Drawstyle(object):
     """ Series of style flags for how to draw the Layout.
@@ -76,16 +168,14 @@ class Drawstyle(object):
         - hide = [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor]
         - show = [stats, groupings, ]
         #
-        - tieupstyle = [ticks, border, style]
-          - where style = [solid|dot|number|XO]
-        - drawdownstyle = [solid | box | intersect | boxshaded | solidshaded]
-        - warpstyle,weftstyle = {ticks, usethread_color, style: [solid|dot|number|XO]}
-          - where style = [solid|dot|number|XO]
+        - tieupstyle = [ticks, border, [solid|dot|number|XO] ]
+        - drawdownstyle = [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
+        - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO], row_length }
           - for warp row_length is howmany threads before a line break to spread down page
         - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
-          - where size is an integer(10), outline is rgb, fill is rgb
-        - tick_style=[mod:4, color:(200, 0, 0)],
-        - floats_color = (R,G,B)
+        - tick_style = [mod:4, color:(200, 0, 0)],
+        - floats_style = { show, count, 'color':(R,G,B) }
+        - spacing_style = [clarity, thinner]
     """
     
     def __init__(self, name = 'Default',
@@ -95,8 +185,9 @@ class Drawstyle(object):
                  tieupstyle={'ticks': True, 'style': 'number'},
                  warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number', 'row_length':None},
                  weftstyle={'ticks':True, 'usethread_color':True, 'style': 'number'},
-                 drawdown_style="solid",
-                 boxstyle={'size':20, 'outline_color':(127, 127, 127), 'fill_color':(0,0,0)},
+                 drawdown_style="box",
+                 interlace_width=1,
+                 boxstyle={'size':20, 'outline_color':(90, 90, 90), 'fill_color':(0,0,0)},
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
                  spacing_style="clarity",
                  clarity_factor=0.8,
@@ -123,6 +214,7 @@ class Drawstyle(object):
         self.warpstyle = warpstyle
         self.weftstyle = weftstyle
         self.drawdown_style = drawdown_style
+        self.interlace_width = interlace_width
         self.boxstyle = boxstyle
         self.floats_style = floats_style
         self.spacing_style = spacing_style
@@ -241,6 +333,7 @@ class Drawstyle(object):
             'warpstyle'    : self.warpstyle,
             'weftstyle'    : self.weftstyle,
             'drawdown_style' : self.drawdown_style,
+            'interlace_width': self.interlace_width,
             'boxstyle'       : self.boxstyle,      #!
             'floats_style'   : self.floats_style,  #!
             'spacing_style'  : self.spacing_style,
@@ -260,7 +353,7 @@ class WarpThread(object):
     """
     def __init__(self, color=None, shaft=None, spacing=None):
         if color and not isinstance(color, Color):
-            color = Color(color)
+            color = Color(color, True)
         self.color = color
         self.shaft = shaft
         self.spacing = spacing
@@ -275,7 +368,7 @@ class WeftThread(object):
     """
     def __init__(self, color=None, shafts=None, treadles=None, spacing=None):
         if color and not isinstance(color, Color):
-            color = Color(color)
+            color = Color(color, True)
         self.color = color
         # print("huh",shafts)
         # print("huh",treadles)
@@ -349,7 +442,15 @@ class Draft(object):
         self.warp = [] # holds the WarpThreads
         self.weft = [] # holds the WeftThreads
          # unique yarn spacing,color stats
-        self.thread_stats = {"weft":[],"warp":[]}
+        self.thread_stats = {"weft":[],           # list of (colour,spacing,count)
+                             "warp":[],           # list of (colour,spacing,count)
+                             "warp_spacings":[],  # list of (spacing,count)
+                             "weft_spacings":[],  # list of (spacing,count)
+                             "summary":[],        # list of spacings
+                             "warp_ratio":[],     # value of Warp/Weft balance
+                             "unique_threads" :[],# number of unique threads used in draft
+                             "selvedge_floats":[],# list of lengths of warp threads on sides
+                            }
         
         self.warp_units = warp_units
         self.weft_units = weft_units
@@ -550,7 +651,7 @@ class Draft(object):
                                    if visible==True and isinstance(thread, WarpThread)])
         weft_count = sum([length+1 for start, end, visible, length, thread in floats
                                    if visible==True and isinstance(thread, WeftThread)])
-        self.thread_stats["facings"] =  warp_count/max(weft_count,1) #!!twill error if badly formed floaty wif
+        self.thread_stats["warp_ratio"] =  warp_count/max(weft_count,1) #!!twill error if badly formed floaty wif
         
         # Unique threads
         unique_threads = [[t[0],t[1]] for t in self.thread_stats["warp"]]
@@ -562,7 +663,7 @@ class Draft(object):
                     break
             if not found:
                 unique_threads.append((col2,sp2))
-        self.thread_stats["unique"] = unique_threads
+        self.thread_stats["unique_threads"] = unique_threads
         
         # Floating Selvedges required ?
         floats = self.computed_floats
@@ -613,9 +714,7 @@ class Draft(object):
     def compute_floats(self):
         """
         Return an iterator over every float, yielding a tuple for each one::
-
             (start, end, visible, length, thread)
-
         FIXME: This ignores the back side of the fabric. Should it?
         """
         num_warp_threads = len(self.warp)
@@ -655,8 +754,13 @@ class Draft(object):
 
     def _longest_float(self, floats, front=True, cls=WarpThread):
         "  -usedby compute_longest_floats "
-        return max(length for start, end, visible, length, thread in floats
-                            if visible==front and isinstance(thread, cls))
+        lengths = [length for start, end, visible, length, thread in floats
+                            if visible==front and isinstance(thread, cls)]
+        # remove any that are same as warp length. Probably gaps in a gamp...
+        warp_len = len(self.warp)-1
+        for i in range(lengths.count(warp_len)):
+            lengths.remove(warp_len)
+        return max(lengths)
 
     def compute_longest_floats(self, front=True, back=False):
         """ Return tuple containing pair of longest floats for warp, weft.
@@ -862,25 +966,30 @@ class Draft(object):
         """
         # Threadcounts
         stats = ["Threadcounts: Warp %d  Weft %d"%(len(self.warp), len(self.weft))]
-        unique_thread_count = len(self.thread_stats["unique"])
+        unique_thread_count = len(self.thread_stats["unique_threads"])
+        # Shaft and treadle counts
+        shafts = "%d shafts."% len(self.shafts)
+        if not self.liftplan:
+            shafts += " %d treadles."%(len(self.treadles))
+        stats.append(shafts)
         # Unique yarns
-        stats.append("%d unique yarns (color/weight)"%(unique_thread_count))
+        stats.append("%d unique yarns (color/spacing)"%(unique_thread_count))
         # Longest Floats
         floats = self.compute_longest_floats(True, True)
         front, back = floats[:2], floats[2:]
         stats.append("Longest floats: (warp/back) %d/%d , (weft/back) %d/%d" % 
                     (front[0]+1, back[0]+1, front[1]+1, back[1]+1))
         # Warp/Weft ratio
-        warp_ratio = self.thread_stats["facings"]
+        warp_ratio = self.thread_stats["warp_ratio"]
         if 0.8 < warp_ratio < 1.2:
             if warp_ratio == 1: # special case exact balanced weave
-                stats.append("Balanced weave warp:weft=1:{:d}".format(int(warp_ratio)))
+                stats.append("Balanced weave warp:weft = 1 : {:d}".format(int(warp_ratio)))
             else:
-                stats.append("Balanced weave warp:weft=1:{:.1f}".format(warp_ratio))
+                stats.append("Balanced weave warp:weft = 1 : {:.1f}".format(warp_ratio))
         elif warp_ratio < 1:
-            stats.append("Weft dominant weave 1:{:.1f}".format(warp_ratio))
+            stats.append("Weft dominant weave 1 : {:.1f}".format(warp_ratio))
         else: # weft 
-            stats.append("Warp dominant weave 1:{:.1f}".format(1/warp_ratio))
+            stats.append("Warp dominant weave 1 : {:.1f}".format(1/warp_ratio))
         # Selvedges
         selvedge_floats = self.thread_stats["selvedge_floats"]
         if selvedge_floats and max(selvedge_floats) > 1:

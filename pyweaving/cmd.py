@@ -98,41 +98,43 @@ def gen_tartan(opts):
                 # force pwd if not supplied
                 opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
             # set the renderstyle
-            style = Drawstyle()
+            style = get_style(opts.style)
             # override renderstyle
             pass
             ImageRenderer(wif, style).save(opts.renderfile)
     
     
 def gen_twill(opts):
-    wif = twill(opts.shape)
-    wif.process_draft()
-    
-    current_dir = getcwd()+"\\"
-    autoname = opts.shape.replace("/","_").upper() # new filename
-    if opts.outfile == 'auto':
-        opts.outfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "wif")
-    else:
-        opts.outfile = ensure_ext(opts.outfile, 'wif')
-        # force current_dir if not supplied
-        opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
-    WIFWriter(wif).write(opts.outfile)
-    
-    # render png to file as well
-    if opts.render:
-        if opts.renderfile == "auto":
-            # generate filename from shape and current_dir directory
-            opts.renderfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "png")
+    wif = twill(opts.shape, opts.repeats)
+    if wif:
+        wif.process_draft()
+        
+        # save wif file
+        autoname = opts.shape.replace("/","_").upper() # new filename
+        current_dir = getcwd()+"\\"
+        if opts.outfile == 'auto':
+            opts.outfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "wif")
         else:
-            opts.renderfile = ensure_ext(opts.renderfile, 'png')
-            # force pwd if not supplied
-            opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
-        # set the renderstyle
-        style = Drawstyle()
-        # override renderstyle
-        pass
-        ImageRenderer(wif, style).save(opts.renderfile)
-    # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
+            opts.outfile = ensure_ext(opts.outfile, 'wif')
+            # force current_dir if not supplied
+            opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
+        WIFWriter(wif).write(opts.outfile)
+        
+        # render png to file as well
+        if opts.render:
+            if opts.renderfile == "auto":
+                # generate filename from shape and current_dir directory
+                opts.renderfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "png")
+            else:
+                opts.renderfile = ensure_ext(opts.renderfile, 'png')
+                # force pwd if not supplied
+                opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
+            # set the renderstyle
+            style = get_style(opts.style)
+            # override renderstyle
+            pass
+            ImageRenderer(wif, style).save(opts.renderfile)
+        # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
     
 def load_draft(infile):
     """ Load the draft file in wif or json format.
@@ -161,25 +163,24 @@ def render(opts):
     draft = load_draft(opts.infile)
     if draft:
         style = get_style(opts.style)
-        if style:
-            if opts.floats > 0:
-                style.set_floats(opts.floats-1)
-            if opts.outfile:
-                first4 = opts.outfile[:4]    # is it 'auto'
-                imagetype = opts.outfile[4:] # and png or svg
-                if first4 == 'auto':
-                    current_dir = getcwd()+"\\"
-                    if imagetype in ['svg','png']:
-                        opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
-                    else: # force to png
-                        opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
-                #
-                if opts.outfile.endswith('.svg'):
-                    SVGRenderer(draft).save(opts.outfile)
-                else:
-                    ImageRenderer(draft, style, opts.liftplan).save(opts.outfile)
-            else: # no outfile specified - show it
-                ImageRenderer(draft, style, opts.liftplan).show()
+        if opts.floats > 0:
+            style.set_floats(opts.floats-1)
+        if opts.outfile:
+            first4 = opts.outfile[:4]    # is it 'auto'
+            imagetype = opts.outfile[4:] # and png or svg
+            if first4 == 'auto':
+                current_dir = getcwd()+"\\"
+                if imagetype in ['svg','png']:
+                    opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
+                else: # force to png
+                    opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
+            #
+            if opts.outfile.endswith('.svg'):
+                SVGRenderer(draft, style, opts.liftplan).save(opts.outfile)
+            else:
+                ImageRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
+        else: # no outfile specified - show it
+            ImageRenderer(draft, style, opts.liftplan, opts.structure).show()
 
 
 def convert(opts):
@@ -281,7 +282,7 @@ def load_styles(filename='styles.json'):
                 temp = Drawstyle(**attributes)
                 for a in attributes.keys(): # using string as accessor
                     setattr(style, a, getattr(temp, a))
-				# save it
+                # save it
                 Drawstyles[name] = style
     else:
         print("Could not find styles.json at:", infile)
@@ -316,6 +317,7 @@ def main(argv=sys.argv):
     p_render.add_argument('--liftplan', action='store_true',help='Show draft as a liftplan even if defined with a Tieup.')
     p_render.add_argument('--floats', type=int, default=0,help='Highlight floats above this size.')
     p_render.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
+    p_render.add_argument('--structure', action='store_true',help='Warp is Black, Weft is white.')
     p_render.set_defaults(function=render)
 
     p_convert = subparsers.add_parser(
@@ -364,7 +366,7 @@ def main(argv=sys.argv):
     p_tartan.add_argument('--repeats', type=int, default=1,help='How many times to repeat the sett.')
     p_tartan.add_argument('--render', action='store_true',help='Also render to file.')
     p_tartan.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_tartan.add_argument('--style', default='default',help='Use a named style from styles.json in ~/.pyweaving directory.')
+    p_tartan.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_tartan.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
@@ -373,9 +375,10 @@ def main(argv=sys.argv):
         'twill', 
         help='Create a wif from the twill generator (and optionally render).')
     p_twill.add_argument('shape')
+    p_twill.add_argument('--repeats', type=int, default=4,help='How many times to repeat the twill.')
     p_twill.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
     p_twill.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
-    p_twill.add_argument('--style', default='default',help='Use a named style from styles.json in ~/.pyweaving directory.')
+    p_twill.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 

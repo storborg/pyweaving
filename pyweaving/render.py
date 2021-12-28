@@ -2,10 +2,10 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os.path
-
+import svgwrite
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
-from . import get_project_root, WHITE, BLACK
+from . import get_project_root, WHITE, BLACK, MID, WarpThread
 
 homedir = get_project_root()
 font_path = os.path.join(homedir, 'data','Arial.ttf')
@@ -20,29 +20,23 @@ class ImageRenderer(object):
     # - Add option to render a bar graph of the thread crossings along the
     # sides
     # - Add option to render 'stats table'
-    #   - Number of warp threads
-    #   - Number of weft threads
-    #   - Number of harnesses/shafts
-    #   - Number of treadles
     #   - Warp unit size / reps
     #   - Weft unit size / reps
-    #   - Longest warp float
-    #   - Longest weft float
     #   - Selvedge continuity
     # - Add option to rotate orientation
     # - Add option to render selvedge continuity
     # - Add option to render inset "scale view" rendering of fabric
-    # - Add option to change thread spacing
     # - Support variable thickness threads
-    # - Add option to render heddle count on each shaft
+
         
     
-    def __init__(self, draft, style, show_liftplan=False):
+    def __init__(self, draft, style, show_liftplan=False, show_structure=False):
         
         self.draft = draft
         self.style = style
 
         self.show_liftplan = show_liftplan #force liftplan display
+        self.show_structure = show_structure
 
         self.border_pixels = style.border_pixels
         self.pixels_per_square = style.box_size
@@ -65,9 +59,8 @@ class ImageRenderer(object):
              calculated from spacings data, on each thread.
         """
         all_spacings = self.draft.thread_stats["summary"]
-        basicbox = self.style.box_size
+        basicbox = self.pixels_per_square
         clarity_factor = self.style.clarity_factor
-        
         sizing = []
         if all_spacings:
             # determine the ratios of the boxes for each mentioned 'spacing'
@@ -96,6 +89,11 @@ class ImageRenderer(object):
                     if s == spacing:
                         thread.yarn_width = dist
                         break # stop looking
+        else: # no spacng in wif so use
+            for thread in self.draft.warp:
+                thread.yarn_width = basicbox
+            for thread in self.draft.weft:
+                thread.yarn_width = basicbox
         return sizing
                     
         
@@ -116,8 +114,8 @@ class ImageRenderer(object):
              layout each part and draw them,
              add a border round the outside.
         """
-        # gather spacings data for use in stats and to calc yarn widths to draw
-        box_sizing = self.calculate_box_sizing() # incorporate spacing
+        # gather spacings data for stats and calc yarn widths for drawdown
+        box_sizing = self.calculate_box_sizing()
         # calculate image size estimate (yarn spacing makes this a maximal number)
         warp_area_length = 0
         if box_sizing: # spacing data in wif file
@@ -174,13 +172,14 @@ class ImageRenderer(object):
         
         # Layout
         titlestart = startpos
+        heddles_offset = 2
         titleend = self.paint_title(titlestart, draw, self.draft.draft_title)
         ministatsend = self.paint_ministats((titlestart[0],titleend[1]), stats, draw)
         
         warpstart = [startpos[0], ministatsend[1]]
-        warpstart[0] += 2 # heddlestats
+        warpstart[0] += heddles_offset # heddlestats
         warpend = self.paint_warp_colors(warpstart, draw)
-        warpstart[0] -= 2 # heddlestats
+        warpstart[0] -= heddles_offset # heddlestats
         
         heddlestart = (warpstart[0], warpend[1]+self.style.warp_gap)
         heddleend = self.paint_heddles_stats(heddlestart, draw)
@@ -311,14 +310,18 @@ class ImageRenderer(object):
     def paint_heddles_stats(self, startpos, draw):
         " show heddles needed per warp shaft "
         offsetx,offsety = startpos # upper left corner position
+        offsety -= 1 # text strats above line
         if self.style.warp_tick_active or self.style.tieup_tick_active:
-            start_warp_y = offsety + self.style.tick_length
-        starty = (offsety+1) * self.pixels_per_square
+            starty = (offsety + self.style.tick_length) * self.pixels_per_square
+        else:
+            starty = offsety * self.pixels_per_square
         startx = offsetx * self.pixels_per_square
         
         vcenter_adj = (self.pixels_per_square/10) -1 + (self.pixels_per_square-self.thread_font_size)/2
         total = 0
-        for shaft in self.draft.shafts:
+        for i in range(len(self.draft.shafts),0,-1):
+            # shaft in self.draft.shafts:
+            shaft = self.draft.shafts[i-1]
             starty += self.pixels_per_square
             count = len([1 for t in self.draft.warp if t.shaft == shaft])
             total += count
@@ -361,30 +364,34 @@ class ImageRenderer(object):
         endheight = offsety + 1
         return (endwidth, endheight)
 
-    def paint_fill_marker(self, draw, box, blobcolor, style, label=None, yarncolor=None):
+    def paint_fill_marker(self, draw, box, dotcolor, style, label=None, yarncolor=None):
         startx, starty, endx, endy = box
         textcol = BLACK
         margin = 1
 
         if yarncolor:
-            if yarncolor.close(self.style.background) and style=='solid':
-                # yarn color is too close to background and so not visible
-                # so  if 'solid' override to draw 'blob' style instead
-                style = 'blob'
-                bgcolor = None
-            else:
-                draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                                fill=yarncolor.rgb)
             if yarncolor.intensity < 0.5:
                 textcol = WHITE
+            draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
+                                    fill=yarncolor.rgb)
+            if yarncolor.close(self.style.background):
+                if style=='solid':# or style =='dot':
+                    # yarn color is too close to background and so not visible
+                    # so  if 'solid' override to draw 'dot' style instead
+                    style = 'dot'
+                    yarncolor = None #!bgcolor
+                # else:
+                    # draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
+                                    # fill=yarncolor.rgb)
+            
         
-        if style == 'blob' and not yarncolor:
+        if style == 'dot' and not yarncolor:
             margin = floor((endx-startx)/5)
             draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                            fill=blobcolor.rgb)
+                            fill=dotcolor.rgb)
         elif style == 'solid' and not yarncolor:
             draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                            fill=blobcolor.rgb)
+                            fill=dotcolor.rgb)
         elif style == 'number' or style == 'XO':
             if style == 'number':
                 hcenter_adj = len(label) * self.thread_font_size/4
@@ -416,7 +423,7 @@ class ImageRenderer(object):
             start_warp_y = start_tick_y + tick_length -1
             endheight += tick_length
         else:
-            start_warp_y = start_tick_y -1
+            start_warp_y = start_tick_y - 1
         
         distance = offsetx * self.pixels_per_square
         previous = distance
@@ -684,8 +691,8 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def get_position(self, thread, start, end, x_reversed=False):
-        """ Iterate over the threads calculating the proper position for any given float
-             - assuming spacing defined
+        """ Iterate over the threads calculating the proper position
+            for any given float to be draw in the drawdown
         """
         num_warp_threads = len(self.draft.warp)
         # reversed for back of cloth
@@ -727,36 +734,142 @@ class ImageRenderer(object):
         return (result_start, result_end)
 
         
-    def paint_drawdown(self, startpos, draw):
+    def paint_drawdown(self, startpos, draw, front=True, asfabric=False):
+        """ Draw different styles of drawodown
+            - solid, box, interlace - also shaded variants
+            - asfabric will use solid and hide overlapping wefts
+        """
         num_threads = len(self.draft.warp)
         floats = self.draft.computed_floats
-        # drawdown styles = [solid | box | intersect | boxshaded | solidshaded]
         
         float_color = self.style.floats_color
         float_cutoff = self.style.floats_count
         show_float = self.style.show_floats
+        outline_color = self.outline_color.rgb
         
         offsetx,offsety = startpos
         offsetx *= self.pixels_per_square
         offsety *= self.pixels_per_square
+        if self.show_structure:
+            outline_color = MID.rgb
+        
+        # shading prep
+        indent = self.style.interlace_width # how much indent in the interlace style
+        # BG fills in gaps when interlacing
+        drawdown_width = sum([t.yarn_width for t in self.draft.warp])
+        drawdown_height = sum([t.yarn_width for t in self.draft.weft])
+        draw.rectangle((offsetx+indent-1, offsety+indent-1,
+                        offsetx+drawdown_width, offsety+drawdown_height),
+                        fill=outline_color)
+        # shading offset - used when drawing the shadow and highlight thread features
+        # works for 10,20 but not 30 (pixels_per_square)
+        so2 = max(1, self.pixels_per_square//10)
+        so1 = max(1, so2//2)
         
         for start, end, visible, length, thread in floats:
-            if visible:
-                realpos = self.get_position(thread, start, end, True)
+            if visible==front: # visible is front of fabric. If front is false - show back of fabric
+                realpos = self.get_position(thread, start, end, True) #! True also front or !front
                 (startx,starty), (endx,endy) = realpos
                 startx += offsetx
                 starty += offsety
                 endx += offsetx
                 endy += offsety
-                
-                outline_color = self.outline_color.rgb
-                fill_color = thread.color.rgb
+
+                if self.show_structure:
+                    # Use warp=black, weft=white
+                    if isinstance(thread, WarpThread):
+                        fill_color = BLACK.rgb
+                    else: fill_color = WHITE.rgb
+                    outline_color = MID.rgb
+                else: # use the thread colors
+                    fill_color = thread.color.rgb
+                    outline_color = self.outline_color.rgb
+                # highlight the long floats
                 if show_float and length >= float_cutoff:
-                    outline_color = WHITE.rgb
                     fill_color = float_color.rgb
-                draw.rectangle((startx, starty, endx, endy),
-                               outline=outline_color,
-                               fill=fill_color)
+                
+                # The drawdown box styles
+                if 'solid' in self.style.drawdown_style:
+                    draw.rectangle((startx, starty, endx-1, endy-1),
+                                    outline=None,
+                                    fill=fill_color)
+                    if  'shade' in self.style.drawdown_style:
+                        # darker thin, lighter thick, natural, darker thick
+                        draw.line((startx, starty, endx-so2, starty), # top highlight
+                                  fill=thread.color.highlight, width=so2)
+                        draw.line((startx, endy-so2, endx-so1, endy-so2), # bot shadow
+                                  fill=thread.color.shadow, width=so2)
+                        draw.line((startx, starty+so1, startx, endy-so2-so1), # left highlight
+                                  fill=thread.color.highlight, width=so2)
+                        draw.line((endx-so2, starty, endx-so2, endy-so2), # right shadow
+                                      fill=thread.color.shadow, width=so2)
+                elif 'box' in self.style.drawdown_style:
+                    draw.rectangle((startx, starty, endx, endy),
+                                    outline=outline_color,
+                                    fill=fill_color)
+                    if  'shade' in self.style.drawdown_style:
+                        # darker thin, lighter thick, natural, darker thick
+                        draw.line((startx+so1, starty+so1, endx-so1, starty+so1), # top shadow
+                                  fill=thread.color.shadow, width=so1)
+                        draw.line((startx+so1, starty+so2, endx-so1, starty+so2), # top highlight
+                                  fill=thread.color.highlight, width=so2)
+                        draw.line((startx+so1, endy-so2, endx-so1, endy-so2), # bot shadow
+                                  fill=thread.color.shadow, width=so2)
+                        draw.line((startx+so1, starty+so1, startx+so1, endy-so2), # left shadow
+                                  fill=thread.color.shadow, width=so1)
+                        draw.line((startx+so2, starty+so2, startx+so2, endy-so2-so1), # left highlight
+                                  fill=thread.color.highlight, width=so2)
+                        # lower shadow different
+                        if isinstance(thread, WarpThread):
+                            draw.line((endx-so1, starty+so1, endx-so1, endy-so2), # right shadow
+                                      fill=thread.color.shadow, width=so1)
+                        else: # weft thread
+                            draw.line((endx-so2, starty+so1, endx-so2, endy-so2), # right shadow
+                                      fill=thread.color.shadow, width=so2)
+                elif 'interlace' in self.style.drawdown_style:
+                    if isinstance(thread, WarpThread):
+                        boxx1 = startx + indent
+                        boxx2 = endx - indent
+                        boxy1 = starty - indent
+                        boxy2 = endy + indent
+                    else:
+                        boxy1 = starty + indent
+                        boxy2 = endy - indent
+                        boxx1 = startx - indent
+                        boxx2 = endx + indent
+                
+                    draw.rectangle((boxx1, boxy1, boxx2, boxy2),
+                                    outline=None,
+                                    fill=fill_color)
+                    # draw the stepped thread edge lines
+                    draw.line((boxx1, boxy1, boxx2, boxy1),
+                              fill=outline_color, width=indent)
+                    draw.line((boxx1, boxy1, boxx1, boxy2),
+                              fill=outline_color, width=indent)
+                    draw.line((boxx2, boxy1, boxx2, boxy2),
+                              fill=outline_color, width=indent)
+                    draw.line((boxx1, boxy2, boxx2, boxy2),
+                              fill=outline_color, width=indent)
+                    if  'shade' in self.style.drawdown_style:
+                        # darker thin, lighter thick, natural, darker thick
+                        draw.line((boxx1+so1, boxy1+so1, boxx2-so1, boxy1+so1), # top shadow
+                                  fill=thread.color.shadow, width=so1)
+                        draw.line((boxx1+so1, boxy1+so2, boxx2-so1, boxy1+so2), # top highlight
+                                  fill=thread.color.highlight, width=so2)
+                        draw.line((boxx1+so1, boxy2-so2, boxx2-so1, boxy2-so2), # bot shadow
+                                  fill=thread.color.shadow, width=so2)
+                        #
+                        draw.line((boxx1+so1, boxy1+so1, boxx1+so1, boxy2-so2), # left shadow
+                                  fill=thread.color.shadow, width=so1)
+                        draw.line((boxx1+so2, boxy1+so2, boxx1+so2, boxy2-so2-so1), # left highlight
+                                  fill=thread.color.highlight, width=so2)
+                        # lower shadow different
+                        if isinstance(thread, WarpThread):
+                            draw.line((boxx2-so1, boxy1+so1, boxx2-so1, boxy2-so2), # right shadow
+                                      fill=thread.color.shadow, width=so1)
+                        else: # weft thread
+                            draw.line((boxx2-so2, boxy1+so1, boxx2-so2, boxy2-so2), # right shadow
+                                      fill=thread.color.shadow, width=so2)
         #
         endwidth = int(endx/self.pixels_per_square)
         endheight = int(endy/self.pixels_per_square)
@@ -797,14 +910,16 @@ SVG = TagGenerator()
 
 
 class SVGRenderer(object):
-    def __init__(self, draft, liftplan=None, scale=10,
+    def __init__(self, draft, style, liftplan=None, scale=0.5,
                  foreground='#7f7f7f', background='#ffffff',
                  marker_color='#000000', number_color='#c80000'):
+        
         self.draft = draft
-
         self.liftplan = liftplan
-
+        self.border_pixels = style.border_pixels
+        self.pixels_per_square = style.box_size
         self.scale = scale
+        self.style = style
 
         self.background = background
         self.outline_color = foreground
@@ -814,7 +929,20 @@ class SVGRenderer(object):
         self.font_family = 'Arial, sans-serif'
         self.tick_font_size = 12
 
-    def make_svg_doc(self):
+    def create_CSS_styles(self):
+        """ collect colorts used and create css style with ref """
+        # always use css for styling
+        CSS_STYLES = """
+                        .background { fill: lavenderblush; }
+                        .line { stroke: firebrick; stroke-width: .1mm; }
+                        .blacksquare { fill: indigo; }
+                        .whitesquare { fill: hotpink; }
+                     """
+        dwg.defs.add(dwg.style(CSS_STYLES))
+    
+    
+    
+    def make_svg_doc(self, filename):
         width_squares_estimate = len(self.draft.warp) + 6
         if self.liftplan or self.draft.liftplan:
             width_squares_estimate += len(self.draft.shafts)
@@ -823,46 +951,70 @@ class SVGRenderer(object):
 
         height_squares_estimate = len(self.draft.weft) + 6 + len(self.draft.shafts)
 
-        width = width_squares_estimate * self.scale
-        height = height_squares_estimate * self.scale
+        width = width_squares_estimate * self.pixels_per_square
+        height = height_squares_estimate * self.pixels_per_square
 
-        doc = []
+        ##
+        dwg = svgwrite.Drawing(filename, size=(str(width)+'px', str(height)+'px'),
+                               viewBox=('0 0 %d %d'%(width/self.scale,height/self.scale)), profile='tiny', debug=True)
+        # create styles
+        # always use css for styling
+        dwg.defs.add(dwg.style(CSS_STYLES))
+        
+        self.paint_warp_colors(dwg)
+        # self.paint_threading(dwg)
+
+        # self.paint_weft(dwg)
+        # if self.liftplan or self.draft.liftplan:
+            # self.paint_liftplan(dwg)
+        # else:
+            # self.paint_tieup(dwg)
+            # self.paint_treadling(dwg)
+
+        # self.paint_drawdown(dwg)
+        return dwg
+        
+        # doc = []
         # Use a negative starting point so we don't have to offset everything
         # in the drawing.
-        doc.append(svg_header.format(width=width, height=height))
+        # doc.append(svg_header.format(width=width, height=height))
+        # self.write_metadata(doc)
 
-        self.write_metadata(doc)
+        # self.paint_warp_colors(doc)
+        # self.paint_threading(doc)
 
-        self.paint_warp_colors(doc)
-        self.paint_threading(doc)
+        # self.paint_weft(doc)
+        # if self.liftplan or self.draft.liftplan:
+            # self.paint_liftplan(doc)
+        # else:
+            # self.paint_tieup(doc)
+            # self.paint_treadling(doc)
 
-        self.paint_weft(doc)
-        if self.liftplan or self.draft.liftplan:
-            self.paint_liftplan(doc)
-        else:
-            self.paint_tieup(doc)
-            self.paint_treadling(doc)
+        # self.paint_drawdown(doc)
+        # doc.append('</svg>')
+        # return '\n'.join(doc)
 
-        self.paint_drawdown(doc)
-        doc.append('</svg>')
-        return '\n'.join(doc)
+    # def write_metadata(self, doc):
+        # doc.append(SVG.title(self.draft.title))
 
-    def write_metadata(self, doc):
-        doc.append(SVG.title(self.draft.title))
-
-    def paint_warp_colors(self, doc):
+    def paint_warp_colors(self, dwg):
         starty = 0
-        grp = []
+        grp = dwg.g(id='constellation_names')
+        # grp = []
         for ii, thread in enumerate(self.draft.warp):
-            # paint box, outlined with foreground color, filled with thread
-            # color
-            startx = self.scale * ii
-            grp.append(SVG.rect(
-                x=startx, y=starty,
-                width=self.scale, height=self.scale,
-                style='stroke:%s; fill:%s' % (self.outline_color,
-                                              thread.color.css)))
-        doc.append(SVG.g(*grp))
+            # paint box using outline color, filled with thread color
+            # print(thread.color.rgb)
+            startx = self.pixels_per_square * ii
+            grp.add(dwg.rect(insert=(startx, starty), size=(self.pixels_per_square,self.pixels_per_square),
+                             fill=svgwrite.rgb(*thread.color.rgb), stroke=svgwrite.rgb(*self.style.outline_color.rgb)))
+            # grp.append(SVG.rect(
+                # x=startx, y=starty,
+                # width=self.scale, height=self.scale,
+                # style='stroke:%s; fill:%s' % (self.outline_color,
+                                              # thread.color.css)))
+        # print()
+        dwg.add(grp)
+        # doc.append(SVG.g(id="warp_threads",*grp))
 
     def paint_weft(self, doc):
         offsety = (6 + len(self.draft.shafts)) * self.scale
@@ -1149,10 +1301,13 @@ class SVGRenderer(object):
                                                   thread.color.css)))
         doc.append(SVG.g(*grp))
 
-    def render_to_string(self):
-        return self.make_svg_doc()
+    #!unused
+    # def render_to_string(self):
+        # return self.make_svg_doc()
 
     def save(self, filename):
-        s = svg_preamble + '\n' + self.make_svg_doc()
+        # s = svg_preamble + '\n' + self.make_svg_doc()
+        s = self.make_svg_doc(filename)
         with open(filename, 'w') as f:
-            f.write(s)
+            # f.write(s)
+            s.write(f, pretty=False, indent=2)

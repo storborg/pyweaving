@@ -5,12 +5,13 @@
      "tieupstyle": {"ticks": true, "style": "number"},
      "warpstyle": {"ticks": true, "usethread_color": true, "style": "number", "row_length": null},
      "weftstyle": {"ticks": true, "usethread_color": true, "style": "number"},
-     "drawdown_style": "solid",
-	 "boxstyle": {"size": 20, "outline_color": [127, 127, 127], "fill_color": [0, 0, 0]},
+     "drawdown_style": "interlace",
+     "interlace_width": 1,
+     "boxstyle": {"size": 20, "outline_color": [20, 20, 20], "fill_color": [0, 0, 0]},
      "floats_style": {"show": false, "count": 3, "color": [200, 0, 0]},
      "spacing_style": "clarity",
      "clarity_factor": 0.8,
-     "background": [240, 240, 240],
+     "background": [243, 243, 243],
      "title_font_size_factor": 1.5,
      "border_pixels": 20,
      "warp_gap": 1,
@@ -18,16 +19,58 @@
      "weft_gap": 1,
      "tick_gap": 1
      },
+ "shaded" : {"name": "shaded",
+     "derived_from": "Default",
+     "drawdown_style": "interlaceshaded"
+     },
+ "emphasised" : {"name": "emphasised",
+     "derived_from": "shaded",
+     "interlace_width": 2
+     },
+ "flat" : {"name": "flat",
+     "derived_from": "Default",
+     "drawdown_style": "solid"
+     },
  "minimal" : {"name": "minimal",
      "derived_from": "Default",
-	 "tieupstyle": {"ticks": false, "style": "number"},
-	 "warpstyle": {"ticks": false, "usethread_color": false, "style": "blob", "row_length": null},
-     "weftstyle": {"ticks": false, "usethread_color": false, "style": "blob"},
-	 "boxstyle": {"size": 10, "outline_color": [127, 127, 127], "fill_color": [0, 0, 0]}
+     "tieupstyle": {"ticks": false, "style": "solid"},
+     "warpstyle": {"ticks": false, "usethread_color": false, "style": "solid", "row_length": null},
+     "weftstyle": {"ticks": false, "usethread_color": false, "style": "solid"},
+     "drawdown_style": "box",
+     "boxstyle": {"size": 10, "outline_color": [40, 40, 40], "fill_color": [0, 0, 0]}
+     },
+ "minimal2" : {"name": "minimal2",
+     "derived_from": "minimal",
+     "interlace_width": 1,
+     "drawdown_style": "interlace"
+     },
+ "minimal3" : {"name": "minimal3",
+     "derived_from": "minimal2",
+	 "drawdown_style": "interlaceshaded"
+     },
+ "dense" : {"name": "dense",
+     "derived_from": "minimal",
+     "drawdown_style": "solidshaded",
+     "boxstyle": {"size": 8, "outline_color": [40, 40, 40], "fill_color": [0, 0, 0]}
      },
  "mincolor" : {"name": "mincolor",
      "derived_from": "minimal",
-	 "warpstyle": {"ticks": true, "usethread_color": true, "style": "blob", "row_length": null},
-     "weftstyle": {"ticks": true, "usethread_color": true, "style": "blob"}
+     "warpstyle": {"ticks": false, "usethread_color": true, "style": "solid", "row_length": null},
+     "weftstyle": {"ticks": false, "usethread_color": true, "style": "solid"}
+     },
+ "finely_spaced": {"name": "finely_spaced",
+     "derived_from": "Default",
+     "tieupstyle": {"ticks": false, "style": "solid"},
+     "drawdown_style": "interlace",
+     "boxstyle": {"size": 20, "outline_color": [30, 30, 30], "fill_color": [0, 0, 0]},
+     "floats_style": {"show": false, "count": 3, "color": [200, 0, 0]},
+     "spacing_style": "thinner",
+     "background": [255, 255, 255],
+     "title_font_size_factor": 1.5,
+     "border_pixels": 20,
+     "warp_gap": 1,
+     "drawdown_gap": 1,
+     "weft_gap": 1,
+     "tick_gap": 1
      }
 }

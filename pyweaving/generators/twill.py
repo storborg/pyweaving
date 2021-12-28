@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 from .. import Draft
 
 
-def twill(shape="2/2", warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
+def twill(shape="2/2", repeats=4, warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
     """ Generate twills from a shape description. Defaults to Z twill
         E.g. "2/2", "1/3 2/2", "2/4S", 2/4Z"
         E.g. 1/3 twill reveals 1 weft and three warps
@@ -46,7 +46,7 @@ def twill(shape="2/2", warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
             index += weft # skip these unset treadles
 
     # Threading
-    for ii in range(4 * size):
+    for ii in range(repeats * size):
         draft.add_warp_thread(
             color=warp_color,
             shaft=ii % shafts,
