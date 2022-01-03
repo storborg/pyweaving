@@ -58,7 +58,8 @@ class WIFReader(object):
         if draft.source_program.find("Glassner")>-1 and draft.source_version =="1.0":
             self.zerobased = True
             # alas these wif files use a mix of zero and one based thread counting :(
-        # setup  draft_title
+        # title may have multiple lines embedded
+        # create draft_title list and possibly add filename
         if draft.title == "":
             draft.draft_title =[]
         else:
@@ -387,6 +388,19 @@ class WIFWriter(object):
         config.set('COLOR PALETTE', 'Range', '0,255')
         return wif_palette
 
+    def find_freq_color(self, threads, palette):
+        counts = {}
+        for t in threads:
+            col = t.color.rgb
+            if col in counts:
+                counts[col] += 1
+            else:
+                counts[col] = 1
+        # most frequent color
+        color = max([(counts[c],c) for c in counts])[1]
+        return palette[color]
+        
+        
     def write_threads(self, config, wif_palette, dir):
         assert dir in ('warp', 'weft')
         threads = getattr(self.draft, dir)
@@ -394,19 +408,21 @@ class WIFWriter(object):
         config.set('CONTENTS', dir, True)
         config.add_section(dir)
         config.set(dir, 'Threads', len(threads))
-        # XXX This should actually be stored in the draft.
-        #config.set(dir, 'Units', 'Inches')
+        
         if dir == 'WARP':
             config.set(dir, 'Units', self.draft.warp_units)
         if dir == 'WEFT':
             config.set(dir, 'Units', self.draft.weft_units)
-
+        common_col = self.find_freq_color(threads, wif_palette)
+        config.set(dir, 'Color',str(common_col))
+        
         config.set('CONTENTS', '%s COLORS' % dir, True)
         config.add_section('%s COLORS' % dir)
         for ii, thread in enumerate(threads, start=1):
-            config.set('%s COLORS' % dir,
-                       str(ii),
-                       wif_palette[thread.color.rgb])
+            index = wif_palette[thread.color.rgb]
+            if index != common_col:
+                config.set('%s COLORS' % dir,
+                           str(ii), index)
 
     def write_threading(self, config):
         config.set('CONTENTS', 'THREADING', True)
@@ -456,6 +472,7 @@ class WIFWriter(object):
         self.write_metadata(config, liftplan=liftplan)
 
         wif_palette = self.write_palette(config)
+        
         self.write_threads(config, wif_palette, 'warp')
         self.write_threads(config, wif_palette, 'weft')
 

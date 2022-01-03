@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .. import Draft
+from .. import Draft, __version__
 
 
 def twill(shape="2/2", repeats=4, warp_color=(255, 255, 255), weft_color=(0, 0, 220)):
@@ -59,4 +59,6 @@ def twill(shape="2/2", repeats=4, warp_color=(255, 255, 255), weft_color=(0, 0, 
 
     draft.title = shape + " "+direction+" Twill"
     draft.draft_title = [draft.title]
+    draft.source_program = 'PyWeaving'
+    draft.source_version = __version__
     return draft

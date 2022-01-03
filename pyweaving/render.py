@@ -116,20 +116,9 @@ class ImageRenderer(object):
         """
         # gather spacings data for stats and calc yarn widths for drawdown
         box_sizing = self.calculate_box_sizing()
-        # calculate image size estimate (yarn spacing makes this a maximal number)
-        warp_area_length = 0
-        if box_sizing: # spacing data in wif file
-            for spacing,count in self.draft.thread_stats["warp_spacings"]:
-                distance = 0
-                for (s,dist) in box_sizing:
-                    if s == spacing:
-                        distance = dist*count
-                        break # stop looking
-                warp_area_length += distance
-            warp_area_length = int(warp_area_length / self.style.box_size) # distance in box units
-        else: # no spacing data
-            warp_area_length = len(self.draft.warp)
-        # heddles
+        # calculate image width by summing up regions
+        warp_area_length = int(sum([t.yarn_width/self.pixels_per_square for t in self.draft.warp]))
+        # add heddles
         warp_area_length += 2
         # gather width sizes
         width_squares_estimate = warp_area_length + 1 + self.style.tick_length + self.style.weft_gap  + self.style.drawdown_gap
@@ -138,76 +127,80 @@ class ImageRenderer(object):
         else:
             width_squares_estimate += len(self.draft.treadles)
 
-        weft_area_length = 0
-        if box_sizing:
-            for spacing,count in self.draft.thread_stats["weft_spacings"]:
-                distance = 0
-                for s,dist in box_sizing:
-                    if s == spacing:
-                        distance = dist*count
-                        break # stop looking
-                weft_area_length += distance
-            weft_area_length = int(weft_area_length / self.pixels_per_square) # distance in box units
-        else: # no spacing data
-            weft_area_length = len(self.draft.weft)
+        # calculate image height by summing up regions
+        weft_area_length = int(sum([t.yarn_width/self.pixels_per_square for t in self.draft.weft]))
         height_squares_estimate = weft_area_length + len(self.draft.shafts) + \
                                   self.style.warp_gap  + self.style.drawdown_gap + \
                                   len(self.draft.draft_title) * 2 + 1 +self.style.tick_length
-        # mini stats
+        # add mini stats
         stats = self.draft.get_mini_stats()
         height_squares_estimate += int((len(stats) * self.tick_font_size * 1.5) / self.pixels_per_square) #(spacing)
 
-        # Notes
+        # add Notes
         if self.draft.collected_notes:
-            notes_size = len(self.draft.collected_notes) +2  #!! should be 1. Error somewhere else?
+            notes_size = len(self.draft.collected_notes) + 2
             height_squares_estimate += int((notes_size * self.tick_font_size * 1.5) / self.pixels_per_square)
-            
+
+        # Create image
         # outline width of +1 is added otherwise contents overflow
         width = width_squares_estimate * self.pixels_per_square + 1
         height = height_squares_estimate * self.pixels_per_square + 1
         startpos = (0,0) # in squares
-        
         im = Image.new('RGB', (width, height), self.background.rgb)
         draw = ImageDraw.Draw(im)
         
         # Layout
         titlestart = startpos
-        heddles_offset = 2
+        
+        # Title
         titleend = self.paint_title(titlestart, draw, self.draft.draft_title)
+        # Ministats
         ministatsend = self.paint_ministats((titlestart[0],titleend[1]), stats, draw)
         
+        # Warpcolors
         warpstart = [startpos[0], ministatsend[1]]
+        heddles_offset = 2
         warpstart[0] += heddles_offset # heddlestats
         warpend = self.paint_warp_colors(warpstart, draw)
         warpstart[0] -= heddles_offset # heddlestats
         
+        # Heddle stats
         heddlestart = (warpstart[0], warpend[1]+self.style.warp_gap)
         heddleend = self.paint_heddles_stats(heddlestart, draw)
         
+        # Threading
         threadingstart = (heddleend[0], warpend[1]+self.style.warp_gap)
         threadingend = self.paint_threading(threadingstart, draw)
+        # Tieup status
         self.paint_tieup_status((warpend[0]+self.style.drawdown_gap, warpstart[1]), draw)
         
         tieupstart = (threadingend[0]+self.style.drawdown_gap, threadingstart[1])
-        treadlingstart = (threadingend[0]+self.style.drawdown_gap, threadingend[1]+self.style.drawdown_gap)
-        tieupend=(0,0)
+        treadlingstart = (tieupstart[0], tieupstart[1]+self.style.drawdown_gap)
+        # treadlingstart = (threadingend[0]+self.style.drawdown_gap, threadingend[1]+self.style.drawdown_gap)
+        
+        # Liftplan or Treadling
         if self.show_liftplan or self.draft.liftplan:
             treadlingend = self.paint_liftplan(treadlingstart, draw)
+            tieupend=(0,0)
         else:
-            tieupend = self.paint_tieup(tieupstart, draw)
             treadlingend = self.paint_treadling(treadlingstart, draw)
-            
+            tieupend = self.paint_tieup(tieupstart, draw)
+        
+        # Weftcolors
         weftstart = (max(treadlingend[0],tieupend[0])+self.style.weft_gap, threadingend[1]+self.style.drawdown_gap)
         weftend = self.paint_weft_colors(weftstart, draw)
         
+        # Drawdown
         drawdownstart = (heddleend[0], threadingend[1]+self.style.drawdown_gap)
         drawdownend = self.paint_drawdown(drawdownstart, draw)
         self.paint_start_indicator(drawdownstart, draw)
         
+        # Notes
         notesend = drawdownend
-        if self.draft.notes:
+        if self.draft.collected_notes:
             notesend = self.paint_notes((drawdownstart[0],drawdownend[1]), self.draft.collected_notes, draw)
         
+        # Pad image
         del draw
         im = self.pad_image(im)
         return im
@@ -379,7 +372,7 @@ class ImageRenderer(object):
                     # yarn color is too close to background and so not visible
                     # so  if 'solid' override to draw 'dot' style instead
                     style = 'dot'
-                    yarncolor = None #!bgcolor
+                    yarncolor = None
                 # else:
                     # draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
                                     # fill=yarncolor.rgb)
@@ -463,11 +456,12 @@ class ImageRenderer(object):
                     tendy = ((start_tick_y + tick_length) * self.pixels_per_square) - 1
                     draw.line((startx, tstarty, startx, tendy),
                               fill=self.tick_color)
-                    # draw text
-                    draw.text((startx + 2, tstarty + 2),
-                              str(thread_no),
-                              font=self.tick_font,
-                              fill=self.tick_color)
+                    if self.style.show_ticktext:
+                        # draw text
+                        draw.text((startx + 2, tstarty + 2),
+                                  str(thread_no),
+                                  font=self.tick_font,
+                                  fill=self.tick_color)
             previous = distance
             t_index -= 1
         #
@@ -608,10 +602,12 @@ class ImageRenderer(object):
                             draw.line((line_startx, line_starty,
                                        line_endx, line_endy),
                                        fill=self.tick_color)
-                            draw.text((line_startx + 2, line_starty),
-                                       str(shaft_no),
-                                       font=self.tick_font,
-                                       fill=self.tick_color)
+                            if self.style.show_ticktext:
+                                # draw text
+                                draw.text((line_startx + 2, line_starty),
+                                           str(shaft_no),
+                                           font=self.tick_font,
+                                           fill=self.tick_color)
             
             # horizontal ticks, number if it's a multiple of tick_mod and not the first one
             if self.style.tieup_tick_active:
@@ -622,12 +618,13 @@ class ImageRenderer(object):
                     endy = (end_tick * self.pixels_per_square) - 1
                     draw.line((startx, starty, endx, endy),
                               fill=self.tick_color)
-                    # draw text on left side, right justified
-                    textw, texth = draw.textsize(str(treadle_no), font=self.thread_font)
-                    draw.text((startx - textw*1.6, starty + 2),
-                              str(treadle_no),
-                              font=self.tick_font,
-                              fill=self.tick_color)
+                    if self.style.show_ticktext:
+                        # draw text on left side, right justified
+                        textw, texth = draw.textsize(str(treadle_no), font=self.thread_font)
+                        draw.text((startx - textw*1.6, starty + 2),
+                                  str(treadle_no),
+                                  font=self.tick_font,
+                                  fill=self.tick_color)
         #
         return (endwidth, endheight)
 
@@ -678,11 +675,12 @@ class ImageRenderer(object):
                     tick_endx = endx + (self.style.tick_length * self.pixels_per_square)
                     draw.line((endx, endy, tick_endx, endy),
                               fill=self.tick_color)
-                    # draw text
-                    draw.text((endx + self.tick_font_size/4, endy - 2 - self.tick_font_size),
-                              str(thread_no),
-                              font=self.tick_font,
-                              fill=self.tick_color)
+                    if self.style.show_ticktext:
+                        # draw text
+                        draw.text((endx + self.tick_font_size/4, endy - 2 - self.tick_font_size),
+                                  str(thread_no),
+                                  font=self.tick_font,
+                                  fill=self.tick_color)
             #
             previous = endy
             index += 1

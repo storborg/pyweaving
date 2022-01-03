@@ -1,5 +1,5 @@
 #SECTION XT
-Patterns from www.io.com/~acroyear/XTartan.html XTartan by Jim McBeath, Joseph Shelby
+- (Anecdotal) Patterns from www.io.com/~acroyear/XTartan.html XTartan by Jim McBeath, Joseph Shelby
 Abercrombie -XT=>b#000052k#000000w#aaaaaag#11450d=g14(w1g7k7b2k2b2k2)b7
 Abercrombie D -XT=>b#000052k#000000w#aaaaaag#11450d=g14(w1g7k7b2k2b2k2)b14
 Anderson -XT=>r#aa0000y#aaaa00a#4367aeb#000052k#000000w#aaaaaag#11450d=r3(a6r1k2r1a18k3w3k3y1k1y1k4r1b4r3g6r2g6)r4
@@ -279,7 +279,7 @@ Rainbow -XT=>z#00aaaar#aa0000m#6e5058y#aaaa00b#000052k#000000w#aaaaaag#11450d=k2
 Usa -XT=>r#aa0000y#aaaa00b#000052w#aaaaaa=r4w4b4]r2(w2b2)y2
 
 #SECTION VS
-Patterns from en.wikipedia.org/wiki/Vestiarium_Scoticum Vestiarium Scoticum
+- (Anecdotal) Patterns from en.wikipedia.org/wiki/Vestiarium_Scoticum Vestiarium Scoticum
 The Clan Stewart (Stuart) -VS=>r#c80000g#004C00w#FFFFFFk#000000b#000080y#C8C800=g4(r60b8r8k12y2k2w2k2g20r8k2r2)w2 
 Prince of Rothsay (Duke of Rothesay) -VS=>r#c80000g#004C00w#FFFFFF=w4(r64g4r6g4r8g32r8g32r8g4r6g4r64w2r2)w4 
 ye principal clovris of ye clanne Stewart (Stuart) -VS=>w#FFFFFFr#c80000k#000000g#004C00=r6(w56k6w6k6w6g26r16k2r2)w2 
@@ -364,7 +364,7 @@ Johnstoun (Johnstone) -VS=>b#000080g#004C00k#000000y#C8C800=k4(b4k4b48g60k2g4)y6
 Kerr (Kerr) -VS=>g#004C00r#c80000k#000000=g40(k2g4k2g6k28r56k2r4)k8
 
 #SECTION TI
-Patterns from www.tinsel.org/tinsel/Java/Tartan/setts.txt  T.Insel's Tartan for Java
+- (Anecdotal) Patterns from www.tinsel.org/tinsel/Java/Tartan/setts.txt  T.Insel's Tartan for Java
 Abercrombie -TI=>b#000052k#000000w#aaaaaag#11450d=g28(w2g14k14b4k4b4k4)b14
 Abercrombie D -TI=>b#000052k#000000w#aaaaaag#11450d=g28(w2g14k14b4k4b4k4)b28
 Anderson -TI=>r#aa0000y#aaaa00a#4367aeb#000052k#000000w#aaaaaag#11450d=r6(a12r2k4r2a36k6w6k6y2k2y2k8r2b8r6g12r4g12)r8
@@ -640,7 +640,7 @@ Wallace -TI=>r#aa0000y#aaaa00k#000000=k2(r16k16)y2
 Wemyss -TI=>r#aa0000k#000000w#aaaaaag#11450d=r8(g2r48k8r8k24w2k24)r8
 
 #SECTION RB
-Patterns kindly provided by Robert Bradford
+- (Anecdotal) Patterns kindly provided by Robert Bradford
 Abercrombie -RB=>b#00004ck#000000w#d0d0d0g#004c00=g14(w1g7k7b2k2b2k2)b7
 Anderson -RB=>b#00004ck#000000w#d0d0d0g#004c00y#ffc800r#c80000=r3(w6r1k2r1w18k3w3k3y1k1y1k4r1b4r3g6r2g6)r4
 Anderson P -RB=>b#00004ck#000000w#d0d0d0g#004c00y#ffc800r#c80000=r3(w6k1r2k1w18k3w3k3y1k1y1k3r1b5g6k1r2k1g6)r3
@@ -917,7 +917,7 @@ Wallace -RB=>r#c80000k#000000y#c8c800=k1(r8k8)y1
 Wemyss -RB=>r#c80000k#000000w#d0d0d0g#004c00=r4(g1r24k4r4k12w1k12)r4
 
 #SECTION STS
-Patterns from www.scottish-tartans-society.co.uk">Scottish Tartans Society
+- (Anecdotal) Patterns from www.scottish-tartans-society.co.uk Scottish Tartans Society
 13, Centennial Warp -STS=>t#806050k#000000g#008000b#304080=b16(g8k8b1k1b1k1b1k1b1k1b1k1b1k1b20k4g12k24t8b1t1b1t1b1t1b1t1b1t1b1t1b28t6k4)g52 
 13, Confederation -STS=>w#E0E0E0r#C00000k#000000g#008000b#304080=b1(k1b1k1b1k1b1k1b20k4r12k24g8b1g1b1g1b1g1b1g1b26g6k4r24w4r24b16r8)k8 
 13, Irish Regiment -STS=>o#600030v#908000t#806050i#003000=o2(i3t26)v100 
@@ -3507,7 +3507,7 @@ Yukon -STS=>y#F0C000w#E0E0E0r#C00000p#800080g#008000b#304080=p8(b40y2b4y2b8y8g8w
 Yukon(2) -STS=>y#F0C000w#E0E0E0r#C00000p#800080g#008000b#304080=p8(b32y2b2y2b10y8g8w8)r8
 
 #SECTION Misc
-Patterns from wyellowstone et al
+- (Anecdotal) Patterns from wyellowstone et al
 Abercrombie -Misc=>w#ffffffa#868affb#86ae9ak#000000=b27(k4b4k4b4k14a14w2)a27
 Stewart, modern -Misc=>t#dfc29ab#00009er#b24d6dk#000000a#4d9e8a=t11(b2r40k16a6b2a4b2)a44
 Skene -Misc=>t#dfb675k#000000g#007d00c#be414db#0004ff=t6(k8g48c6k8)b48
@@ -3520,3 +3520,5 @@ Ruxton hunting -Misc=>r#802040#d0d0d0b#000064k#000000=r32(w2r2w6r4b8r30w2r2y6b32
 Ruxton hunting(2) -Misc=>r#802040#d0d0d0b#000064k#000000=r32(w2r2w6r4b8r30w2r2y6b32k2b4r16y2)r32
 Burberry -Misc=>r#c80000y#b8a47c#101010w#f8f4d0=r6(y60k18w18)k18
 
+#SECTION User
+- User section

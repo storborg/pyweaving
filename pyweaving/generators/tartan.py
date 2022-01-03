@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 import re
 import os.path
 
-from .. import Draft, get_project_root, Color
+from .. import Draft, get_project_root, __version__
 
 # test here:
 # - https://www.tartanregister.gov.uk/searchDesigns#TartanDisplay
@@ -86,7 +86,7 @@ def tartan(sett, repeats=1, direction="z"):
     
     # sett is either a pattern or a name. 
     # - hard to guess so assume its a name and then if fail - a sett
-    found, sett, override_colors, pattern = find_named_tartan(sett)
+    found, sett, override_colors, pattern, cat_msg = find_named_tartan(sett)
     # if found then use pattern, colors
     # else use sett and ignore the rest
     if found:
@@ -148,8 +148,14 @@ def tartan(sett, repeats=1, direction="z"):
         #
         draft.title = name.replace(", ","_").replace(" ","_").replace("__","_")
         draft.title = draft.title.replace(",","_").replace(" ","_")
+        # also create draft_title list for render
         draft.draft_title = [draft.title]
         draft.notes.append("from: %s in %s twill"%(sett, direction))
+        if cat_msg:
+            draft.notes.append(cat_msg)
+            draft.notes.append("- Official data should be sourced from: https://www.tartanregister.gov.uk/index or http://www.tartansauthority.com/tartan/tartan-register/")
+        draft.source_program = 'PyWeaving'
+        draft.source_version = __version__
         return draft
 
 def find_named_tartan(desired_name):
@@ -162,16 +168,23 @@ def find_named_tartan(desired_name):
     matching = []
     colors = None
     pattern = None
+    cat_msg = None
     inf = open(collected_tartans_filename, 'r')
-    uppername = desired_name.lower()
-    for line in inf:
+    lines = inf.readlines()
+    lowername = desired_name.lower()
+    for i in range(len(lines)):
+        line = lines[i]
+        if line[0] == "#":
+            # get the category message for help
+            msg = lines[i+1] # all of next line
         namepos = line.find("=>")
         if namepos > -1:
             name = line[:namepos].strip()
-            if name.lower().find(uppername) > -1:
+            if name.lower().find(lowername) > -1:
                 # found one possibly imperfect match
                 matching.append(name) # remove \n
                 pattern = line[:-1]
+                cat_msg = msg
     # unique ?
     if len(matching) == 1:
         # process it
@@ -187,7 +200,7 @@ def find_named_tartan(desired_name):
         pass
     # return sett_or_name, None if no file found (might have been a sett)
     # return newsett, colors if from a file
-    return (found, desired_name, colors, pattern)
+    return (found, desired_name, colors, pattern, cat_msg)
     
 
 def _parse_tartan_description(sett_or_name):

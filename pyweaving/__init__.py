@@ -38,7 +38,8 @@ class Color(object):
         self.rgb2hsl()
         self.create_highlight()
         self.create_shadow()
-        if shadeable:
+        self.shadeable = shadeable
+        if self.shadeable:
             self.check_self_shadeable()
         
 
@@ -102,7 +103,7 @@ class Color(object):
             b = self._hue2rgb(p, q, h - 1/3)
         return (min(floor(r*256),255), min(floor(g*256),255), min(floor(b*256),255))
         
-    def create_highlight(self, factor=1.2):
+    def create_highlight(self, factor=1.4):
         h,s,l = self.hsl
         lighter = min(l*factor, 1.0)
         self.highlight = self.hsl2rgb(h,s,lighter)
@@ -152,7 +153,7 @@ class Color(object):
         self.rgb2hsl()
         self.create_highlight()
         self.create_shadow()
-        if shadeable:
+        if self.shadeable:
             self.check_self_shadeable()
 
     def __str__(self):
@@ -181,7 +182,7 @@ class Drawstyle(object):
     def __init__(self, name = 'Default',
                  derived_from=None,
                  layout='american', hide=None, show=None,
-                 tick_style={'mod':4, 'color':(200, 0, 0), 'length':2},
+                 tick_style={'mod':4, 'color':(200, 0, 0), 'length':2, "showtext":True},
                  tieupstyle={'ticks': True, 'style': 'number'},
                  warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number', 'row_length':None},
                  weftstyle={'ticks':True, 'usethread_color':True, 'style': 'number'},
@@ -236,6 +237,9 @@ class Drawstyle(object):
     @property
     def tick_mod(self):
         return self.tick_style['mod']
+    @property
+    def show_ticktext(self):
+        return self.tick_style['showtext']
     @property
     def tick_length(self):
         return self.tick_style['length']
@@ -467,7 +471,7 @@ class Draft(object):
         self.fax = fax
         self.notes = notes
         self.collected_notes = []
-        self.draft_title = []
+        self.draft_title = [] # multiple line of title from wif and filename
         
         self.source_program = None#"PyWeaving" #! set when saving
         self.source_version = None#__version__
