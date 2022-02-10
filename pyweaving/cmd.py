@@ -163,24 +163,25 @@ def render(opts):
     draft = load_draft(opts.infile)
     if draft:
         style = get_style(opts.style)
-        if opts.floats > 0:
-            style.set_floats(opts.floats-1)
-        if opts.outfile:
-            first4 = opts.outfile[:4]    # is it 'auto'
-            imagetype = opts.outfile[4:] # and png or svg
-            if first4 == 'auto':
-                current_dir = getcwd()+"\\"
-                if imagetype in ['svg','png']:
-                    opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
-                else: # force to png
-                    opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
-            #
-            if opts.outfile.endswith('.svg'):
-                SVGRenderer(draft, style, opts.liftplan).save(opts.outfile)
-            else:
-                ImageRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
-        else: # no outfile specified - show it
-            ImageRenderer(draft, style, opts.liftplan, opts.structure).show()
+        if style:
+            if opts.floats > 0:
+                style.set_floats(opts.floats-1)
+            if opts.outfile:
+                first4 = opts.outfile[:4]    # is it 'auto'
+                imagetype = opts.outfile[4:] # and png or svg
+                if first4 == 'auto':
+                    current_dir = getcwd()+"\\"
+                    if imagetype in ['svg','png']:
+                        opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
+                    else: # force to png
+                        opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
+                #
+                if opts.outfile.endswith('.svg'):
+                    SVGRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
+                else:
+                    ImageRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
+            else: # no outfile specified - show it
+                ImageRenderer(draft, style, opts.liftplan, opts.structure).show()
 
 
 def convert(opts):
@@ -297,6 +298,12 @@ def get_style(name):
         return Drawstyles[name]
     else:
         print("Could not find Style named:",name)
+        possibles = [n for n in Drawstyles.keys() if n.find(name[:len(name)//2]) > -1]
+        temp = [n for n in Drawstyles.keys() if n.find(name[len(name)//2:]) > -1]
+        for t in temp:
+            if t not in possibles:
+                possibles.append(t)
+        print("Simlarly named styles:",possibles)
         return None
         
     

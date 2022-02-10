@@ -171,12 +171,14 @@ class Drawstyle(object):
         #
         - tieupstyle = [ticks, border, [solid|dot|number|XO] ]
         - drawdownstyle = [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
-        - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO], row_length }
-          - for warp row_length is howmany threads before a line break to spread down page
+        - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO] }
         - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
         - tick_style = [mod:4, color:(200, 0, 0)],
         - floats_style = { show, count, 'color':(R,G,B) }
         - spacing_style = [clarity, thinner]
+        future:
+          - row_length is howmany threads before a line break to spread down page
+          - will need new formatting fields for showing grouped structures
     """
     
     def __init__(self, name = 'Default',
@@ -184,11 +186,12 @@ class Drawstyle(object):
                  layout='american', hide=None, show=None,
                  tick_style={'mod':4, 'color':(200, 0, 0), 'length':2, "showtext":True},
                  tieupstyle={'ticks': True, 'style': 'number'},
-                 warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number', 'row_length':None},
+                 warpstyle={'ticks':True, 'usethread_color':True, 'style': 'number'},
                  weftstyle={'ticks':True, 'usethread_color':True, 'style': 'number'},
                  drawdown_style="box",
                  interlace_width=1,
-                 boxstyle={'size':20, 'outline_color':(90, 90, 90), 'fill_color':(0,0,0)},
+                 vector_shading_width=1,
+                 boxstyle={'size':20, 'outline_color':(90, 90, 90), 'fill_color':(0,0,0),'vector_width':0.5},
                  floats_style={'show':False, 'count':3, 'color':(200,0,0)},
                  spacing_style="clarity",
                  clarity_factor=0.8,
@@ -216,6 +219,7 @@ class Drawstyle(object):
         self.weftstyle = weftstyle
         self.drawdown_style = drawdown_style
         self.interlace_width = interlace_width
+        self.vector_shading_width = vector_shading_width
         self.boxstyle = boxstyle
         self.floats_style = floats_style
         self.spacing_style = spacing_style
@@ -266,9 +270,6 @@ class Drawstyle(object):
     @property
     def warp_style(self):
         return self.warpstyle['style']
-    @property
-    def warp_row_length(self):
-        return self.warpstyle['row_length']
     # wefts 
     @property
     def weft_tick_active(self):
@@ -289,6 +290,9 @@ class Drawstyle(object):
     @property
     def boxfill_color(self):
         return self.boxstyle['fill_color']
+    @property
+    def box_vec_stroke(self):
+        return self.boxstyle['vector_width']
     # floats
     @property
     def show_floats(self):
@@ -338,6 +342,7 @@ class Drawstyle(object):
             'weftstyle'    : self.weftstyle,
             'drawdown_style' : self.drawdown_style,
             'interlace_width': self.interlace_width,
+            'vector_shading_width'  : self.vector_shading_width,
             'boxstyle'       : self.boxstyle,      #!
             'floats_style'   : self.floats_style,  #!
             'spacing_style'  : self.spacing_style,
@@ -361,6 +366,7 @@ class WarpThread(object):
         self.color = color
         self.shaft = shaft
         self.spacing = spacing
+        self.css_label = None # for SVG styles
 
     def __repr__(self):
         return '<WarpThread color:%s shaft:%s>' % (self.color.rgb, self.shaft)
@@ -374,14 +380,10 @@ class WeftThread(object):
         if color and not isinstance(color, Color):
             color = Color(color, True)
         self.color = color
-        # print("huh",shafts)
-        # print("huh",treadles)
-        # !! when loading from json we DO have both... Hmmm what to do
-        # assert not (shafts and treadles), \
-            # "can't have both shafts (liftplan) and treadles specified"
         self.treadles = treadles or set()
         self.shafts = shafts or set()
         self.spacing = spacing
+        self.css_label = None # for SVG styles
 
     @property
     def connected_shafts(self):
@@ -407,15 +409,23 @@ class Shaft(object):
     """
     Represents a single shaft of the loom.
     """
-    pass
+    def __init__(self, index):
+        self.index = index
+        
+    def __repr__(self):
+        return '<Shaft %d>' % (self.index)
 
 
 class Treadle(object):
     """
     Represents a single treadle of the loom.
     """
-    def __init__(self, shafts=None):
+    def __init__(self, index, shafts=None):
         self.shafts = shafts or set()
+        self.index = index
+        
+    def __repr__(self):
+        return '<Treadle %d, using shafts %s>' % (self.index, sorted([s.index for s in self.shafts]))
 
 
 class DraftError(Exception):
@@ -436,16 +446,16 @@ class Draft(object):
         self.start_at_lowest_thread = start_at_lowest_thread
 
         self.shafts = []
-        for __ in range(num_shafts):
-            self.shafts.append(Shaft())
+        for i in range(num_shafts):
+            self.shafts.append(Shaft(i+1))
 
         self.treadles = []
-        for __ in range(num_treadles):
-            self.treadles.append(Treadle())
+        for i in range(num_treadles):
+            self.treadles.append(Treadle(i+1))
 
         self.warp = [] # holds the WarpThreads
         self.weft = [] # holds the WeftThreads
-         # unique yarn spacing,color stats
+         # unique yarn spacing,color stats from gather_metrics()
         self.thread_stats = {"weft":[],           # list of (colour,spacing,count)
                              "warp":[],           # list of (colour,spacing,count)
                              "warp_spacings":[],  # list of (spacing,count)
@@ -455,6 +465,9 @@ class Draft(object):
                              "unique_threads" :[],# number of unique threads used in draft
                              "selvedge_floats":[],# list of lengths of warp threads on sides
                             }
+        
+        # css labels for svg
+        self.css_colors = []
         
         self.warp_units = warp_units
         self.weft_units = weft_units
@@ -599,6 +612,31 @@ class Draft(object):
         else:
             self.weft.insert(index, thread)
 
+    def assign_css_labels(self, threads, stats, suffix):
+        """ assign css labels to unique threads in warp and weft independently.
+            Used by SVG renderer
+            called from process_draft()
+        """
+        # prep css labels
+        labels = []
+        for i,(c,s,_) in enumerate(stats):
+            labels.append([c,s,i,"%scol%d"%(suffix,i)])
+        # remember for svg hashing if required
+        self.hash_colorkeys = labels
+        # assign labels to threads
+        for thread in threads:
+            color = thread.color
+            spacing = thread.spacing
+            # find the right color/spacing match
+            for c,s,i,name in labels:
+                if c==color and s==spacing:
+                    thread.css_label = name
+                    # remember for svg hashing if required
+                    thread.css_hash = i
+                    break
+        # remember name:color relationship for svg renderer
+        self.css_colors.extend([[name,color] for color,_,_,name in labels])
+        
     def _count_colour_spacings(self, threads):
         " threads are self.weft or self.warp -usedby gather_metrics"
         # extract weft color, spacing numbers
@@ -648,9 +686,9 @@ class Draft(object):
             if s and s not in all_spacings:
                 all_spacings.append(s)
         self.thread_stats["summary"] = sorted(all_spacings)
-        
-        # Warp/WeftBalance
+
         floats = self.computed_floats
+        # Warp/WeftBalance
         warp_count = sum([length+1 for start, end, visible, length, thread in floats
                                    if visible==True and isinstance(thread, WarpThread)])
         weft_count = sum([length+1 for start, end, visible, length, thread in floats
@@ -670,7 +708,6 @@ class Draft(object):
         self.thread_stats["unique_threads"] = unique_threads
         
         # Floating Selvedges required ?
-        floats = self.computed_floats
         start,end = 0,len(self.warp)-1
         longest = [length for s, e, visible, length, thread in floats
                              if (s[0]==start or s[0]==end) and isinstance(thread, WarpThread)]
@@ -706,6 +743,9 @@ class Draft(object):
         " after reading do these processes to fill in some reporting datastructures "
         self.computed_floats = list(self.compute_floats())
         self.metrics = self.gather_metrics()
+        # uniquely name each unique thread (warp,weft independent)
+        self.assign_css_labels(self.warp, self.thread_stats["warp"], "warp")
+        self.assign_css_labels(self.weft, self.thread_stats["weft"], "weft")
         # collate notes
         for n in self.notes:
             if n and n.lower() != "nil":
@@ -780,6 +820,53 @@ class Draft(object):
             longest.append(self._longest_float(floats, back, WeftThread))                             
         return longest
 
+    def get_position(self, thread, start, end, boxsize, x_reversed=False):
+        """ Iterate over the threads calculating the proper position
+            for any given float to be drawn in the drawdown
+                - inefficient
+                - should be stored on thread like yarn_width or in compute_floats #!
+                 change compute_floats() to return this also
+        """
+        num_warp_threads = len(self.warp)
+        # reversed for back of cloth
+        begin = num_warp_threads
+        step = -1
+        if x_reversed:
+            step = 1
+        # if isinstance(thread, WarpThread):
+            # print(thread,thread.spacing,thread.yarn_width) #!
+        if thread.spacing:
+            # starty (step through the wefts)
+            w = 0
+            for i in range(start[1]):
+                w += self.weft[i].yarn_width
+            starty = w
+            # endy
+            w = 0
+            for i in range(end[1]+1):
+                w += self.weft[i].yarn_width
+            endy = w
+            # startx (step through the warps)
+            w = 0
+            for i in range(num_warp_threads-1, end[0], -1):
+                w += self.warp[i].yarn_width
+            startx = w
+            # endx
+            w = 0
+            for i in range(num_warp_threads-1, start[0]-1, -1):
+                w += self.warp[i].yarn_width
+            endx = w
+
+        else: # no spacing info so use pixels_per_square (boxsize)
+            startx = (num_warp_threads - end[0]-1) * boxsize 
+            starty = start[1] * boxsize
+            endx = (num_warp_threads - start[0]) * boxsize
+            endy = (end[1] + 1) * boxsize
+        #
+        result_start = (startx, starty)
+        result_end   = (endx, endy)
+        return (result_start, result_end)
+        
     def reduce_shafts(self):
         """
         Optimize to use the fewest number of shafts, to attempt to make a
