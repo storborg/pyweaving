@@ -308,13 +308,14 @@ def get_style(name):
         
     
 def main(argv=sys.argv):
-    p = argparse.ArgumentParser(prog='pyweaving', description='Weaving utilities.',
+    p = argparse.ArgumentParser(prog='pyweaving', 
+                                description='Weaving utilities for wif files.',
                                 epilog='Generators like "tartan","twill","satin" have a --render option in addition to outfile',
                                 # can supply a file of args instead of commandline
                                 fromfile_prefix_chars='@')
 
-    subparsers = p.add_subparsers(help='sub-command help')
-
+    subparsers = p.add_subparsers(help='Sub-command help')
+    
     # Render a wif file
     p_render = subparsers.add_parser(
         'render', help='Render a draft.')
@@ -393,4 +394,7 @@ def main(argv=sys.argv):
     # copy directory to outfile if not supplied
     if  'outfile' in opts and opts.outfile and "infile" in opts:
         opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)
-    return opts.function(opts)
+    if len(argv) > 1:
+        return opts.function(opts)
+    else:
+        p.print_help()
