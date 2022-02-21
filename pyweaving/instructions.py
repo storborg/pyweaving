@@ -1,11 +1,7 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import os.path
 import time
 import json
-
-from six.moves import input
 
 
 def print_shafts(draft, connected):
