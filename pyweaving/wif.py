@@ -78,6 +78,9 @@ class WIFReader(object):
         if has_warp_colors:
             warp_color_map = {}
             for thread_no, value in self.config.items('WARP COLORS'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     warp_color_map[int(thread_no)] = int(value)
         else:
@@ -98,6 +101,9 @@ class WIFReader(object):
         threading_map = {}
         if has_threading:
             for thread_no, value in self.config.items('THREADING'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     if self.zerobased : thread_no = str(int(thread_no)+1)
                     threading_map[int(thread_no)] = \
@@ -111,6 +117,9 @@ class WIFReader(object):
         warp_spacing_map = {}
         if has_warp_spacing:
             for thread_no, value in self.config.items('WARP SPACING'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     warp_spacing_map[int(thread_no)] = float(value)
         
@@ -161,6 +170,9 @@ class WIFReader(object):
         if has_weft_colors:
             weft_color_map = {}
             for thread_no, value in self.config.items('WEFT COLORS'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     weft_color_map[int(thread_no)] = int(value)
         else:
@@ -180,6 +192,9 @@ class WIFReader(object):
         if has_liftplan:
             liftplan_map = {}
             for thread_no, value in self.config.items('LIFTPLAN'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     # some wif files have illegal thread numbers
                     # so cutoff anything higher than found in THREADING
@@ -191,6 +206,9 @@ class WIFReader(object):
         if has_treadling:
             treadling_map = {}
             for thread_no, value in self.config.items('TREADLING'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     if self.zerobased : thread_no = str(int(thread_no)+1)
                     try:
@@ -208,6 +226,9 @@ class WIFReader(object):
         weft_spacing_map = {}
         if has_weft_spacing:
             for thread_no, value in self.config.items('WEFT SPACING'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if thread_no not in [';','#']: # check for comments ourselves
                     weft_spacing_map[int(thread_no)] = float(value)
 
@@ -250,13 +271,17 @@ class WIFReader(object):
 
     def put_tieup(self, draft):
         for treadle_no, value in self.config.items('TIEUP'):
-            if treadle_no not in [';','#']: # check for comments ourselves
-                if int(treadle_no)-1 < len(draft.treadles):
-                    treadle = draft.treadles[int(treadle_no) - 1]
-                    shaft_nos = [int(sn) for sn in value.split(',')]
-                    for shaft_no in shaft_nos:
-                        shaft = draft.shafts[shaft_no - 1]
-                        treadle.shafts.add(shaft)
+            if value:
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
+                if treadle_no not in [';','#']: # check for comments ourselves
+                    if int(treadle_no)-1 < len(draft.treadles):
+                        treadle = draft.treadles[int(treadle_no) - 1]
+                        shaft_nos = [int(sn) for sn in value.split(',')]
+                        for shaft_no in shaft_nos:
+                            shaft = draft.shafts[shaft_no - 1]
+                            treadle.shafts.add(shaft)
 
     def read(self):
         """
@@ -303,6 +328,9 @@ class WIFReader(object):
         if self.getbool('CONTENTS', 'COLOR TABLE'):
             wif_palette = {}
             for color_no, value in self.config.items('COLOR TABLE'):
+                # maybe a comment on end of line (pixeLoom6.7.5)
+                if value.find(";") > -1:
+                    value = value[:value.find(";")].strip()
                 if color_no not in [';','#']: # check for comments ourselves
                     channels = [int(ch) for ch in value.split(',')]
                     channels = [int(round(ch * (255. / palette_range[1])))
