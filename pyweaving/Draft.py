@@ -16,11 +16,21 @@ class WarpThread(object):
     def __init__(self, color=None, shaft=None, spacing=None):
         if color and not isinstance(color, Color):
             color = Color(color, True)
-        self.color = color
+        self._color = color
         self.shaft = shaft
         self.spacing = spacing
         self.css_label = None # for SVG styles
-
+    @property
+    def color(self):
+        return self._color
+         
+    @color.setter
+    def color(self, color):
+        if color and not isinstance(color, Color):
+            color = Color(color, True)
+        print("setter method called", color)
+        self._color = color
+        
     def __repr__(self):
         return '<WarpThread color:%s shaft:%s>' % (self.color.rgb, self.shaft)
 
@@ -32,9 +42,9 @@ class WeftThread(object):
     def __init__(self, color=None, shafts=None, treadles=None, spacing=None):
         if color and not isinstance(color, Color):
             color = Color(color, True)
-        self.color = color
-        self.treadles = treadles or set()
-        self.shafts = shafts or set()
+        self._color = color
+        self.treadles = treadles or set()   # has treadles if not liftplan
+        self.shafts = shafts or set()       # has shafts if a liftplan
         self.spacing = spacing
         self.css_label = None # for SVG styles
 
@@ -43,12 +53,21 @@ class WeftThread(object):
         if self.shafts:
             return self.shafts
         else:
-            assert self.treadles
+            # assert self.treadles #!!
             ret = set()
             for treadle in self.treadles:
                 ret.update(treadle.shafts)
             return ret
-
+    @property
+    def color(self):
+        return self._color
+        
+    @color.setter
+    def color(self, color):
+        if color and not isinstance(color, Color):
+            color = Color(color, True)
+        self._color = color
+        
     def __repr__(self):
         if self.treadles:
             return '<WeftThread color:%s treadles:%s>' % (self.color.rgb,
@@ -220,21 +239,27 @@ class Draft(object):
         """
         return deepcopy(self)
 
-    def add_warp_thread(self, color=None, index=None, shaft=0, spacing=None):
+    def add_warp_thread(self, color=None, index=None, shaft=None, spacing=None):
         """
         Add a warp thread to this draft.
+        shaft may be None, an integer or a member of self.shafts
         """
-        if not isinstance(shaft, Shaft):
+        if isinstance(shaft, int):
             shaft = self.shafts[shaft]
-        thread = WarpThread(
-            color=color,
-            shaft=shaft,
-            spacing=spacing,
-        )
+        
         if index is None:
+            thread = WarpThread(color=color,
+                                shaft=shaft,
+                                spacing=spacing )
             self.warp.append(thread)
-        else:
-            self.warp.insert(index, thread)
+        else: # threads not in numerical order
+            if index > len(self.warp):
+                for i in range(index - len(self.warp)): #+1
+                    self.warp.append(WarpThread())
+            thread = self.warp[index]
+            thread.color = color
+            thread.shaft = shaft
+            thread.spacing = spacing
 
     def add_weft_thread(self, color=None, index=None,
                         shafts=None, treadles=None, spacing=None):
@@ -244,7 +269,7 @@ class Draft(object):
         shafts = shafts or set()
         shaft_objs = set()
         for shaft in shafts:
-            if not isinstance(shaft, Shaft):
+            if isinstance(shaft, int):
                 shaft = self.shafts[shaft]
             shaft_objs.add(shaft)
         treadles = treadles or set()
@@ -262,7 +287,14 @@ class Draft(object):
         if index is None:
             self.weft.append(thread)
         else:
-            self.weft.insert(index, thread)
+            if index > len(self.weft):
+                for i in range(index - len(self.weft)): #+1
+                    self.weft.append(WeftThread())
+            thread = self.weft[index]
+            thread.color = color
+            thread.shaft = shaft_objs
+            thread.treadles = treadle_objs,
+            thread.spacing = spacing
 
     def assign_css_labels(self, threads, stats, suffix):
         """ assign css labels to unique threads in warp and weft independently.
@@ -456,7 +488,10 @@ class Draft(object):
         warp_len = len(self.warp)-1
         for i in range(lengths.count(warp_len)):
             lengths.remove(warp_len)
-        return max(lengths)
+        if lengths: #!!
+            return max(lengths)
+        else:
+            return 0
 
     def compute_longest_floats(self, front=True, back=False):
         """ Return tuple containing pair of longest floats for warp, weft.

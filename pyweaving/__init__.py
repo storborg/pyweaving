@@ -3,6 +3,7 @@
 from .Color import * 
 from .Drawstyle import *
 from .Draft import *
+from .repeats import *
 
 __version__ = '0.8'
 

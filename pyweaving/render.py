@@ -222,14 +222,15 @@ class ImageRenderer(object):
         """ Add the title from Notes and the filename load from
         """
         offsetx,offsety = startpos
-        longest = titles[0]
+        longest = ""
         for t in titles:
             if len(t) > len(longest): longest = t
+                
         textw, texth = draw.textsize(longest, font=self.title_font)
         lineheight = self.style.title_font_size_factor *1.2 #(for spacing)
-        
         endwidth = offsetx + textw/self.style.box_size
         endheight = int(offsety + lineheight * len(titles))+1
+
         for i,title in enumerate(titles[:-1]):
             draw.text((offsetx, (offsety + i*lineheight) * self.pixels_per_square),
                        title,
@@ -839,6 +840,7 @@ class ImageRenderer(object):
     def save(self, filename):
         im = self.make_pil_image()
         im.save(filename)
+        print("Wrote image:",filename)
 
 
 ### SVG section
@@ -1698,3 +1700,4 @@ class SVGRenderer(object):
         s = self.make_svg_doc(filename)
         with open(filename, 'w') as f:
             s.write(f, pretty=True, indent=2)
+        print("Wrote image:",filename)

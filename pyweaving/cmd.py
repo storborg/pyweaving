@@ -13,6 +13,7 @@ from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
+from .generators.raster import point_threaded, extract_draft
 
 # support for local styles.json in ./pyweaving
 from shutil import copy2
@@ -65,6 +66,36 @@ def generate_unique_filename(label, directory, ext):
         result += "-%02d"%(last+1)
     result = result+"."+ext
     return result
+    
+def write_wif_auto(wif, opts, name_part, prefix):
+    """ save wif using name_part as principle label
+        Also render if defined
+    """
+    # save wif file
+    autoname = name_part.replace("/","") # new filename
+    current_dir = getcwd()+"\\"
+    if opts.outfile == 'auto':
+        opts.outfile = generate_unique_filename(prefix+autoname, current_dir, "wif")
+    else:
+        opts.outfile = ensure_ext(opts.outfile, 'wif')
+        # force current_dir if not supplied
+        opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
+    WIFWriter(wif).write(opts.outfile)
+    
+    # render png to file as well ?
+    if opts.render:
+        if opts.renderfile == "auto":
+            # generate filename from shape and current_dir directory
+            opts.renderfile = generate_unique_filename(prefix+autoname, current_dir, "png")
+        else:
+            opts.renderfile = ensure_ext(opts.renderfile, 'png')
+            # force pwd if not supplied
+            opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
+        # set the renderstyle
+        style = get_style(opts.style)
+        # override renderstyle
+        pass
+        ImageRenderer(wif, style).save(opts.renderfile) 
 
 def gen_tartan(opts):
     """ create a tartan pattern from a pattern 
@@ -74,65 +105,42 @@ def gen_tartan(opts):
     wif = tartan(opts.sett, opts.repeats, opts.direction)
     if wif:
         wif.process_draft()
-    
         # save wif file
-        autoname = opts.sett.replace("/","") # new filename
-        current_dir = getcwd()+"\\"
-        if opts.outfile == 'auto':
-            opts.outfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "wif")
-        else:
-            opts.outfile = ensure_ext(opts.outfile, 'wif')
-            # force current_dir if not supplied
-            opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
-        WIFWriter(wif).write(opts.outfile)
-        
-        # render png to file as well
-        if opts.render:
-            if opts.renderfile == "auto":
-                # generate filename from sett and current_dir directory
-                opts.renderfile = generate_unique_filename('gen_tartan_'+autoname, current_dir, "png")
-            else:
-                opts.renderfile = ensure_ext(opts.renderfile, 'png')
-                # force pwd if not supplied
-                opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
-            # set the renderstyle
-            style = get_style(opts.style)
-            # override renderstyle
-            pass
-            ImageRenderer(wif, style).save(opts.renderfile)
+        write_wif_auto(wif, opts, opts.sett, 'gen_tartan_')
     
     
 def gen_twill(opts):
+    """ create a twill pattern from a pattern 
+        - save as wif and optionally render as png
+        - incoming pattern in form '2/2 3/1' for a combined twill
+    """
     wif = twill(opts.shape, opts.repeats)
     if wif:
         wif.process_draft()
-        
         # save wif file
-        autoname = opts.shape.replace("/","_").upper() # new filename
-        current_dir = getcwd()+"\\"
-        if opts.outfile == 'auto':
-            opts.outfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "wif")
-        else:
-            opts.outfile = ensure_ext(opts.outfile, 'wif')
-            # force current_dir if not supplied
-            opts.outfile = outfile_if_missing_dir(current_dir, opts.outfile)
-        WIFWriter(wif).write(opts.outfile)
+        write_wif_auto(wif, opts, opts.shape, 'gen_twill_')
+ 
+def gen_from_drawdown(opts):
+    """ create a draft from an image of a drawdown
+        - save as wif and optionally render as png
+        - incoming shafts is a target for detecting number of shafts in the image
+    """
+    wif = extract_draft(opts.imagefile, shafts=opts.shafts, find_core=opts.core)
+    if wif:
+        wif.process_draft()
+        # save wif file
+        write_wif_auto(wif, opts, opts.imagefile, 'gen_draft_')
         
-        # render png to file as well
-        if opts.render:
-            if opts.renderfile == "auto":
-                # generate filename from shape and current_dir directory
-                opts.renderfile = generate_unique_filename('gen_twill_'+autoname, current_dir, "png")
-            else:
-                opts.renderfile = ensure_ext(opts.renderfile, 'png')
-                # force pwd if not supplied
-                opts.renderfile = outfile_if_missing_dir(current_dir, opts.renderfile)
-            # set the renderstyle
-            style = get_style(opts.style)
-            # override renderstyle
-            pass
-            ImageRenderer(wif, style).save(opts.renderfile)
-        # print(opts.outfile, opts.render, opts.renderfile, opts.renderstyle) 
+def gen_image(opts):
+    """ create a draft from a pictorial image. Uses a point draw.
+        - save as wif and optionally render as png
+    """
+    wif = point_threaded(opts.imagefile, shafts=opts.shafts, repeats=opts.repeats)
+    if wif:
+        wif.process_draft()
+        # save wif file
+        write_wif_auto(wif, opts, opts.imagefile, 'gen_image_')
+    
     
 def load_draft(infile):
     """ Load the draft file in wif or json format.
@@ -387,6 +395,32 @@ def main(argv=sys.argv):
     p_twill.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
+    
+    # Drawdown generator
+    p_drawdown  = subparsers.add_parser(
+        'drawdown', 
+        help='Create a wif from a supplied image of a drawdown (and optionally render).')
+    p_drawdown.add_argument('imagefile')
+    p_drawdown.add_argument('--shafts', default='8',help='How many shafts to use. E.g. 8, 8x16')
+    p_drawdown.add_argument('--core', action='store_true',help='Reduce to non-repeating core draft')
+    p_drawdown.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
+    p_drawdown.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
+    p_drawdown.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
+    p_drawdown.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
+    p_drawdown.set_defaults(function=gen_from_drawdown)
+    
+    # Image generator
+    p_image  = subparsers.add_parser(
+        'image', 
+        help='Create a wif from a supplied pictorial image (and optionally render).')
+    p_image.add_argument('imagefile')
+    p_image.add_argument('--shafts', default='40',help='How many shafts to use. E.g. 40')
+    p_image.add_argument('--repeats', default='2',help='How many repeats to create')
+    p_image.add_argument('--render', action='store_true',help='Also render to file. Add auto to get an autonamed imagefile.')
+    p_image.add_argument('--renderfile', default='auto',help='filename or "auto"(default) for an autoname.')
+    p_image.add_argument('--style', default='Default',help='Use a named style from styles.json in ~/.pyweaving directory.')
+    p_image.add_argument('outfile', default='auto',help='Save to this file or "auto"(default) for an autoname in current directory.')
+    p_image.set_defaults(function=gen_image)
 
     opts, args = p.parse_known_args(argv[1:])
     # copy directory to outfile if not supplied

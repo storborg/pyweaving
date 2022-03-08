@@ -309,6 +309,7 @@ class WIFReader(object):
         liftplan = self.getbool('CONTENTS', 'LIFTPLAN')
         treadling = self.getbool('CONTENTS', 'TREADLING')
         # ideally TREADLING and LIFTPLAN are mutually exclusive,
+		#! actually both legit and we should preserve (future feature)
         assert not (liftplan and treadling), \
             "WIF contains both liftplan and treadling"
         #!! just ignore them if included
@@ -507,6 +508,6 @@ class WIFWriter(object):
         else:
             self.write_treadling(config)
             self.write_tieup(config)
-
         with open(filename, 'w') as f:
             config.write(f)
+        print("Wrote wif:",filename)
