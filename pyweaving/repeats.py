@@ -58,11 +58,6 @@ for j,line in enumerate(ascols):
         else: newline.append(1)
     ascols[j] = newline
 
-def find_pattern(s):
-    """
-    """
-    pass
-
 
 # When looking for repeats in a sequence we might find several repeats which overlap.
 # E.g. a len=4 repeat might appear twice but inside this len4 repeat there are two len2 repeats.
@@ -103,22 +98,22 @@ def find_pattern(s):
 ###       
 def find_repeats(seq, min_match_len=2, debug=False):
     """ Find all repeats in the sequence.
-        return dictionary of all found sequences by seq length
+    return dictionary of all found sequences by seq length
     """
     found_patterns = {}
     patterns = []
     seq_len = len(seq)
     start = 0
     # step 1 fwd until halfway
-    while start < len(seq)//2+1:
+    while start < len(seq) // 2 + 1:
         # window size grows from min_match_len
-        for window in range(min_match_len, len(seq)//2+1):
-            sample = seq[start:start+window]
+        for window in range(min_match_len, len(seq) // 2 + 1):
+            sample = seq[start: start + window]
             # print(start,window,sample)
-            found = [i for i in range(seq_len) if seq[i:i+len(sample)] == sample]
-            if len(found)>1 and sample not in [f for f,_ in patterns]:
-                # print("Found",[sample,found])
-                patterns.append([sample,found])
+            found = [i for i in range(seq_len) if seq[i: i + len(sample)] == sample]
+            if len(found) > 1 and sample not in [f for f, _ in patterns]:
+                # print("Found",[sample, found])
+                patterns.append([sample, found])
         # increment start and loop
 ##        print("Next", start+1, patterns)
         start += 1
@@ -136,9 +131,9 @@ def find_repeats(seq, min_match_len=2, debug=False):
             next_p = patterns[i+1]
             # is the following for the same seq but longer
             superseded = p==next_p[0][:len(p)] and w==next_p[1]
-            if i>0:
+            if i > 0:
                 # is this one shorter than the previous entry
-                prev_p = patterns[i-1]
+                prev_p = patterns[i - 1]
                 preceded = p==prev_p[0][1:] and [q-1 for q in w] == prev_p[1]
             if not superseded and not preceded:
                 concise.append([p,w])
@@ -155,38 +150,40 @@ def find_repeats(seq, min_match_len=2, debug=False):
             found_patterns[entry].append(p)
     return found_patterns
 
+
 def prune_pattern(pattern):
     """ Prune to a minmal pattern
-        - look for smaller redundant patterns inside larger ones and remove
-        - 
+    - look for smaller redundant patterns inside larger ones and remove
+    - 
     """
     pass
-    
+
+
 def find_mirrors(seq, min_match_len=2):
     """ Find all repeats in the sequence.
-        1. Starting on left, window size = min_match_len
-        2. grow window while looking to right until seq ends or find match
-        3. then increment start by 1 and loop until reach end of seq 
-        return dictionary of all found sequences by seq length
-        step forward slowly so will get subsequences that will need pruning
+    1. Starting on left, window size = min_match_len
+    2. grow window while looking to right until seq ends or find match
+    3. then increment start by 1 and loop until reach end of seq 
+    return dictionary of all found sequences by seq length
+    step forward slowly so will get subsequences that will need pruning
     """
     found_patterns = {}
     patterns = []
     seq_len = len(seq)
     start = 0
     # step 1 fwd until halfway
-    while start < len(seq)//2+1:
+    while start < len(seq) // 2 + 1:
         # window size grows from min_match_len
-        for window in range(min_match_len, len(seq)//2): # +1 ??
-            sample = seq[start:start+window]
+        for window in range(min_match_len, len(seq) // 2):  # +1 ??
+            sample = seq[start: start + window]
             sample_rev = deepcopy(sample)[::-1]
-##            print(start,window,sample)
-            found = [i for i in range(seq_len) if seq[i:i+len(sample)] == sample_rev]
-            if len(found)>1 and sample not in [f for f,_ in patterns]:
-##                print("Found",[sample,found])
-                patterns.append([sample,found])
+            # print(start,window,sample)
+            found = [i for i in range(seq_len) if seq[i: i + len(sample)] == sample_rev]
+            if len(found) > 1 and sample not in [f for f, _ in patterns]:
+                # print("Found",[sample, found])
+                patterns.append([sample, found])
         # increment start and loop
-##        print("Next", start+1, patterns)
+        # print("Next", start+1, patterns)
         start += 1
     # all done but maybe run is stil not saved (all in single pattern)
     print("All patterns:")
@@ -199,17 +196,13 @@ if __name__ == "__main__":
     seq = mseq
     seq = ascols
     result = find_repeats(seq)
-    print("Seq =",seq, len(seq))
+    print("Seq =", seq, len(seq))
     #result = find_mirrors(mseq)
-    print("Seq =",seq)
+    print("Seq =", seq)
     print(result)
     for key in result.keys():
-        print(str(key)+":")
+        print(str(key) + ":")
         for s in result[key]:
-            print("  "+str(s))
+            print("  " + str(s))
     max_rep = max(result.keys())
-    print("Longest repeat is:",result[max_rep][0][1])
-
-
-
-    
+    print("Longest repeat is:", result[max_rep][0][1])
