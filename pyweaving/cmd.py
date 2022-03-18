@@ -5,23 +5,14 @@ import argparse
 import io  # used in convert() to get around json.dumps issues in python3
 import os.path
 from os import getcwd
-import json
 import glob  # finding numerically suffixed files in generate_unique_filename()
 
-from . import Draft, instructions, Drawstyle, get_project_root
+from . import Draft, instructions, get_style
 from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
 from .generators.raster import point_threaded, extract_draft
-
-
-# support for local styles.json in ./pyweaving
-from shutil import copy2
-homedir = get_project_root()
-data_path = os.path.join(homedir, 'data')  # original style.json file is here
-
-Drawstyles = {}  # loaded styles go in here
 
 
 def outfile_if_missing_dir(infile, outfile):
@@ -259,68 +250,6 @@ def stats(opts):
         print("Treadles:", len(draft.treadles))
         print("Longest Float (Warp):", warp_longest)
         print("Longest Float (Weft):", weft_longest)
-
-
-def load_styles(filename='styles.json'):
-    """ Load the styles into Drawstyles dict.
-    If no .pyweaving dir create it and
-    copy original syles.json from /data
-    """
-    global Drawstyles
-    platform = sys.platform
-    if platform.find('win') > -1:  # windows
-        dir = os.path.join(os.path.expanduser('~'), 'Documents', '.pyweaving')
-    elif platform.find('dar'):  # mac
-        dir = os.path.join(os.path.expanduser('~'), '.pyweaving')
-    else:  # linux
-        dir = os.path.join(os.path.expanduser('~'), '.pyweaving')
-    if not os.path.exists(dir):
-        os.makedir(dir)
-        # copy styles.json master from data dir
-        copy2(os.path.join(data_path, 'styles.json'), dir)
-    infile = os.path.join(dir, 'styles.json')
-
-    if os.path.exists(infile):
-        with open(infile, 'r') as file:
-            styles = json.load(file)
-            for name, attributes in styles.items():
-                # Make the Drawstyle() or copy an existing is derived_from
-                attributes.pop('name')  # pop so we won't be using these again
-                parent = attributes.pop('derived_from')
-                if parent:
-                    style = Drawstyles[parent].copy
-                    style.name = name
-                    style.derived_from = parent
-                else:
-                    style = Drawstyle()
-                    style.name = name
-                # Populate the class by copying defined fields from a temp Drawstyle
-                temp = Drawstyle(**attributes)
-                for a in attributes.keys():  # using string as accessor
-                    setattr(style, a, getattr(temp, a))
-                # save it
-                Drawstyles[name] = style
-    else:
-        print("Could not find styles.json at:", infile)
-
-
-def get_style(name):
-    """ load styles if not loaded and
-    return the named style
-    """
-    if not Drawstyles:
-        load_styles()
-    if name in Drawstyles.keys():
-        return Drawstyles[name]
-    else:
-        print("Could not find Style named:", name)
-        possibles = [n for n in Drawstyles.keys() if n.find(name[:len(name) // 2]) > -1]
-        temp = [n for n in Drawstyles.keys() if n.find(name[len(name) // 2:]) > -1]
-        for t in temp:
-            if t not in possibles:
-                possibles.append(t)
-        print("Simlarly named styles:", possibles)
-        return None
 
 
 def main(argv=sys.argv):

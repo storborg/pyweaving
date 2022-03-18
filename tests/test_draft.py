@@ -1,9 +1,7 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 from unittest import TestCase
 
-from .. import Draft, Color
+from pyweaving import Draft, Color
 
 
 class TestDraft(TestCase):

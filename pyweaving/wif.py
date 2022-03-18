@@ -6,6 +6,9 @@ from . import Draft, __version__
 class WIFReader(object):
     """
     A reader for a specific WIF file.
+
+    :param filename: the wif filename
+    :type filename: str
     """
     # TODO
     # - add support for metadata: author, notes, etc.
@@ -16,6 +19,8 @@ class WIFReader(object):
     allowed_units = ('decipoints', 'inches', 'centimeters')
 
     def __init__(self, filename):
+        """Constructor method
+        """
         self.filename = filename
         # at least one author uses 0 based (instead of 1) counting for
         # threading/treadling/color entries in WARP and WEFT
@@ -28,6 +33,17 @@ class WIFReader(object):
             return False
 
     def put_metadata(self, draft):
+        """
+        Populate the draft in-place with metadata extracted from the wif file.
+
+        Specifically: date,title,author, etc
+
+        - from Contents: Text, Notes
+        - and the publishing software: name and version
+
+        :param draft: a draft to fill with metadata
+        :type draft: class:`Draft`
+        """
         # generally date is always 1997 date of wif spec.
         draft.date = self.config.get('WIF', 'Date', fallback="April 20, 1997")
         # Name, author, notes, etc.
@@ -65,6 +81,9 @@ class WIFReader(object):
             draft.draft_title.append("from: " + self.filename)
 
     def put_warp(self, draft, wif_palette):
+        """
+        Constructor method
+        """
         warp_thread_count = self.config.getint('WARP', 'Threads')
         warp_units = self.config.get('WARP', 'Units', fallback='centimeters').lower()
         assert warp_units in self.allowed_units, \

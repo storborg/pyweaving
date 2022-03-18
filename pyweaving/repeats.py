@@ -2,21 +2,21 @@
 from copy import deepcopy
 
 # mirror check
-mseq = [1,2,3,4,1,4, 4,1,4,3,2,1]
-mseq = [1,2,3,4,1,4, 2, 4,1,4,3,2,1]
-mseq = [6, 2,3,4,1,4, 4,1,4,3,2, 1]
-mseq = [1,2,3,4, 1,4,4,1, 1,2,3,4]
-mseq = [1,2,3,4, 1,4,2,4,1, 1,2,3,4]
-mseq = [1,2,3,4,1,4,1,1,4,1,1,1,1,4,1,1,4,1,4,3,2,1]
-mseq = [1,2,2,1,1,4,1,1,4,1,0,1,1,4,1,1,0,1,4,3,2,1]
+mseq = [1, 2, 3, 4, 1, 4, 4, 1, 4, 3, 2, 1]
+mseq = [1, 2, 3, 4, 1, 4, 2, 4, 1, 4, 3, 2, 1]
+mseq = [6, 2, 3, 4, 1, 4, 4, 1, 4, 3, 2, 1]
+mseq = [1, 2, 3, 4, 1, 4, 4, 1, 1, 2, 3, 4]
+mseq = [1, 2, 3, 4, 1, 4, 2, 4, 1, 1, 2, 3, 4]
+mseq = [1, 2, 3, 4, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 4, 3, 2, 1]
+mseq = [1, 2, 2, 1, 1, 4, 1, 1, 4, 1, 0, 1, 1, 4, 1, 1, 0, 1, 4, 3, 2, 1]
 #mseq = [1,2,3,4,5,6,5,4,4,5,6,5,4,1,2,1,4,5,6,5,4,4,5,6,5,4,3,2,1]
 #mseq = [1,2,3,4,5,6,4,5,6,4,5,6,5,4,1,2,1,4,5,6,4,5,6,4,5,6,5,4,3,2,1]
 
 # R,M: simple and as 2D
-rseq = [1,2,3, 2,3,2,3,2, 3,2,1]
-rseq = [[1,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[1,1]]
+rseq = [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1]
+#rseq = [[1,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[1,1]]
 # R: super simple 2D
-##rseq = [1,2,3,4,5,3,4,5,6,7,8,6,7,8,2,3,4,6,7,8,9]
+rseq = [1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 6, 7, 8, 2, 3, 4, 6, 7, 8, 9]
 # rseq = [[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1]]
 
 ascols = [(0, 0, 0, 0, 14, 2, 14, 12, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0, 0, 14, 14, 14, 14, 0, 0, 14, 7, 0, 0, 14, 9),
@@ -51,11 +51,13 @@ ascols = [(0, 0, 0, 0, 14, 2, 14, 12, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0, 0, 14
           (0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0, 0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0),
           (0, 0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0, 0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0),
           (0, 0, 0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0, 0, 0, 0, 14, 14, 14, 14, 0, 0, 14, 14, 0, 0, 14, 14, 0)]
-for j,line in enumerate(ascols):
+for j, line in enumerate(ascols):
     newline = []
     for i in line:
-        if i == 0: newline.append(0)
-        else: newline.append(1)
+        if i == 0:
+            newline.append(0)
+        else:
+            newline.append(1)
     ascols[j] = newline
 
 
@@ -63,18 +65,18 @@ for j,line in enumerate(ascols):
 # E.g. a len=4 repeat might appear twice but inside this len4 repeat there are two len2 repeats.
 #      so they will also appear but 4 of them.
 # so we also need to work out which of these repats is teh most important.
-### Mirrors wil also appear in this way (min length 3)
+# Mirrors wil also appear in this way (min length 3)
 # When trying to discover all mirrors and repeats in a draft we wil need to look for a good strategy.
 # - in general the sequence that is shortest and conatins the most entities is probably the best description
 
-### Outputs:
+# Outputs:
 # (assuming in rows)
 # - we want to see a sequence of col indexes in each section
 # - nested.
 # E.g. [{R1: [1-4]}, {M1: [5-17]}, {R1: [18-21]}]
 
 
-### Strategy:
+# Strategy:
 # 1. look for an outer mirror
 #  1a. if not at boundary then check to see if outer is a repeat
 # 2. look for repeats inside one of the mirrors - keep the largest number of repeats
@@ -82,7 +84,7 @@ for j,line in enumerate(ascols):
 # 4 keep repeating until no repeats or mirros found.
 # present.
 
-### Implementation:
+# Implementation:
 # - keep a running list of ranges and what has been checked for R and M
 # - end when all checked.
 # insert into each sequence as it is broken up.
@@ -90,15 +92,28 @@ for j,line in enumerate(ascols):
 # types are SN = a sequence, RN = a repeat, MN = a mirror
 # [ SN[1-100] ]
 
-### In practice we collect all repeas (and al mirors) on initial inspection
-# - so want to find nesting and oragnise into eth final structure
+# In practice we collect all repeats (and all mirors) on initial inspection
+# - so want to find nesting and organise into the final structure
 
 
-
-###       
 def find_repeats(seq, min_match_len=2, debug=False):
-    """ Find all repeats in the sequence.
-    return dictionary of all found sequences by seq length
+    """
+    Find all repeats in the sequence.
+    Return a dictionary of found sequence lengths. Where each entry is
+     - A list of twp lists.
+     - first is the sequences found (of length = the key)
+     - second is the start positions of each repeat in the sequence
+
+    Args:
+        list: seq. A one or 2D list of a sequence with possible repeats
+
+    Returns:
+        dict: of sequence lengths containing two lists; found sequences, positions of first item in list
+
+    Notes:
+        Subset sequences have been removed. E.g. if a 1,2 repeat is found and a 1,2,3 repeats is also found
+        and there are no 1,2 repeats that are not also in 1,2,3 repeats - then only the 1,2,3 repeat will
+        be returned.
     """
     found_patterns = {}
     patterns = []
@@ -115,29 +130,29 @@ def find_repeats(seq, min_match_len=2, debug=False):
                 # print("Found",[sample, found])
                 patterns.append([sample, found])
         # increment start and loop
-##        print("Next", start+1, patterns)
+        # print("Next", start+1, patterns)
         start += 1
     # all done but maybe run is stil not saved (all in single pattern)
-    if debug: 
+    if debug:
         print("All patterns:")
         for p in patterns:
             print(p)
     # remove patterns that got longer
     concise = []
-    for i,(p,w) in enumerate(patterns[:-1]):
+    for i, (p, w) in enumerate(patterns[:-1]):
         superseded = False
         preceded = False
         if i < len(patterns):
             next_p = patterns[i+1]
             # is the following for the same seq but longer
-            superseded = p==next_p[0][:len(p)] and w==next_p[1]
+            superseded = p == next_p[0][:len(p)] and w == next_p[1]
             if i > 0:
                 # is this one shorter than the previous entry
                 prev_p = patterns[i - 1]
-                preceded = p==prev_p[0][1:] and [q-1 for q in w] == prev_p[1]
+                preceded = p == prev_p[0][1:] and [q-1 for q in w] == prev_p[1]
             if not superseded and not preceded:
-                concise.append([p,w])
-    if debug: 
+                concise.append([p, w])
+    if debug:
         print("Concise patterns:")
         for p in concise:
             print(p)
@@ -154,18 +169,19 @@ def find_repeats(seq, min_match_len=2, debug=False):
 def prune_pattern(pattern):
     """ Prune to a minmal pattern
     - look for smaller redundant patterns inside larger ones and remove
-    - 
+    -
     """
     pass
 
 
 def find_mirrors(seq, min_match_len=2):
-    """ Find all repeats in the sequence.
-    1. Starting on left, window size = min_match_len
-    2. grow window while looking to right until seq ends or find match
-    3. then increment start by 1 and loop until reach end of seq 
-    return dictionary of all found sequences by seq length
-    step forward slowly so will get subsequences that will need pruning
+    """
+    Find all repeats in the sequence.
+     1. Starting on left, window size = min_match_len
+     2. grow window while looking to right until seq ends or find match
+     3. then increment start by 1 and loop until reach end of seq
+     - return dictionary of all found sequences by seq length
+     - step forward slowly so will get subsequences that will need pruning
     """
     found_patterns = {}
     patterns = []

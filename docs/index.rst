@@ -35,7 +35,7 @@ Contents
 
 .. seealso::
 
-    `What's WIF Got to Do With It? <http://www.weavezine.com/content/whats-wif-got-do-it>`_
+    `What's WIF Got to Do With It? <https://www.weavezine.com/content/whats-wif-got-do-it.html>`_
         A brief overview of the history and purpose of WIF.
 
     `The WIF Specification <http://www.mhsoft.com/wif/wif1-1.txt>`_

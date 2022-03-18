@@ -8,21 +8,23 @@ from .Color import Color
 
 
 class Drawstyle(object):
-    """ Series of style flags for how to draw the Layout.
-    - layout = [swedish | american]
-    - hide = [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor]
-    - show = [stats, groupings, ]
-    #
-    - tieupstyle = [ticks, border, [solid|dot|number|XO] ]
-    - drawdownstyle = [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
-    - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO] }
-    - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
-    - tick_style = [mod:4, color:(200, 0, 0)],
-    - floats_style = { show, count, 'color':(R,G,B) }
-    - spacing_style = [clarity, thinner]
-    future:
+    """
+    Series of style flags for how to draw the Layout.
+      - layout = [swedish | american] - UNUSED
+      - hide = [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor] - UNUSED
+      - show = [stats, groupings, ] - UNUSED
+      - tieupstyle = [ticks, border, [solid|dot|number|XO] ]
+      - drawdownstyle = [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
+      - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO] }
+      - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
+      - tick_style = [mod:4, color:(200, 0, 0)],
+      - floats_style = { show, count, 'color':(R,G,B) }
+      - spacing_style = [clarity, thinner]
+
+    Future:
       - row_length is howmany threads before a line break to spread down page
       - will need new formatting fields for showing grouped structures
+
     """
 
     def __init__(self, name='Default',
@@ -87,115 +89,154 @@ class Drawstyle(object):
     # ticks
     @property
     def tick_mod(self):
+        """int: Tick marks shown at this frequency. E.g. 4 shows a tick every 4 yarns."""
         return self.tick_style['mod']
 
     @property
     def show_ticktext(self):
+        """bool: True means show numbers associated with each tick's position."""
         return self.tick_style['showtext']
 
     @property
     def tick_length(self):
+        """int: Length of Tick marks in box units."""
         return self.tick_style['length']
 
     @property
     def tick_color_rgb(self):
+        """tuple: Color of the Tick marks and text."""
         return self.tick_style['color'].rgb
 
     @property
     def tick_color_hex(self):
+        """str: Color of the Tick marks and text in hex form."""
         return self.tick_style['color'].hex
 
     # tieups
     @property
     def tieup_tick_active(self):
+        """bool: True means show ticks in the Tieup section."""
         return self.tieupstyle['ticks']
 
     @property
     def tieup_style(self):
+        """str: One of these: [solid | dot | number | XO]"""
         return self.tieupstyle['style']
 
     # warps
     @property
     def warp_tick_active(self):
+        """bool: True means show ticks in the Warp section."""
         return self.warpstyle['ticks']
 
     @property
     def warp_use_thread_color(self):
+        """bool: True means use the thread color as the box backgound"""
         return self.warpstyle['usethread_color']
 
     @property
     def warp_style(self):
+        """str: One of these: [solid | dot | number | XO]"""
         return self.warpstyle['style']
 
     # wefts
     @property
     def weft_tick_active(self):
+        """bool: True means show ticks in the Weft section."""
         return self.weftstyle['ticks']
 
     @property
     def weft_use_thread_color(self):
+        """bool: True means use the thread color as the box backgound"""
         return self.weftstyle['usethread_color']
 
     @property
     def weft_style(self):
+        """str: One of these: [solid | dot | number | XO]"""
         return self.weftstyle['style']
 
     # boxstyle
     @property
     def box_size(self):
+        """int: Box size - text or marker fits in here."""
         return self.boxstyle['size']
 
     @property
     def outline_color(self):
+        """tuple: RGB color of the box outline."""
         return self.boxstyle['outline_color']
 
     @property
     def boxfill_color(self):
+        """tuple: Interior RGB color of the box."""
         return self.boxstyle['fill_color']
 
     @property
     def box_vec_stroke(self):
+        """float: Only used in svg output. stroke width of box."""
         return self.boxstyle['vector_width']
 
     # floats
     @property
     def show_floats(self):
+        """bool: True means highlight long floats."""
         return self.floats_style['show']
 
     @property
     def floats_count(self):
+        """int: Report how many threads to cross to decide a long float."""
         return self.floats_style['count']
 
     @property
     def floats_color(self):
+        """tuple: RGB color of the highlighted floats."""
         return self.floats_style['color']
 
     def set_floats(self, count):
+        """int: Set how many threads to cross to decide a long float."""
         self.floats_style['show'] = True
         self.floats_style['count'] = count
 
     # general setters
     def disable_tickmarks(self):
+        """
+        bool: True means disable all tickmarks.
+        """
         self.tieupstyle['ticks'] = False
         self.warpstyle['ticks'] = False
         self.weftstyle['ticks'] = False
 
     def set_warp_weft_style(self, mode='solid'):
+        """
+        Set Warp style to One of: [solid | dot | number | XO]
+
+        Args:
+            mode (str): a style
+        """
         self.warpstyle['style'] = mode
         self.weftstyle['style'] = mode
 
     def disable_thread_color(self):
+        """
+        bool: True means disable warp and weft thread color backgrounds.
+        """
         self.warpstyle['usethread_color'] = False
         self.weftstyle['usethread_color'] = False
 
     @property
     def copy(self):
-        " Make a complete copy of this Drawstyle. "
+        """
+        Make a deepcopy of this Drawstyle.
+
+        Returns:
+            Drawstyle:
+        """
         return deepcopy(self)
 
     # Loading and saving
     def to_json(self):
-        """ Serialize a DrawStyle to its JSON representation.
+        """
+        Serialize a DrawStyle to its JSON representation.
         Counterpart to from_json()
         """
         self.tick_style['color'] = self.tick_style['color'].rgb

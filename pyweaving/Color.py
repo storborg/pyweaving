@@ -9,24 +9,36 @@ from math import floor
 class Color(object):
     """
     A color type. Internally stored as RGB, and does not support transparency.
-    - can accept, Color(), rgb tuples, or #rrggbb string
-    Generates a highlight and shadow variant for shading
-    - will change B,W primary color to see this shading
-    self.rgb, self.css, self.hex, self.hsl, self.highlight, self.shadow
+     - Accepts Color, rgb triplet or #RRGGBB strings.
+     - If shadeable True then calculate shadow and highlight variants for use in shading.
+     - Accessors are: self.rgb, self.css, self.hex, self.hsl, self.highlight, self.shadow
+
+    Args:
+        rgb_or_hex (Color, tuple, str): Color, or RGB tuple, or hex string
+        shadeable (bool, optional):  If True then cacluate highlight and shadow variants.
+        Defaults to False.
+
+    Note:
+        Will change Black or White primary colors slightly so highlight/shadow colors are visibly different.
     """
-    def __init__(self, rgb_or_hex, shadeable=False):
+    def __init__(self, rgb_or_hex="#000000", shadeable=False):
+        self.shadeable = shadeable
+		# initialise self.rgb
         if isinstance(rgb_or_hex, type("")) and rgb_or_hex[0] == '#' and len(rgb_or_hex) == 7:
-            self.hex(rgb_or_hex)
+            # self.hex(rgb_or_hex) # we are in __init__ so will not work
+            self.hex = rgb_or_hex
         elif isinstance(rgb_or_hex, type(self)):
             self.rgb = rgb_or_hex.rgb
         elif not isinstance(rgb_or_hex, tuple):
             self.rgb = tuple(rgb_or_hex)
         else:
             self.rgb = rgb_or_hex
+		# initialise self.hsl
         self.rgb2hsl()
+		# initialise self.highlight, self.shadow
         self.create_highlight()
         self.create_shadow()
-        self.shadeable = shadeable
+		# define them if required
         if self.shadeable:
             self.check_self_shadeable()
 
@@ -39,11 +51,26 @@ class Color(object):
     def __ne__(self, other):
         return self.rgb != other.rgb
 
-    def close(self, other):
-        " rgb distance between two rgb colors "
-        return abs(sum(self.rgb) - sum(other.rgb)) < 60
+    def close(self, other, distance=60):
+        """
+        True if two colors are close to each other usng RGB distance.
+
+        Args:
+            other (Color): Compare to this Color.
+            distance (int, optional): True if the distance between RGB colors is less than this.
+        Returns:
+            bool:
+
+        Note:
+            Using an overly simplistic rgb test - would be better in a different
+            color space (IHS) but close enough for our use.
+        """
+        return abs(sum(self.rgb) - sum(other.rgb)) < distance
 
     def rgb2hsl(self):
+        """
+        Convert the RGB value into a HSL and store as self.hsl
+        """
         r, g, b = [i / 255 for i in self.rgb]
         maxc = max(r, g, b)
         minc = min(r, g, b)
@@ -82,6 +109,17 @@ class Color(object):
         return p
 
     def hsl2rgb(self, h, s, ll):
+        """
+        Convert supplied HSL values into an RGB triplet
+
+        Args:
+            h (float): Hue
+            s (float): Saturation
+            l (float): Lightness
+
+        Returns:
+            RGB tuple:
+        """
         if s == 0:
             r = g = b = ll  # achromatic
         else:
@@ -98,18 +136,31 @@ class Color(object):
                 min(floor(b * 256), 255))
 
     def create_highlight(self, factor=1.4):
+        """
+        Make a new color that is slightly brighter and save as highlight of this Color.
+
+        Args:
+            factor (float, optional): factor to make it brighter by.
+        """
         h, s, ll = self.hsl
         lighter = min(ll * factor, 1.0)
         self.highlight = self.hsl2rgb(h, s, lighter)
 
     def create_shadow(self, factor=0.7):
+        """
+        Make a new color that is slightly dimmer and save as shadow of this Color.
+
+        Args:
+            factor (float, optional): factor to make it dimmer by.
+        """
         h, s, ll = self.hsl
         darker = ll * factor
         self.shadow = self.hsl2rgb(h, s, darker)
 
     def check_self_shadeable(self):
-        """ if white then can;t see shading so make dimmer.
-            Likewise for Black
+        """
+        If Color is White then can't see shading color as also White. So make original Color dimmer.
+         - Likewise for Black.
         """
         if self.highlight == self.rgb:
             # can't see highlight so replace colour with darker
@@ -121,7 +172,7 @@ class Color(object):
             self.replace((35, 35, 35))
 
     def replace(self, newcol):
-        """ was white or black so change it so shading wil be visible """
+        """ Color was White or Black and shading required so change RGB so shading will be visible """
         self.rgb = newcol
         self.rgb2hsl()
         self.create_highlight()
@@ -129,17 +180,31 @@ class Color(object):
 
     @property
     def intensity(self):
-        " Perceived intensity calc "
+        """float: Perceived intensity calc. Range 0 to 1"""
         return (0.299 * self.rgb[0] / 255 +
                 0.587 * self.rgb[1] / 255 +
                 0.114 * self.rgb[2] / 255)
 
     @property
     def css(self):
+        """
+        str: Present RGB as css styling
+
+        Examples:
+            >>> print(Color(0,128,255).css
+            rgb(0,128,255)
+        """
         return 'rgb(%d, %d, %d)' % self.rgb
 
     @property
     def hex(self):
+        """
+        str: Present RGB as hex styling
+
+        Examples:
+            >>> print(Color(0,128,255).hex
+            #007FFF
+        """
         return '#%02x%02x%02x' % self.rgb
 
     # save a hex into rgb tuple
@@ -158,5 +223,10 @@ class Color(object):
 
 
 WHITE = Color((255, 255, 255))
+"""Color: Predefined White"""
+
 BLACK = Color((0, 0, 0))
+"""Color: Predefined Black"""
+
 MID = Color((120, 120, 120))
+"""Color: Predefined Mid Gray"""

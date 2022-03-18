@@ -5,14 +5,34 @@ from copy import deepcopy
 
 
 class Image_draft(object):
-    """ Assuming the image contains square ares which represent a weaving draft drawdown
-    - We need to know expected number of warp threads to sample correctly
-    - one day this could be detected?
+    """
+    Builds a draft from an image of a drawdown
+    Assumes the supplied image contains square areas which represent a weaving draft drawdown.
+    Uses Black and white (anything non-black) when detecting color.
+    - We need to know expected number of warp threads to sample correctly.
+    - needs to knw how many warp thereads across. can also stretch image if in form of wxh
+
+    :param imagefile: an image filename
+    :type imagefile: str
+    :param size_description: integer width of warps (w) or warps and height in form wxh
+    :type size_description: str
+    :param minimal: attempt to remove repeats if True , defaults to True
+    :type minimal: bool, optional
+    :param hreflect: reflect the image horizinatally, defaults to False
+    :type hreflect: bool, optional
+    :param samples_per_cell: sampling to remove noise, 3-10, defaults to 5
+    :type samples_per_cell: int, optional
+    :param noise_threshold: threshold when grouping colors, range 0-1, defaults to 0.1
+    :type noise_threshold: float, optional
+    :param feedback: write a sampleref image showing sample positions on image, defaults to True
+    :type feedback: bool, optional
+
     """
 
     def __init__(self, imagefile, size_description, minimal=True, hreflect=True,
                  samples_per_cell=5, noise_threshold=0.1, feedback=True):
-
+        """Constructor method
+        """
         self.filename = imagefile
         warpthreads, weftthreads = self.parse_size(size_description)
         self.minimal = minimal

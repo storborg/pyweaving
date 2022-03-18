@@ -3,7 +3,7 @@ include CHANGES
 include LICENSE
 include tox.ini
 recursive-include docs *
-recursive-include pyweaving/tests/samples *
+recursive-include tests/samples *
 
 prune docs/_build
 recursive-exclude * __pycache__
