@@ -10,21 +10,37 @@ from .Color import Color
 class Drawstyle(object):
     """
     Series of style flags for how to draw the Layout.
-      - layout = [swedish | american] - UNUSED
-      - hide = [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor] - UNUSED
-      - show = [stats, groupings, ] - UNUSED
-      - tieupstyle = [ticks, border, [solid|dot|number|XO] ]
-      - drawdownstyle = [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
-      - warpstyle,weftstyle = {ticks, usethread_color, [solid|dot|number|XO] }
-      - boxstyle = {size:10, outline_color:(R,G,B), fill_color:(R,G,B)}
-      - tick_style = [mod:4, color:(200, 0, 0)],
-      - floats_style = { show, count, 'color':(R,G,B) }
-      - spacing_style = [clarity, thinner]
+
+    Args:
+        name (str): used by derived from and as a unique label
+        derived_from (str, optional): use an existing Drawstyle and only define the changed arguments
+        layout (str, optional): [swedish | american] - UNUSED
+        hide (list of str, optional): Hide these regions in layout - [drawdown,tieup,treadling,liftplan,warp,weft,warpcolor,weftcolor] - UNUSED
+        show (list of str, optional): Show these regions in layout - [stats, groupings,] - UNUSED
+        tick_style: Tick attributes {'mod': 4, 'color': (200, 0, 0), 'length': 2, "showtext": True}
+        tieupstyle: Tieup Attributes {'ticks': True, 'style': 'number'}
+          - where style is in [solid|dot|number|XO]
+        warpstyle: Warp attributes {'ticks': True, 'usethread_color': True, 'style': 'number'}
+        weftstyle: Weft attributes {'ticks': True, 'usethread_color': True, 'style': 'number'}
+        drawdownstyle: Attributes [solid | box | interlace | boxshaded | solidshaded | interlaceshaded]
+        interlace_width (int, optional): Defaults to 1. 2 is more pronounced
+        vector_shading_width(foat, optional): line width for SVG files
+        boxstyle: Attributes {'size': 20, 'outline_color': (90, 90, 90), 'fill_color': (0, 0, 0), 'vector_width': 0.5}
+        floats_style: Attributes {'show': False, 'count': 3, 'color': (200, 0, 0)}
+          - 'show' is overloaded in commandline with --floats N option
+        spacing_style (str, optional): When spacing in file - which mode to draw wodths in: [clarity, thinner]
+        clarity_factor (float): spacing scale factor for Clarity style
+        background (Color or tuple): ackground color of entire drawing
+        title_font_size_factor (float): factor to magnify title font size by.
+        border_pixels (int): Number of pixels to draw as a blank border (margin)
+        warp_gap (int): size of gap between warpcolor and Threading - in boxstyle units.
+        drawdown_gap (int): size of gap between Threading and Drawdown and Drawdown and Treadling - in boxstyle units.
+        weft_gap (int): size of gap between weftcolor and Treadling - in boxstyle units.
+        tick_gap (int): size of gap between tick and adjacent component - in boxstyle units.
 
     Future:
-      - row_length is howmany threads before a line break to spread down page
+      - Layout fields need to be in sep class
       - will need new formatting fields for showing grouped structures
-
     """
 
     def __init__(self, name='Default',

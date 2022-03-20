@@ -365,7 +365,8 @@ def main(argv=sys.argv):
     # copy directory to outfile if not supplied
     if 'outfile' in opts and opts.outfile and "infile" in opts:
         opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)
-    if len(argv) > 1:
+
+    if len(argv) > 1 and str(opts) != 'Namespace()':
         return opts.function(opts)
     else:
         p.print_help()

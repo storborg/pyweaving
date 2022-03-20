@@ -4,20 +4,27 @@ import time
 import json
 
 
-def print_shafts(draft, connected):
+def print_shafts(draft, weft_shafts, visual_height=5):
     """
     Print the shaft lift state, as for a table loom.
+     - Simple visual indicator of Tabletop loom levers
+     - Called from weaving()
+
+    Args:
+        draft (Draft): The draft.
+        weft_shafts (list): connected_shafts of the weft thread
+        visual_height(int, optional): how big (number of lines) on screen to make the display.
     """
-    up_shafts = [' ' if shaft in connected else '#'
+    up_shafts = [' ' if shaft in weft_shafts else '#'
                  for shaft in draft.shafts]
-    down_shafts = ['#' if shaft in connected else ' '
+    down_shafts = ['#' if shaft in weft_shafts else ' '
                    for shaft in draft.shafts]
     up_lines = '  '.join((c * 4) for c in up_shafts)
     down_lines = '  '.join((c * 4) for c in down_shafts)
     print()
-    for n in range(5):
+    for n in range(visual_height):
         print(up_lines)
-    for n in range(5):
+    for n in range(visual_height):
         print(down_lines)
 
 
@@ -47,19 +54,37 @@ def describe_interval(secs):
 
 
 class StatCounter(object):
+    """
+    StatCounter holds the current weaving position.
+    Which repeat are we in and which pick (weft thread) we are on in that repeat.
+    All times are recorded per pick so we can track time elapsed and project a future end time.
 
+    Args:
+        total_picks (int): Total length of all picks to be done from all repeats of the draft.
+        average_over (int): When calculating averages use this window size. Default = 10.
+    """
     def __init__(self, total_picks, average_over=10):
         self.pick_times = []
         self.total_picks = total_picks
         self.average_over = average_over
 
     def start(self):
+        """
+        Set the start time to now.
+        """
         self.start_time = time.time()
 
     def pick(self):
+        """
+        Everytime a pick is made - record the time
+         - in pick_times
+        """
         self.pick_times.append(time.time())
 
     def print_pick_stats(self):
+        """
+        Calculate and Display projected end time and average pick times made so far.
+        """
         last_picks = self.pick_times[-self.average_over:]
         if len(last_picks) >= self.average_over:
             elapsed_secs = last_picks[-1] - last_picks[0]
@@ -74,6 +99,9 @@ class StatCounter(object):
                describe_interval(est_remaining_secs)))
 
     def print_session_stats(self):
+        """
+        Print a summary of picks and time.
+        """
         elapsed_secs = self.pick_times[-1] - self.start_time
         picks_done = len(self.pick_times)
         picks_per_second = picks_done / elapsed_secs
@@ -83,25 +111,54 @@ class StatCounter(object):
 
 
 def wait_for_key():
+    """
+    Used to indicate a new pick is required.
+    """
     input('... ')
 
 
 def load_save_file(save_filename):
+    """
+    Load the current progress state and resume weaving.
+    """
     with open(save_filename) as f:
         return json.load(f)
 
 
 def write_save_file(save_filename, obj):
+    """
+    Keep track of the current state in a file.
+
+    Args:
+        save_filename (str): filename for maintaining progress.
+        obj: data we are saving. (current repeat, pick)
+    """
     with open(save_filename, 'w') as f:
         json.dump(obj, f)
 
 
 def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
     """
-    Print weaving instructions. Liftplan only for now.
+    Print weaving instructions.
+     - Liftplan only for now.
+     - Repeat the draft a number of times
+     - Can start at a specific weft thead
+     - Pickup where we left off (state recorded in file)
 
-    current_pick, start_repeat, and start_pick are 1-indexed.
+    Args:
+        draft (Draft): The draft we are weaving.
+        repeats (int): how many times to repeat the draft,
+        start_repeat (int): Repeat we are up to.
+        start_pick (int): Pick to start at.
+        save_filename (str): filename to record progress.
+
+    Todo:
+        from_right assumes all drafts start on RHS. we need to look in draft.
     """
+    line_width = 79
+    max_shafts = 8
+    visual_height = 5
+
     print("\n---- WEAVING INSTRUCTIONS ----\n")
 
     picks_per_repeat = len(draft.weft)
@@ -136,10 +193,10 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
             if current_repeat == repeats:
                 break
             # Restart pattern
-            print("-" * 79)
+            print("-" * line_width)
             print("REPEAT %d COMPLETE" % current_repeat)
             print("Restarting pattern...")
-            print("-" * 79)
+            print("-" * line_width)
             current_repeat += 1
             current_pick = 1
 
@@ -152,7 +209,7 @@ def weaving(draft, repeats, start_repeat, start_pick, save_filename=None):
             print("COLOR CHANGE! %s -> %s" % (last_color, weft_color))
         print("\nREPEAT %d, PICK %d\n" % (current_repeat, current_pick))
         if from_right:
-            print((" " * 40) + "<--- SHUTTLE %s" % weft_color)
+            print((" " * max_shafts * visual_height) + "<--- SHUTTLE %s" % weft_color)
         else:
             print("%s SHUTTLE --->" % weft_color)
         print_shafts(draft, weft_thread.connected_shafts)
@@ -191,6 +248,10 @@ for ii in range(64):
 def threading(draft, repeats=1, color_table=default_color_table):
     """
     Print threading instructions.
+    Assumes 4 shafts colored red, yellow, blue, white
+
+    Todo:
+        Needs to deal with variable sghafts and various shaft numbering/identifying conventions
     """
     print("\n---- THREADING INSTRUCTIONS ----\n")
     total_count = 0

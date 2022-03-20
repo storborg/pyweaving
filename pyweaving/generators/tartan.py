@@ -7,7 +7,8 @@ from .. import Draft, get_project_root, __version__
 # test here:
 # - https://www.tartanregister.gov.uk/searchDesigns#TartanDisplay
 
-# standard colors from Tartan register
+
+#: dict(RGB tuples): standard colors from Tartan register
 STR_colors = {
     'G':  (0,   104,  24),  # green
     'LG': (134, 198, 124),  # light green
@@ -46,8 +47,12 @@ msg_off += " or http://www.tartansauthority.com/tartan/tartan-register/"
 
 
 def lookup_colors(sett, override_colors=None):
-    """ return sequence of color, count pairs from tartan sett
-    - mirror if required
+    """
+    Extract sequence of (color, count) pairs from tartan sett.
+     - mirror if required
+
+    Returns:
+        list of (color, count) pairs
     """
     colors = []
     if override_colors:
@@ -71,7 +76,12 @@ def lookup_colors(sett, override_colors=None):
 
 
 def sett_in_STR_form(sett):
-    " is it likely this is an STR format Sett "
+    """
+    Is it likely that this sett is in STR format.
+
+    Returns:
+        bool
+    """
     if sett:
         # if we split it - how many groups in pattern
         # print("Tartan guess", len(re.split('[,_ ]', sett)))
@@ -81,7 +91,12 @@ def sett_in_STR_form(sett):
 
 
 def tartan(sett, repeats=1, direction="z"):
-    """ Tartan generator
+    """
+    Tartan generator
+
+    Args:
+        repeats (int): Number of times to repeat the sett
+        direction ([z|s]): Z twill or S twill. Default is Z
     """
     direction = direction.upper()
     warp_colors = []
@@ -165,10 +180,10 @@ def tartan(sett, repeats=1, direction="z"):
 
 
 def find_named_tartan(desired_name):
-    """ Search the file for a unique 'name' and
-    - return the STR style string.
-    If more than one, then print out the names of the possibles
-    for user selection next time.
+    """
+    Search the tartans file for a unique 'name' and return the STR style string.
+     - If more than one, then print out the names of the possibles for
+       user selection next time.
     """
     found = False
     matching = []
@@ -210,10 +225,13 @@ def find_named_tartan(desired_name):
 
 
 def _parse_tartan_description(sett_or_name):
-    """ in form: name = colors = format
-    tartan_name=>y#aaaa00k#000000w#aaaaaa=w1(y6k6)y1
-    Return colors - a dictionary like STR_colors above,
-    and pattern - which is an STR tartan string
+    """
+    Sett expected in specific format
+      - name = colors = format
+      - tartan_name=>y#aaaa00k#000000w#aaaaaa=w1(y6k6)y1
+
+    Returns
+        colors: a dictionary like STR_colors, and pattern - which is an STR tartan string
     """
     hexcolors, pattern = sett_or_name.split("=")
     colors = {}

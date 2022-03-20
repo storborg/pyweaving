@@ -13,8 +13,16 @@ font_path = os.path.join(homedir, 'data', 'Arial.ttf')
 # Helper function which calculates width of cells and stores in Draft on threads.
 # Also modifies modifies style
 def calculate_box_sizing(draft, style):
-    """ Store the yarn width on each thread,
-    calculated from spacings data, on each thread.
+    """
+    To speed up drawing images with variable spacing we cache on each thread a precalculated yarn_width.
+     - Two modes - Clarity and accuracy
+     - Clarity uses the clarity value defined in a Drawstyle
+     - Accuracy mode will disable tickmarks
+
+    Args:
+        draft (Draft):Store the yarn width on each thread
+    Future:
+        When we have EPI/PPI input then will need updating to use that when 'asfabric' set
     """
     all_spacings = draft.thread_stats["summary"]
     basicbox = style.box_size
@@ -59,6 +67,15 @@ def calculate_box_sizing(draft, style):
 
 
 class ImageRenderer(object):
+    """
+    Draw Everything and save as PNG file.
+
+    Args:
+        draft (Draft): The Draft to draw
+        style (Drawstyle): The Drawstyle to use
+        show_liftplan (bool, optional): Override internals and show liftplan.
+        show_structure (bool, optional): Override colors to show B&W structure
+    """
     # TODO:
     # - Add a "drawndown only" option
     # - Add a default tag (like a small delta symbol) to signal the initial
@@ -72,8 +89,6 @@ class ImageRenderer(object):
     #   - Selvedge continuity
     # - Add option to rotate orientation
     # - Add option to render selvedge continuity
-    # - Add option to render inset "scale view" rendering of fabric
-    # - Support variable thickness threads
 
     def __init__(self, draft, style, show_liftplan=False, show_structure=False):
 
@@ -100,7 +115,8 @@ class ImageRenderer(object):
         self.title_font = ImageFont.truetype(font_path, self.title_font_size)
 
     def pad_image(self, im):
-        """ Final image has border added by pasting image into a larger one
+        """
+        Final image has border added by pasting image into a larger one.
         """
         w, h = im.size
         desired_w = w + (self.border_pixels * 2)
@@ -110,10 +126,12 @@ class ImageRenderer(object):
         return new
 
     def make_pil_image(self):
-        """ Determine size of components,
-        make image,
-        layout each part and draw them,
-        add a border round the outside.
+        """
+        Main procedure to render to a bitmap. Called from save()
+         #. Determine size of components,
+         #. Make image (draw),
+         #. Layout each part and draw them,
+         #. Add a border round the outside.
         """
         # gather spacings data for stats and calc yarn widths for drawdown
         # - store in threads
@@ -207,7 +225,14 @@ class ImageRenderer(object):
         return im
 
     def paint_tieup_status(self, startpos, draw):
-        " indicate rising or falling, from file "
+        """
+        Component: Indicate rising or sinking shed, from draft.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         state = "(Rising shed)"
         if not self.draft.rising_shed:
             state = "(Falling shed)"
@@ -218,7 +243,14 @@ class ImageRenderer(object):
                   state, font=self.thread_font, fill=BLACK.rgb)
 
     def paint_title(self, startpos, draw, titles):
-        """ Add the title from Notes and the filename load from
+        """
+        Component: Add the title from Notes and the draft's filename.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+            titles (list): List of strings to draw.
         """
         offsetx, offsety = startpos
         longest = ""
@@ -245,7 +277,15 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_ministats(self, startpos, stats, draw):
-        """ Short series of hopefully useful observations """
+        """
+        Component: Short series of hopefully useful observations.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            stats(list): List of text stats to draw.
+            draw (Image): Draw into this image.
+        """
         offsetx, offsety = startpos
         longest = stats[0]
         for t in stats:
@@ -263,8 +303,15 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_notes(self, startpos, notes, draw):
-        """ The Notes from the wif file.
-        - Also show creation date and s/w used
+        """
+        Component: The Notes from the wif file.
+         - Also show creation date and s/w used.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            notes (list): List of Notes to draw.
+            draw (Image): Draw into this image.
         """
         # notes are a list of strings(lines)
         offsetx, offsety = startpos
@@ -285,6 +332,17 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_start_indicator(self, startpos, weft_length, draw):
+        """
+        Component: Draw an indicator of where to start weaving.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            weft_length (int): number of threads in weft.
+            draw (Image): Draw into this image.
+        Future:
+            Need to calculate where best start is by looking at selvedges.
+        """
         offsetx, offsety = startpos
         lift = self.pixels_per_square / 10  # lift above line
         starty = offsety * self.pixels_per_square - lift
@@ -305,7 +363,14 @@ class ImageRenderer(object):
         draw.polygon(vertices, fill=self.boxfill_color.rgb)
 
     def paint_heddles_stats(self, startpos, draw):
-        " show heddles needed per warp shaft "
+        """
+        Component: Vertical rows of text showing heddle stats per shaft.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         offsetx, offsety = startpos  # upper left corner position
         offsety -= 1  # text strats above line
         if self.style.warp_tick_active or self.style.tieup_tick_active:
@@ -334,8 +399,15 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_warp_colors(self, startpos, draw):
-        """ Paint each thread as an outlined box, filled with thread color
-        - counts backwards as thread one is on RHS
+        """
+        Component: A line of Warp colors.
+         - Paint each thread as an outlined box.
+         - Counts backwards as thread one is on RHS.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
         """
         offsetx, offsety = startpos  # upper left corner position
         starty = offsety * self.pixels_per_square
@@ -353,7 +425,7 @@ class ImageRenderer(object):
             startx = previous
             draw.rectangle((startx, starty, endx, endy),
                            outline=self.outline_color.rgb,
-                           fill=thread.color.rgb)
+                           fill=thread.color.as_drawn)  # rgb
             previous = endx
             index -= 1
         #
@@ -362,6 +434,18 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_fill_marker(self, draw, box, dotcolor, style, label=None, yarncolor=None):
+        """
+        Paints individual boxes in Threading and Treadling using the selected Drawstyle.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            draw (Image): Draw into this image.
+            box (list): list of [startx,y, endx,y] positions.
+            dotcolor (Color): used if style is 'dot' or 'solid'.
+            style (str): One of [solid, dot, number, XO].
+            label (str): Text to draw - number or X or O.
+            yarncolor (Color): Used if style in [number, XO].
+        """
         startx, starty, endx, endy = box
         textcol = BLACK
         margin = 1
@@ -370,7 +454,7 @@ class ImageRenderer(object):
             if yarncolor.intensity < 0.5:
                 textcol = WHITE
             draw.rectangle((startx + margin, starty + margin, endx - margin, endy - margin),
-                           fill=yarncolor.rgb)
+                           fill=yarncolor.as_drawn)  # rgb
             if yarncolor.close(self.style.background):
                 if style == 'solid':  # or style =='dot':
                     # yarn color is too close to background and so not visible
@@ -400,6 +484,17 @@ class ImageRenderer(object):
                       fill=textcol.rgb)
 
     def paint_threading(self, startpos, draw):
+        """
+        Component: Draw the Threading section of all shafts.
+         - Use warpstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Draw ticks if indicated in Drawstyle.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         num_threads = len(self.draft.warp)
         num_shafts = len(self.draft.shafts)
         bgcolor = None
@@ -470,7 +565,14 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_weft_colors(self, startpos, draw):
-        """ Paint the Vertical weft color bar
+        """
+        Component: A vertical line of Weft colors.
+         - Paint each thread as an outlined box.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
         """
         offsetx, offsety = startpos
         endwidth = offsetx + 1
@@ -490,7 +592,7 @@ class ImageRenderer(object):
                 endy += self.style.box_size
             draw.rectangle((startx, previous, endx, endy),
                            outline=self.outline_color.rgb,
-                           fill=thread.color.rgb)
+                           fill=thread.color.as_drawn)  # rgb
             previous = endy
             index += 1
         #
@@ -498,6 +600,16 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_liftplan(self, startpos, draw):
+        """
+        Component: Draw the Liftplan section.
+         - Use weftstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         num_threads = len(self.draft.weft)
         bgcolor = None
         label = 'O'  # default to rising shaft
@@ -558,6 +670,15 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_tieup(self, startpos, draw):
+        """
+        Component: The Tieup.
+         - Paint using tieup_style.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         offsetx, offsety = startpos
         label = 'O'  # default to rising shaft
         if not self.draft.rising_shed:
@@ -631,6 +752,17 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_treadling(self, startpos, draw):
+        """
+        Component: Draw the vertical Treadling section.
+         - Use weftstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Draw ticks if indicated in Drawstyle.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+        """
         num_threads = len(self.draft.weft)
         bgcolor = None
         label = 'O'  # default to rising shed
@@ -690,9 +822,19 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def paint_drawdown(self, startpos, draw, front=True, asfabric=False):
-        """ Draw different styles of drawodown
-        - solid, box, interlace - also shaded variants
-        - asfabric will use solid and hide overlapping wefts
+        """
+        Component: Draw the Drawdown section.
+         - Use drawdown_style from the Drawstyle.
+         - Styles are: solid, box, or interlace.
+         - Shading added if in style. E.g. boxshaded
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            draw (Image): Draw into this image.
+            front (bool): Draw the front or Back of the fabric.
+        Future:
+            asfabric (bool): Draw using real thread dimensions for better color repro. Hide doubled wefts.
         """
         num_threads = len(self.draft.warp)
         floats = self.draft.computed_floats
@@ -738,7 +880,7 @@ class ImageRenderer(object):
                         fill_color = WHITE.rgb
                     outline_color = MID.rgb
                 else:  # use the thread colors
-                    fill_color = thread.color.rgb
+                    fill_color = thread.color.as_drawn  # rgb
                     outline_color = self.outline_color.rgb
                 # highlight the long floats
                 if show_float and length >= float_cutoff:
@@ -832,12 +974,16 @@ class ImageRenderer(object):
         return (endwidth, endheight)
 
     def show(self):
-        """ Used if no outfile defined. Show it
+        """
+        Used if no outfile defined. Show it using system's imageviewer.
         """
         im = self.make_pil_image()
         im.show()
 
     def save(self, filename):
+        """
+        Save resulting image to filename. Principle entry point.
+        """
         im = self.make_pil_image()
         im.save(filename)
         print("Wrote image:", filename)
@@ -846,6 +992,19 @@ class ImageRenderer(object):
 # SVG section
 
 def compose_css_box(classname, fill, stroke_col, stroke_thick):
+    """
+    Support function for SVG file creation.
+     - Return css string for an SVG Box primitive
+
+    Args:
+        classname (str): the css classname identifier
+        fill (RGB tuple): svg fill
+        stroke_col (RGB tuple): svg stroke
+        stroke_thick (int|float): svg stroke thickness
+
+    Returns:
+        css (str):
+    """
     css = "." + classname + " {fill:"
     if fill:
         css += svgwrite.rgb(*fill) + ";"
@@ -861,13 +1020,36 @@ def compose_css_box(classname, fill, stroke_col, stroke_thick):
 
 
 def compose_css_line(classname, stroke_col, stroke_thick):
+    """
+    Support function for SVG file creation.
+     - Return css string for an SVG Line primitive
+
+    Args:
+        classname (str): the css classname identifier
+        stroke_col (RGB tuple): svg stroke
+        stroke_thick (int|float): svg stroke thickness
+
+    Returns:
+        css (str):
+    """
     css = "." + classname + " {stroke:" + svgwrite.rgb(*stroke_col) + "; stroke-width:" + str(stroke_thick) + "}\n"
     return css
 
 
 def compose_css_text(classname, fill, font_size, align="start", dominant_baseline=None):
-    """ dominant_baseline=center will center caps text
-    align = [start | middle | end]
+    """
+    Support function for SVG file creation.
+     - Return css string for an SVG Text primitive
+
+    Args:
+        classname (str): the css classname identifier
+        fill (RGB tuple): svg stroke
+        font_size(int|float): Height of the Font
+        align (str): Alignment label [start | middle | end]
+        dominant_baseline (str): 'center' will center caps text.
+
+    Returns:
+        css (str):
     """
     css = "." + classname + " {font-size:" + str(int(font_size)) + "px; font-family:Arial;"
     if dominant_baseline:
@@ -880,6 +1062,16 @@ def compose_css_text(classname, fill, font_size, align="start", dominant_baselin
 
 
 class SVGRenderer(object):
+    """
+    Draw Everything and save as SVG vector file.
+
+    Args:
+        draft (Draft): The Draft to draw
+        style (Drawstyle): The Drawstyle to use
+        show_liftplan (bool, optional): Override internals and show liftplan.
+        show_structure (bool, optional): Override colors to show B&W structure
+    """
+
     def __init__(self, draft, style, show_liftplan=False, show_structure=False):
 
         self.draft = draft
@@ -897,8 +1089,13 @@ class SVGRenderer(object):
         self.title_font_size = int(round(self.pixels_per_square * self.style.title_font_size_factor))
 
     def create_CSS_styles(self, thread_colors, swidth=0.5):
-        """ Create css style for classes.
-        - only one allowed per svg.
+        """
+        Premake ALL css styles for SVG primitives so we can cache them to lower filesize and speedup rendering.
+         - embedded at head of SVG in Defs section (only one allowed per svg).
+
+         Args:
+            thread_colors( list of [name, Color]): Pairs of names and Color primitives.
+            swidth (float): box stroke width.
         """
         # Style colors
         bg_col = self.style.background.rgb
@@ -935,7 +1132,7 @@ class SVGRenderer(object):
 
         # thread_colors
         for name, color in thread_colors:
-            rgb = color.rgb
+            rgb = color.as_drawn  # rgb
             # regular outlined box for fill markers (yarns)
             css += compose_css_box(name, rgb, box_col, swidth)
             # flat variant for 'solid' drawdowns
@@ -951,6 +1148,13 @@ class SVGRenderer(object):
         # self.dwg.add(self.dwg.style(css))
 
     def make_svg_doc(self, filename):
+        """
+        Main procedure to render to a vector image file. Called from save()
+         #. Determine size of components,
+         #. Make image (dwg),
+         #. Layout each part and draw them,
+         #. Add a border round the outside.
+        """
         # gather spacings data for stats and calc yarn widths for drawdown
         calculate_box_sizing(self.draft, self.style)
 
@@ -1044,6 +1248,13 @@ class SVGRenderer(object):
         return self.dwg
 
     def paint_tieup_status(self, startpos):
+        """
+        Component: Indicate rising or sinking shed, from draft.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
         " indicate rising or falling, from file "
         state = "(Rising shed)"
         if not self.draft.rising_shed:
@@ -1058,7 +1269,13 @@ class SVGRenderer(object):
         self.dwg.add(grp)
 
     def paint_title(self, startpos, titles):
-        """ Add the title from Notes and the filename load from
+        """
+        Component: Add the title from Notes and the draft's filename.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            titles (list): List of strings to draw.
         """
         offsetx, offsety = startpos
         grp = self.dwg.g(id='titles')
@@ -1082,7 +1299,14 @@ class SVGRenderer(object):
         return (endwidth, endheight)
 
     def paint_ministats(self, startpos, stats):
-        """ Short series of hopefully useful observations """
+        """
+        Component: Short series of hopefully useful observations.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            stats(list): List of text stats to draw.
+        """
         offsetx, offsety = startpos
         grp = self.dwg.g(id='ministats')
 
@@ -1100,8 +1324,14 @@ class SVGRenderer(object):
         return (endwidth, endheight)
 
     def paint_notes(self, startpos, notes):
-        """ The Notes from the wif file.
-        - Also show creation date and s/w used
+        """
+        Component: The Notes from the wif file.
+         - Also show creation date and s/w used.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            notes (list): List of Notes to draw.
         """
         # notes are a list of strings(lines)
         offsetx, offsety = startpos
@@ -1123,37 +1353,17 @@ class SVGRenderer(object):
         endheight = offsety + lineheight * len(lines) + 1
         return (endwidth, endheight)
 
-    def paint_warp_colors(self, startpos):
-        """ Paint each thread as an outlined box, filled with thread color
-        - counts backwards as thread one is on RHS
-        """
-        offsetx, offsety = startpos  # upper left corner position
-        starty = offsety * self.pixels_per_square
-        endy = (offsety + 1) * self.pixels_per_square
-        endx = offsetx * self.pixels_per_square  # start here
-        previous = endx
-
-        grp = self.dwg.g(id='warp_colors')
-
-        index = len(self.draft.warp) - 1
-        while index != -1:
-            thread = self.draft.warp[index]
-            if thread.spacing:
-                endx += thread.yarn_width
-            else:
-                endx += self.style.box_size
-            startx = previous
-            grp.add(self.dwg.rect(insert=(startx, starty), size=(endx-startx, endy-starty),
-                                  class_=thread.css_label))
-            previous = endx
-            index -= 1
-        #
-        self.dwg.add(grp)
-        endwidth = endx/self.pixels_per_square
-        endheight = offsety + 1
-        return (endwidth, endheight)
-
     def paint_start_indicator(self, startpos, weft_length):
+        """
+        Component: Draw an indicator of where to start weaving.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            weft_length (int): number of threads in weft.
+        Future:
+            Need to calculate where best start is by looking at selvedges.
+        """
         offsetx, offsety = startpos
         lift = self.pixels_per_square / 10  # lift above line
         starty = offsety * self.pixels_per_square - lift
@@ -1176,7 +1386,13 @@ class SVGRenderer(object):
         self.dwg.add(grp)
 
     def paint_heddles_stats(self, startpos):
-        " show heddles needed per warp shaft "
+        """
+        Component: Vertical rows of text showing heddle stats per shaft.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
         offsetx, offsety = startpos  # upper left corner position
         grp = self.dwg.g(id='heddles')
         if self.style.warp_tick_active or self.style.tieup_tick_active:
@@ -1208,37 +1424,55 @@ class SVGRenderer(object):
         endheight += offsety + len(self.draft.shafts) + 1  # (total)
         return (endwidth, endheight)
 
-    def paint_weft_colors(self, startpos):
-        """ Paint the Vertical weft color bar
+    def paint_warp_colors(self, startpos):
         """
-        offsetx, offsety = startpos
-        grp = self.dwg.g(id='weft_colors')
+        Component: A line of Warp colors.
+         - Paint each thread as an outlined box.
+         - Counts backwards as thread one is on RHS.
+         - Return sizing so other components can be positioned.
 
-        endwidth = offsetx + 1
-        if self.style.weft_tick_active:
-            endwidth += self.style.tick_length
-        startx = offsetx * self.pixels_per_square
-        endx = startx + self.pixels_per_square
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
+        offsetx, offsety = startpos  # upper left corner position
+        starty = offsety * self.pixels_per_square
+        endy = (offsety + 1) * self.pixels_per_square
+        endx = offsetx * self.pixels_per_square  # start here
+        previous = endx
 
-        endy = offsety * self.pixels_per_square  # steps down along the weft
-        previous = endy
-        index = 0
-        while index != len(self.draft.weft):
-            thread = self.draft.weft[index]
+        grp = self.dwg.g(id='warp_colors')
+
+        index = len(self.draft.warp) - 1
+        while index != -1:
+            thread = self.draft.warp[index]
             if thread.spacing:
-                endy += thread.yarn_width
+                endx += thread.yarn_width
             else:
-                endy += self.style.box_size
-            grp.add(self.dwg.rect(insert=(startx, previous), size=(self.pixels_per_square, endy - previous),
+                endx += self.style.box_size
+            startx = previous
+            grp.add(self.dwg.rect(insert=(startx, starty), size=(endx-startx, endy-starty),
                                   class_=thread.css_label))
-            previous = endy
-            index += 1
+            previous = endx
+            index -= 1
         #
         self.dwg.add(grp)
-        endheight = endy / self.pixels_per_square
+        endwidth = endx/self.pixels_per_square
+        endheight = offsety + 1
         return (endwidth, endheight)
 
     def paint_fill_marker(self, grp, box, dotcss, style, label=None, thread_col=None):
+        """
+        Paints individual boxes in Threading and Treadling using the selected Drawstyle.
+         - Do not return sizing as nothing else depends on this components's location.
+
+        Args:
+            grp (SVG grp): Draw into this group.
+            box (list): list of [startx,y, endx,y] positions.
+            dotcss (str): used if style is 'dot' or 'solid'.
+            style (str): One of [solid, dot, number, XO].
+            label (str): Text to draw - number or X or O.
+            thread_col (Color): Used if style in [number, XO].
+        """
         startx, starty, endx, endy = box
         sizex = endx-startx
         sizey = endy-starty
@@ -1275,6 +1509,16 @@ class SVGRenderer(object):
                                   class_=textclass))
 
     def paint_threading(self, startpos):
+        """
+        Component: Draw the Threading section of all shafts.
+         - Use warpstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Draw ticks if indicated in Drawstyle.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
         num_threads = len(self.draft.warp)
         num_shafts = len(self.draft.shafts)
         bgcolor = None
@@ -1346,7 +1590,52 @@ class SVGRenderer(object):
         endwidth = distance/self.pixels_per_square
         return (endwidth, endheight)
 
+    def paint_weft_colors(self, startpos):
+        """
+        Component: A vertical line of Weft colors.
+         - Paint each thread as an outlined box.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
+        offsetx, offsety = startpos
+        grp = self.dwg.g(id='weft_colors')
+
+        endwidth = offsetx + 1
+        if self.style.weft_tick_active:
+            endwidth += self.style.tick_length
+        startx = offsetx * self.pixels_per_square
+        endx = startx + self.pixels_per_square
+
+        endy = offsety * self.pixels_per_square  # steps down along the weft
+        previous = endy
+        index = 0
+        while index != len(self.draft.weft):
+            thread = self.draft.weft[index]
+            if thread.spacing:
+                endy += thread.yarn_width
+            else:
+                endy += self.style.box_size
+            grp.add(self.dwg.rect(insert=(startx, previous), size=(self.pixels_per_square, endy - previous),
+                                  class_=thread.css_label))
+            previous = endy
+            index += 1
+        #
+        self.dwg.add(grp)
+        endheight = endy / self.pixels_per_square
+        return (endwidth, endheight)
+
     def paint_liftplan(self, startpos):
+        """
+        Component: Draw the Liftplan section.
+         - Use weftstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
         num_threads = len(self.draft.weft)
         bgcolor = None
         label = 'O'  # default to rising shaft
@@ -1406,6 +1695,14 @@ class SVGRenderer(object):
         return (endwidth, endheight)
 
     def paint_tieup(self, startpos):
+        """
+        Component: The Tieup.
+         - Paint using tieup_style.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+        """
         offsetx, offsety = startpos
         label = 'O'  # default to rising shaft
         if not self.draft.rising_shed:
@@ -1477,6 +1774,14 @@ class SVGRenderer(object):
 
     def paint_treadling(self, startpos):
         """
+        Component: Draw the vertical Treadling section.
+         - Use weftstyle from the Drawstyle.
+         - Calls paint_fill_marker()
+         - Draw ticks if indicated in Drawstyle.
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
         """
         num_threads = len(self.draft.weft)
         bgcolor = None
@@ -1536,10 +1841,20 @@ class SVGRenderer(object):
         return (endwidth, endheight)
 
     def paint_drawdown(self, startpos, front=True, asfabric=False):
-        """ Draw different styles of drawodown
-        - solid, box, interlace - also shaded variants
-        - asfabric will use solid and hide overlapping wefts
         """
+        Component: Draw the Drawdown section.
+         - Use drawdown_style from the Drawstyle.
+         - Styles are: solid, box, or interlace.
+         - Shading added if in style. E.g. boxshaded
+         - Return sizing so other components can be positioned.
+
+        Args:
+            startpos (tuple X,Y): starting position of the component.
+            front (bool): Draw the front or Back of the fabric.
+        Future:
+            asfabric (bool): Draw using real thread dimensions for better color repro. Hide doubled wefts.
+        """
+
         floats = self.draft.computed_floats
         float_cutoff = self.style.floats_count
         show_float = self.style.show_floats
@@ -1695,6 +2010,9 @@ class SVGRenderer(object):
         return (endwidth, endheight)
 
     def save(self, filename):
+        """
+        Save resulting image to filename. Principle entry point.
+        """
         s = self.make_svg_doc(filename)
         with open(filename, 'w') as f:
             s.write(f, pretty=True, indent=2)

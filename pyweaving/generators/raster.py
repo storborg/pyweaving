@@ -7,32 +7,23 @@ from copy import deepcopy
 class Image_draft(object):
     """
     Builds a draft from an image of a drawdown
-    Assumes the supplied image contains square areas which represent a weaving draft drawdown.
-    Uses Black and white (anything non-black) when detecting color.
-    - We need to know expected number of warp threads to sample correctly.
-    - needs to knw how many warp thereads across. can also stretch image if in form of wxh
+     - Assumes the supplied image contains square areas which represent a weaving draft drawdown.
+     - Uses Black and white (anything non-black) when detecting color.
+     - We need to know expected number of warp threads to sample correctly.
+     - needs to know how many warp threads across. Can also stretch image if in form of WxH
 
-    :param imagefile: an image filename
-    :type imagefile: str
-    :param size_description: integer width of warps (w) or warps and height in form wxh
-    :type size_description: str
-    :param minimal: attempt to remove repeats if True , defaults to True
-    :type minimal: bool, optional
-    :param hreflect: reflect the image horizinatally, defaults to False
-    :type hreflect: bool, optional
-    :param samples_per_cell: sampling to remove noise, 3-10, defaults to 5
-    :type samples_per_cell: int, optional
-    :param noise_threshold: threshold when grouping colors, range 0-1, defaults to 0.1
-    :type noise_threshold: float, optional
-    :param feedback: write a sampleref image showing sample positions on image, defaults to True
-    :type feedback: bool, optional
-
+    Args:
+        imagefile (str): an image filename
+        size_description (str): integer width of warps (w) or warps and height in form wxh
+        minimal (bool, optional): attempt to remove repeats if True , defaults to True
+        hreflect (bool, optional): reflect the image horizinatally, defaults to False
+        samples_per_cell (int, optional): sampling to remove noise, 3-10, defaults to 5
+        noise_threshold (float, optional): threshold when grouping colors, range 0-1, defaults to 0.1
+        feedback (bool, optional): write a sampleref image showing sample positions on image, defaults to True
     """
 
     def __init__(self, imagefile, size_description, minimal=True, hreflect=True,
                  samples_per_cell=5, noise_threshold=0.1, feedback=True):
-        """Constructor method
-        """
         self.filename = imagefile
         warpthreads, weftthreads = self.parse_size(size_description)
         self.minimal = minimal
@@ -70,7 +61,14 @@ class Image_draft(object):
             return "<Image_Draft %s, %dx%d>" % (self.filename, self.warpcount, self.weftcount)
 
     def parse_size(self, description):
-        " parse width and height from N or NxM format "
+        """
+        Parse width and height from N or NxM format
+
+        Args:
+            description (W | WxH) int
+        Returns:
+            (width, None|Height):
+        """
         if description.isdigit():
             return int(description), None
         else:
@@ -82,8 +80,15 @@ class Image_draft(object):
                     print("Could not parse W or WxH from", description)
 
     def sample_image(self, warpcount, weftcount, scount, debug=False):
-        """ sample image to get clean colour from original
-        if debug set then export an aimge showing sample locations as red dots
+        """
+        Sample image to get clean colour from original
+         - if debug set then export an aimge showing sample locations as red dots
+
+        Args:
+            warpcount (int): How many squares across are in the image.
+            weftcount (int): None or integer. None assumes exactly sq pixels as defined by warpcount.
+            scount (int): Howmany pixels wide to sample each square (3-7)
+            debug (bool): write out a sampleref file showing where sample was made. So user can bettwer define WxH
         """
         sample_width = warpcount * scount
         if weftcount:
@@ -115,8 +120,13 @@ class Image_draft(object):
         return result
 
     def extract_colors(self, samples):
-        """ Find unique colors in samples and create color index table,
-        Sort the colors
+        """
+        Find unique colors in samples and create color index table, Sort the colors.
+
+        Args:
+            samples: list of all samples to extract color from
+        Returns:
+            list of discovered samples (indexed by brighness)
         """
         result = []
         for row in samples:
@@ -126,15 +136,19 @@ class Image_draft(object):
         return sorted(set(result))  # use set to force unique
 
     def _closest_color(self, c, legit_colors):
+        " Find the closest color in the index table "
         # abs(sum(self.rgb) - sum(other.rgb))
         distances = [sum([abs(col[i]-c[i]) for i in range(3)]) for col in legit_colors]
         closest_col_index = distances.index(min(distances))
         return legit_colors[closest_col_index]
 
     def rationalise_colors(self, legit_cutoff=0.1):
-        """ quantise colours that are very close to each other
-        - replace self.colors
-        - legit_cutoff is 0..1 probability
+        """
+        Quantise colors that are very close to each other.
+         - then replace self.samples using minimal color choices.
+
+        Args:
+            legit_cutoff (float, optional): Low number to remove noisy images. Range is 0..1 probability
         """
         # look at freq color is in all data - if low - assume noise and replace with closest
         histogram_values = []
@@ -168,8 +182,14 @@ class Image_draft(object):
         self.samples = newsamples
 
     def make_indexed_samples(self, samples, colors, hreflect):
-        """ step through converting colours to indexes.
-        return data in two lists: row and col order
+        """
+        Step through converting colours to indexes.
+         - setup as_rows and as_cols with the indexed colors
+
+        Args:
+            samples (list): all the samples with color at each index
+            colors (list): list of all colors to index into
+            hreflect (bool): To horizontally reflect the image.
         """
         row_order = []
         col_order = []
@@ -187,8 +207,9 @@ class Image_draft(object):
         self.as_cols = col_order
 
     def find_core(self):
-        """ Find if there is a major repeat of an entire section.
-        - replace self.as_cols, self.as_rows
+        """
+        Find if there is a major repeat of an entire section.
+          - replace self.as_cols, self.as_rows with minimal set
         """
         # assumes ascols, asrows have been color reduced so no noise and true rep of draft
         # set the identity size as default. I.e. no repeat to trim
@@ -236,7 +257,12 @@ class Image_draft(object):
             self.weftcount = len(self.as_rows)
 
     def build_draft(self):
-        """ find the unniqe warps, determine tieup and treadles"""
+        """
+        Find the unique warps, determine tieup and treadles.
+
+        Returns:
+            Draft:
+        """
         unique_shafts = []
         dup_shafts = []
         # find unique columns(warp) patterns
@@ -297,6 +323,15 @@ def point_threaded(image_filename, shafts=40, repeats=2,
     Given an image, generate a point-threaded drawdown that attempts to
     represent the image. Results in a drawdown with bilateral symmetry from a
     non-symmetric source image.
+
+    Args:
+        image_filename (str): bitmap image to load
+        shafts (int): Need a large number, Default=40
+        repeats (int, optional): Number of times to repeat the reflected Threading.
+        warp_color (Color or tuple): Color for the warp.
+        weft_color (Color or tuple): Color for the weft.
+    Returns:
+        Draft:
     """
     shafts = int(shafts)
     repeats = int(repeats)
@@ -340,7 +375,9 @@ def point_threaded(image_filename, shafts=40, repeats=2,
 
 
 def extract_draft(image_filename, shafts=8, find_core=False):
-    """ wrapper for Image_draft class
+    """
+    Create a Draft using an imagefile as a representation of the drawdown.
+    - Wrapper for Image_draft class.
     """
     im = Image_draft(image_filename, shafts, find_core)
     return im.draft

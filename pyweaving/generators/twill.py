@@ -3,11 +3,20 @@ from .. import Draft, __version__
 
 def twill(shape="2/2", repeats=4, warp_color=(255, 255, 255),
           weft_color=(0, 0, 220)):
-    """ Generate twills from a shape description. Defaults to Z twill
-    E.g. "2/2", "1/3 2/2", "2/4S", 2/4Z"
-    E.g. 1/3 twill reveals 1 weft and three warps
+    """
+    Generate twills from a shape description. Defaults to Z twill
+     - E.g. "2/2", "1/3 2/2", "2/4S", 2/4Z"
+     - E.g. 1/3 twill reveals 1 weft and three warps
     Also can define threading order:
-    - 4S means 4 straight, 4Z means 4 straight opp direction
+     - 1/2S means S Twist direction, Z means opp twist direction
+
+    Args:
+        shape (str): pairs of twill definitions. E.g. "2/2 1/3", "1/1 3/1S"
+        repeats (int, optional): Number of times to repeat the twill pattern.
+        warp_color (Color or tuple): Color for the warp.
+        weft_color (Color or tuple): Color for the weft.
+    Returns:
+        Draft:
     """
     shape = shape.strip()  # remove extraneous spaces
     # is direction Z|S supplied

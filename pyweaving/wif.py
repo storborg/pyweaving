@@ -7,8 +7,8 @@ class WIFReader(object):
     """
     A reader for a specific WIF file.
 
-    :param filename: the wif filename
-    :type filename: str
+    Args:
+        filename (str): the wif filename
     """
     # TODO
     # - add support for metadata: author, notes, etc.
@@ -19,14 +19,19 @@ class WIFReader(object):
     allowed_units = ('decipoints', 'inches', 'centimeters')
 
     def __init__(self, filename):
-        """Constructor method
-        """
         self.filename = filename
         # at least one author uses 0 based (instead of 1) counting for
         # threading/treadling/color entries in WARP and WEFT
         self.zerobased = False
 
     def getbool(self, section, option):
+        """
+        Return a boolean state read from the wif file.
+
+        Args:
+            section (str): name of the section to look in
+            options (str): the name of the option in that section to read.
+        """
         if self.config.has_option(section, option):
             return self.config.getboolean(section, option)
         else:
@@ -35,14 +40,12 @@ class WIFReader(object):
     def put_metadata(self, draft):
         """
         Populate the draft in-place with metadata extracted from the wif file.
+         - Specifically: date, title, author, etc
+         - from Contents section: Text, Notes
+         - and the publishing software: name and version
 
-        Specifically: date,title,author, etc
-
-        - from Contents: Text, Notes
-        - and the publishing software: name and version
-
-        :param draft: a draft to fill with metadata
-        :type draft: class:`Draft`
+        Args:
+            draft (Draft): the draft to fill with metadata
         """
         # generally date is always 1997 date of wif spec.
         draft.date = self.config.get('WIF', 'Date', fallback="April 20, 1997")
@@ -82,7 +85,20 @@ class WIFReader(object):
 
     def put_warp(self, draft, wif_palette):
         """
-        Constructor method
+        Populate the draft in-place with warp info extracted from the wif file.
+         - Specifically:
+
+           - Warp threads count,
+           - Warp Units,
+           - default Warp Color,
+           - Warp Threading table,
+           - Warp Color table of color indices,
+           - default Warp Spacing,
+           - Warp Spacing table
+
+        Args:
+            draft (Draft): the draft to fill with metadata
+            wif_palette (dict): Colors defined in the wif file by index
         """
         warp_thread_count = self.config.getint('WARP', 'Threads')
         warp_units = self.config.get('WARP', 'Units', fallback='centimeters').lower()
@@ -179,6 +195,25 @@ class WIFReader(object):
                 )
 
     def put_weft(self, draft, wif_palette):
+        """
+        Populate the draft in-place with weft info extracted from the wif file.
+        Shafts and Treadles are created after reading file contents.
+        
+         - Specifically:
+        
+            - Weft threads count,
+            - Weft Units,
+            - default Weft Color,
+            - Liftplan if defined,
+            - Weft Treadling table,
+            - Weft Color table of color indices,
+            - default Weft Spacing,
+            - Weft Spacing table.
+
+        Args:
+            draft (Draft): the draft to fill with metadata.
+            wif_palette (dict): Colors defined in the wif file by index.
+        """
         weft_thread_count = self.config.getint('WEFT', 'Threads')
         weft_units = self.config.get('WEFT', 'Units', fallback='centimeters').lower()
         assert weft_units in self.allowed_units, \
@@ -293,6 +328,13 @@ class WIFReader(object):
                 )
 
     def put_tieup(self, draft):
+        """
+        Populate the draft in-place with Tieup info extracted from the wif file.
+        Fill in the Shaft and Treadle instances.
+
+        Args:
+            draft (Draft): the draft to fill with metadata
+        """
         for treadle_no, value in self.config.items('TIEUP'):
             if value:
                 # maybe a comment on end of line (pixeLoom6.7.5)
@@ -308,7 +350,16 @@ class WIFReader(object):
 
     def read(self):
         """
-        Perform the actual parsing, and return a Draft instance.
+        Parse the wif file and direct reading of the sections. Create the Draft.
+        - Specifically:
+
+            - Rising or sinking shed,
+            - number of Shafts and Treadles
+            - Liftplan or Treadling,
+            - Color palette (Table) for use when reading Warp and Weft sections,
+
+        Returns:
+            draft (Draft):
         """
         # Config like this so we can read the creation date embedded in comments
         self.config = RawConfigParser(comment_prefixes='/', allow_no_value=True)
@@ -380,7 +431,7 @@ class WIFReader(object):
 
 class WIFWriter(object):
     """
-    A WIF writer for a draft.
+    The WIF writer for a draft.
     """
     # TODO
     # - support greater color depth (may require change to Color)
@@ -389,6 +440,15 @@ class WIFWriter(object):
         self.draft = draft
 
     def write_metadata(self, config, liftplan):
+        """
+        Write sections of the wif file:
+         - Header info,
+         - Source Program, version,
+         - Shed direction,
+         - number of Shafts and Treadles,
+         - Author etc metadata,
+         - Notes.
+        """
         config.add_section('WIF')
         config.set('WIF', 'Date', self.draft.date)
         config.set('WIF', 'Version', '1.1')
@@ -421,6 +481,9 @@ class WIFWriter(object):
                 config.set('NOTES', str(ii), line)
 
     def write_palette(self, config):
+        """
+        Write Color palette section of the wif file:
+        """
         # generate the color table and write it to the config
         # return a wif_palette mapping color instances to numbers.
         colors = set(thread.color.rgb for thread in
@@ -440,6 +503,10 @@ class WIFWriter(object):
         return wif_palette
 
     def find_freq_color(self, threads, palette):
+        """
+        Determine most common color for use in Warp and Weft sections.
+        Can considerably lower the size of the file.
+        """
         counts = {}
         for t in threads:
             col = t.color.rgb
@@ -452,6 +519,15 @@ class WIFWriter(object):
         return palette[color]
 
     def write_threads(self, config, wif_palette, dir):
+        """
+        Write Warp and Weft sections of the file which are very simlar in structure.
+         - Units, Counts, Colors
+
+        Args:
+            config (RawConfigParser): The configuration we are saving into.
+            wif_palette (dict): Colors used in the draft by indices.
+            dir (warp|weft): which section we are configuring.
+        """
         assert dir in ('warp', 'weft')
         threads = getattr(self.draft, dir)
         dir = dir.upper()
@@ -474,6 +550,12 @@ class WIFWriter(object):
                 config.set('%s COLORS' % dir, str(ii), index)
 
     def write_threading(self, config):
+        """
+        Write Warp Threading section of the file.
+
+        Args:
+            config (RawConfigParser): The configuration we are saving into.
+        """
         config.set('CONTENTS', 'THREADING', True)
         config.add_section('THREADING')
 
@@ -482,6 +564,12 @@ class WIFWriter(object):
             config.set('THREADING', str(ii), shaft_string)
 
     def write_liftplan(self, config):
+        """
+        Write Liftplan section of the file.
+
+        Args:
+            config (RawConfigParser): The configuration we are saving into.
+        """
         config.set('CONTENTS', 'LIFTPLAN', True)
         config.add_section('LIFTPLAN')
 
@@ -492,6 +580,12 @@ class WIFWriter(object):
             config.set('LIFTPLAN', str(ii), shaft_string)
 
     def write_treadling(self, config):
+        """
+        Write Treadling section of the file.
+
+        Args:
+            config (RawConfigParser): The configuration we are saving into.
+        """
         config.set('CONTENTS', 'TREADLING', True)
         config.add_section('TREADLING')
 
@@ -503,6 +597,12 @@ class WIFWriter(object):
             config.set('TREADLING', str(ii), treadle_string)
 
     def write_tieup(self, config):
+        """
+        Write Tieup section of the file.
+
+        Args:
+            config (RawConfigParser): The configuration we are saving into.
+        """
         config.set('CONTENTS', 'TIEUP', True)
         config.add_section('TIEUP')
 
@@ -513,6 +613,13 @@ class WIFWriter(object):
             config.set('TIEUP', str(ii), shaft_string)
 
     def write(self, filename, liftplan=False):
+        """
+        Write draft to wif file. Write each section using a RawConfigParser so we can handle comments manually.
+
+        Args:
+            filename (str): where the file wil be saved.
+            liftplan (bool): save Treadling or Liftplan
+        """
         assert self.draft.start_at_lowest_thread
 
         config = RawConfigParser(allow_no_value=True)  # !!

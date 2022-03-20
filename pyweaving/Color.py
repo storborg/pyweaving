@@ -10,20 +10,22 @@ class Color(object):
     """
     A color type. Internally stored as RGB, and does not support transparency.
      - Accepts Color, rgb triplet or #RRGGBB strings.
-     - If shadeable True then calculate shadow and highlight variants for use in shading.
-     - Accessors are: self.rgb, self.css, self.hex, self.hsl, self.highlight, self.shadow
+     - If shadeable True then check to see if highlight and shadow can be visually seen in drawdown
+       if not the calculate new as_drawn color.
+     - Accessors are: self.rgb, self.css, self.hex, self.hsl,
+     - Renderer will use self.as_drawn, self.highlight, self.shadow
 
     Args:
         rgb_or_hex (Color, tuple, str): Color, or RGB tuple, or hex string
-        shadeable (bool, optional):  If True then cacluate highlight and shadow variants.
-        Defaults to False.
+        shadeable (bool, optional):  If True then possibly recalc as_drawn color so highlights,shadows can be seen
+        Defaults to False. Used in rendering.
 
     Note:
         Will change Black or White primary colors slightly so highlight/shadow colors are visibly different.
     """
     def __init__(self, rgb_or_hex="#000000", shadeable=False):
         self.shadeable = shadeable
-		# initialise self.rgb
+        # initialise self.rgb
         if isinstance(rgb_or_hex, type("")) and rgb_or_hex[0] == '#' and len(rgb_or_hex) == 7:
             # self.hex(rgb_or_hex) # we are in __init__ so will not work
             self.hex = rgb_or_hex
@@ -33,17 +35,23 @@ class Color(object):
             self.rgb = tuple(rgb_or_hex)
         else:
             self.rgb = rgb_or_hex
-		# initialise self.hsl
-        self.rgb2hsl()
-		# initialise self.highlight, self.shadow
-        self.create_highlight()
-        self.create_shadow()
-		# define them if required
+        # as_drawn may be adjusted to show shading
+        # - used by renderer in drawdown,weft,warp
+        self.as_drawn = self.rgb
+        # initialise self.hsl
+        self.hsl = self.rgb2hsl(self.rgb)
+        # initialise self.highlight, self.shadow
+        self.highlight = self.create_highlight(self.rgb)
+        self.shadow = self.create_shadow(self.rgb)
+        # Check if as_drawn needs to be changed
         if self.shadeable:
             self.check_self_shadeable()
 
+    def __str__(self):
+        return str(self.rgb)
+
     def __repr__(self):
-        return "<Color: %s>" % (str(self))
+        return "<Color: %s>" % (self.rgb)
 
     def __eq__(self, other):
         return self.rgb == other.rgb
@@ -67,11 +75,11 @@ class Color(object):
         """
         return abs(sum(self.rgb) - sum(other.rgb)) < distance
 
-    def rgb2hsl(self):
+    def rgb2hsl(self, rgb):
         """
-        Convert the RGB value into a HSL and store as self.hsl
+        Convert the RGB value into a HSL
         """
-        r, g, b = [i / 255 for i in self.rgb]
+        r, g, b = [i / 255 for i in rgb]
         maxc = max(r, g, b)
         minc = min(r, g, b)
         ll = (maxc + minc) / 2
@@ -93,7 +101,7 @@ class Color(object):
             else:  # maxc == b
                 h = (r - g) / d + 4
             h /= 6
-        self.hsl = (h, s, ll)
+        return (h, s, ll)
 
     def _hue2rgb(self, p, q, t):
         if t < 0:
@@ -135,55 +143,43 @@ class Color(object):
                 min(floor(g * 256), 255),
                 min(floor(b * 256), 255))
 
-    def create_highlight(self, factor=1.4):
+    def create_highlight(self, rgb, factor=1.4):
         """
-        Make a new color that is slightly brighter and save as highlight of this Color.
+        Make a new color that is slightly brighter.
 
         Args:
             factor (float, optional): factor to make it brighter by.
         """
-        h, s, ll = self.hsl
+        h, s, ll = self.rgb2hsl(rgb)
         lighter = min(ll * factor, 1.0)
-        self.highlight = self.hsl2rgb(h, s, lighter)
+        return self.hsl2rgb(h, s, lighter)
 
-    def create_shadow(self, factor=0.7):
+    def create_shadow(self, rgb, factor=0.8):
         """
-        Make a new color that is slightly dimmer and save as shadow of this Color.
+        Make a new color that is slightly dimmer.
 
         Args:
             factor (float, optional): factor to make it dimmer by.
         """
-        h, s, ll = self.hsl
+        h, s, ll = self.rgb2hsl(rgb)
         darker = ll * factor
-        self.shadow = self.hsl2rgb(h, s, darker)
+        return self.hsl2rgb(h, s, darker)
 
     def check_self_shadeable(self):
         """
         If Color is White then can't see shading color as also White. So make original Color dimmer.
-         - Likewise for Black.
+
+         - Save as_drawn
+         - Likewise for Black but brighter.
         """
         if self.highlight == self.rgb:
-            # can't see highlight so replace colour with darker
-            self.create_shadow(0.92)
-            self.replace(self.shadow)
-            # self.replace((240, 240, 240))
+            # can't see highlight so replace as_drawn colour with darker
+            self.as_drawn = self.create_shadow(self.rgb, 0.93)
+            self.highlight = (255, 255, 255)
         if self.shadow == self.rgb:
-            # can't see shadow so replace colour with brighter
-            self.replace((35, 35, 35))
-
-    def replace(self, newcol):
-        """ Color was White or Black and shading required so change RGB so shading will be visible """
-        self.rgb = newcol
-        self.rgb2hsl()
-        self.create_highlight()
-        self.create_shadow()
-
-    @property
-    def intensity(self):
-        """float: Perceived intensity calc. Range 0 to 1"""
-        return (0.299 * self.rgb[0] / 255 +
-                0.587 * self.rgb[1] / 255 +
-                0.114 * self.rgb[2] / 255)
+            # can't see shadow so replace as_drawn colour with brighter
+            self.as_drawn = self.create_highlight(self.rgb, 1.1)
+            self.shadow = (0, 0, 0)
 
     @property
     def css(self):
@@ -207,19 +203,29 @@ class Color(object):
         """
         return '#%02x%02x%02x' % self.rgb
 
+    @property
+    def intensity(self):
+        """
+        float: Perceived intensity calc. Range 0 to 1
+
+        Examples:
+            >>> print(Color(0,128,255).intensity
+            0.40865
+        """
+        return (0.299 * self.rgb[0] / 255 +
+                0.587 * self.rgb[1] / 255 +
+                0.114 * self.rgb[2] / 255)
+
     # save a hex into rgb tuple
     @hex.setter
     def hex(self, hexstring):
         h = hexstring.lstrip('#')
         self.rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
-        self.rgb2hsl()
-        self.create_highlight()
-        self.create_shadow()
+        self.hsl = self.rgb2hsl(self.rgb)
+        self.highlight = self.create_highlight(self.rgb)
+        self.shadow = self.create_shadow(self.rgb)
         if self.shadeable:
             self.check_self_shadeable()
-
-    def __str__(self):
-        return str(self.rgb)
 
 
 WHITE = Color((255, 255, 255))
