@@ -31,9 +31,10 @@ Drawstyles = {}  # loaded styles go in here
 
 
 def load_styles(filename='styles.json'):
-    """ Load the styles into Drawstyles dict.
-    If no .pyweaving dir create it and
-    copy original syles.json from /data
+    """
+    Load the styles into Drawstyles dictionary.
+     - If no .pyweaving dir in homedir create it
+     - and copy original syles.json from /data
     """
     global Drawstyles
     platform = sys.platform
@@ -74,8 +75,8 @@ def load_styles(filename='styles.json'):
 
 
 def get_style(name):
-    """ load styles if not loaded and
-    return the named style
+    """
+    Load styles if not loaded and return the named style.
     """
     if not Drawstyles:
         load_styles()

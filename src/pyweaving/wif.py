@@ -112,7 +112,7 @@ class WIFReader(object):
             warp_color_map = {}
             for thread_no, value in self.config.items('WARP COLORS'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     warp_color_map[int(thread_no)] = int(value)
@@ -136,7 +136,7 @@ class WIFReader(object):
         if has_threading:
             for thread_no, value in self.config.items('THREADING'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     if self.zerobased:
@@ -153,7 +153,7 @@ class WIFReader(object):
         if has_warp_spacing:
             for thread_no, value in self.config.items('WARP SPACING'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     warp_spacing_map[int(thread_no)] = float(value)
@@ -198,9 +198,9 @@ class WIFReader(object):
         """
         Populate the draft in-place with weft info extracted from the wif file.
         Shafts and Treadles are created after reading file contents.
-        
+
          - Specifically:
-        
+
             - Weft threads count,
             - Weft Units,
             - default Weft Color,
@@ -226,7 +226,7 @@ class WIFReader(object):
             weft_color_map = {}
             for thread_no, value in self.config.items('WEFT COLORS'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     weft_color_map[int(thread_no)] = int(value)
@@ -249,7 +249,7 @@ class WIFReader(object):
             liftplan_map = {}
             for thread_no, value in self.config.items('LIFTPLAN'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     # some wif files have illegal thread numbers
@@ -263,7 +263,7 @@ class WIFReader(object):
             treadling_map = {}
             for thread_no, value in self.config.items('TREADLING'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     if self.zerobased:
@@ -284,7 +284,7 @@ class WIFReader(object):
         if has_weft_spacing:
             for thread_no, value in self.config.items('WEFT SPACING'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if thread_no not in [';', '#']:  # check for comments ourselves
                     weft_spacing_map[int(thread_no)] = float(value)
@@ -404,7 +404,7 @@ class WIFReader(object):
             wif_palette = {}
             for color_no, value in self.config.items('COLOR TABLE'):
                 # maybe a comment on end of line (pixeLoom6.7.5)
-                if value.find(";") > -1:
+                if value and value.find(";") > -1:
                     value = value[:value.find(";")].strip()
                 if color_no not in [';', '#']:  # check for comments ourselves
                     channels = [int(ch) for ch in value.split(',')]

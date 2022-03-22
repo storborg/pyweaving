@@ -373,8 +373,8 @@ class Draft(object):
         I.e. Find all the unique color/spacing combinations and collate to a minimal set.
         Used by SVG renderer only (for efficiency).
 
-			- Called from process_draft()
-			- Collect colors in self.css_colors
+            - Called from process_draft()
+            - Collect colors in self.css_colors
 
         Args:
             threads (list): of WarpThreads or WeftThreads to process,

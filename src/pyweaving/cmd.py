@@ -16,6 +16,12 @@ from .generators.raster import point_threaded, extract_draft
 
 
 def outfile_if_missing_dir(infile, outfile):
+    """
+    If no directory defined on outfile, then use the directory from infile.
+
+    Returns:
+        outfile (str):
+    """
     " use dir from infile if not in outfile "
     indir, inbase = os.path.split(infile)
     outdir, outbase = os.path.split(outfile)
@@ -25,13 +31,19 @@ def outfile_if_missing_dir(infile, outfile):
 
 
 def ensure_ext(filename, ext):
-    " replace or add ext as required onto full filename "
+    """
+    Replace the extension on the filename and return.
+    """
     return os.path.splitext(filename)[0]+"."+ext
 
 
 def find_highest_suffixed_file(directory, stub, ext):
-    """ Look in dir for filenames with numeric suffix matching stub
-    and find highest count
+    """
+    Look in directory for filenames with numeric suffix matching stub
+     - find highest count
+
+    Returns:
+        highest (int):
     """
     stubname = stub+"-*"+"."+ext
     files = glob.glob(os.path.join(directory, stubname))
@@ -47,8 +59,17 @@ def find_highest_suffixed_file(directory, stub, ext):
 
 
 def generate_unique_filename(label, directory, ext):
-    """ Generate autoname and increment suffix until unique in directory
-    - suffix is in form -NN where NN is a zero leading integer (max 99)
+    """
+    Cleanup label and generate a well named file with a unique numeric suffix:
+     - finding a numeric suffix that is unique in the directory,
+     - replacing the file extension,
+     - suffix is in form -NN where NN is a zero leading integer (max 99)
+     - will produce names like 'foo-02.png'
+
+    Args:
+        label (str): a filename withouta directory,
+        directory (str): a directory to look into to check for name collisions,
+        ext (str): file extension like 'png'
     """
     result = label.replace(",", "_")
     result = result.replace(" ", "_")
@@ -64,8 +85,14 @@ def generate_unique_filename(label, directory, ext):
 
 
 def write_wif_auto(wif, opts, name_part, prefix):
-    """ save wif using name_part as principle label
-    Also render if defined
+    """
+    Does a few common tasks to sabve a file:
+     - cleanup file removing illegal chars
+     - use the current working directory if one is not supplied,
+     - construct a filename from the prefix, name_part and a
+       calculated numeric suffix (if required to ensure the name is unique).
+
+    Save the wif using this name and also render to png if opts.render is True.
     """
     # save wif file
     autoname = name_part.replace("/", "")  # new filename
@@ -95,9 +122,10 @@ def write_wif_auto(wif, opts, name_part, prefix):
 
 
 def gen_tartan(opts):
-    """ create a tartan pattern from a pattern
-    - save as wif and optionally render as png
-    - incoming sett is a pattern or name of a tartan
+    """
+    Create a tartan pattern from a pattern
+     - save as wif and optionally render as png
+     - incoming sett is a pattern or name of a tartan
     """
     wif = tartan(opts.sett, opts.repeats, opts.direction)
     if wif:
@@ -107,9 +135,10 @@ def gen_tartan(opts):
 
 
 def gen_twill(opts):
-    """ create a twill pattern from a pattern
-    - save as wif and optionally render as png
-    - incoming pattern in form '2/2 3/1' for a combined twill
+    """
+    Create a twill pattern from a pattern
+     - save as wif and optionally render as png
+     - incoming pattern in form '2/2 3/1' for a combined twill
     """
     wif = twill(opts.shape, opts.repeats)
     if wif:
@@ -119,9 +148,10 @@ def gen_twill(opts):
 
 
 def gen_from_drawdown(opts):
-    """ create a draft from an image of a drawdown
-    - save as wif and optionally render as png
-    - incoming shafts is a target for detecting number of shafts in the image
+    """
+    Create a draft from an image of a drawdown
+     - save as wif and optionally render as png
+     - incoming shafts is a target for detecting number of shafts in the image
     """
     wif = extract_draft(opts.imagefile, shafts=opts.shafts, find_core=opts.core)
     if wif:
@@ -131,8 +161,9 @@ def gen_from_drawdown(opts):
 
 
 def gen_image(opts):
-    """ create a draft from a pictorial image. Uses a point draw.
-    - save as wif and optionally render as png
+    """
+    Create a draft from a pictorial image. Uses a point draw.
+     - save as wif and optionally render as png
     """
     wif = point_threaded(opts.imagefile, shafts=opts.shafts, repeats=opts.repeats)
     if wif:
@@ -142,9 +173,9 @@ def gen_image(opts):
 
 
 def load_draft(infile):
-    """ Load the draft file in wif or json format.
-    - return the Draft or
-    false if not found or wrong type
+    """
+    Load the draft file in wif or json format.
+     - return the Draft or false if not found or wrong type
     """
     if os.path.exists(infile):
         if infile.endswith('.wif'):
@@ -162,8 +193,9 @@ def load_draft(infile):
 
 
 def render(opts):
-    """ Render to svg or png based on file extension
-    - if no outfile then show without saving
+    """
+    Render to svg or png based on file extension
+     - if no outfile then show without saving
     """
     draft = load_draft(opts.infile)
     if draft:
@@ -190,8 +222,9 @@ def render(opts):
 
 
 def convert(opts):
-    """ Convert wif to json or back.
-    (Also can wif to wif if need to rewrite file)
+    """
+    Convert wif to json or back.
+     - (Also can wif to wif if need to rewrite file)
     """
     draft = load_draft(opts.infile)
     if draft:
@@ -203,12 +236,20 @@ def convert(opts):
 
 
 def thread(opts):
+    """
+    Print Basic instructions on Threading
+    """
     draft = load_draft(opts.infile)
     if draft:
         instructions.threading(draft, opts.repeats)
 
 
 def weave(opts):
+    """
+    Help Weaver to weave this draft one pick at a time.
+    Assumes a 4 shaft table loom and liftplan only.
+    Allows weaver to stop and start again later at the correct pick.
+    """
     draft = load_draft(opts.infile)
     if draft:
         assert opts.liftplan, "only liftplan supported for now"
@@ -222,12 +263,19 @@ def weave(opts):
 
 
 def tieup(opts):
+    """
+    Print instructions on tieup
+    """
     draft = load_draft(opts.infile)
     if draft:
         instructions.tieup(draft)
 
 
 def stats(opts):
+    """
+    Basic report on nature of draft.
+     - terminal output
+    """
     draft = load_draft(opts.infile)
     if draft:
         warp_longest, weft_longest = draft.compute_longest_floats()

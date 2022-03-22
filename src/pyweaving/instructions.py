@@ -251,7 +251,7 @@ def threading(draft, repeats=1, color_table=default_color_table):
     Assumes 4 shafts colored red, yellow, blue, white
 
     Todo:
-        Needs to deal with variable sghafts and various shaft numbering/identifying conventions
+        Needs to deal with variable shafts and various shaft numbering/identifying conventions
     """
     print("\n---- THREADING INSTRUCTIONS ----\n")
     total_count = 0
