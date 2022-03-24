@@ -12,7 +12,7 @@ from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
-from .generators.raster import point_threaded, extract_draft
+from .generators.raster import point_threaded, extract_draft, find_common_colors
 
 
 def outfile_if_missing_dir(infile, outfile):
@@ -172,6 +172,28 @@ def gen_image(opts):
         write_wif_auto(wif, opts, opts.imagefile, 'gen_image_')
 
 
+def find_colors(opts):
+    """
+    Will print out the most common colors found in an image.
+    """
+    colors, swatch = find_common_colors(opts.imagefile, int(opts.count),
+                                        swatch_size=int(opts.size))  # test with image_scaled_size=100)
+    if colors:
+        print("Found", len(colors), "colors in", opts.imagefile, int(opts.count))
+        if int(opts.count) != len(colors):
+            print("Even though %d colors were requested. Only %d clusters of color were found" % (opts.count, len(colors)))
+        print(" - the random nature of initial sampling can lead to slightly different results each time")
+        for c in colors:
+            print(c.hex, c)
+    if swatch:
+        # save wif file
+        dotpos = opts.imagefile.rfind(".")
+        current_dir = getcwd() + "\\"
+        newname = generate_unique_filename("%s-colorrefx%d" % (opts.imagefile[:dotpos], len(colors)), current_dir, "png")
+        swatch.save(newname)
+        print("Wrote image:", newname)
+
+
 def load_draft(infile):
     """
     Load the draft file in wif or json format.
@@ -311,7 +333,7 @@ def main(argv=sys.argv):
 
     # Render a wif file
     p_render = subparsers.add_parser(
-        'render', help='Render a draft.')
+        'render', help='Render a draft on-screen or to file.')
     p_render.add_argument('infile')
     # will just show() if outfile not specified
     p_render.add_argument('outfile', nargs='?', help='use autopng or autosvg for a safely autonamed image file')
@@ -354,14 +376,14 @@ def main(argv=sys.argv):
 
     p_stats = subparsers.add_parser(
         'stats',
-        help='Print stats for a draft.')
+        help='Show stats for a draft.')
     p_stats.add_argument('infile')
     p_stats.set_defaults(function=stats)
 
     # Tartan generator
     p_tartan = subparsers.add_parser(
         'tartan',
-        help='Create a wif from the tartan generator (and optionally render).')
+        help='Create a wif from the tartan generator (optionally render).')
     p_tartan.add_argument('sett', help='The Tartan pattern "B46,G3,Y1,G4" or a tartan name.')
     p_tartan.add_argument('--direction', default="Z", help='Twill direction S, Z(default).')
     p_tartan.add_argument('--repeats', type=int, default=1, help='How many times to repeat the sett.')
@@ -374,7 +396,7 @@ def main(argv=sys.argv):
     # Twill generator
     p_twill = subparsers.add_parser(
         'twill',
-        help='Create a wif from the twill generator (and optionally render).')
+        help='Create a wif from the twill generator (optionally render).')
     p_twill.add_argument('shape')
     p_twill.add_argument('--repeats', type=int, default=4, help='How many times to repeat the twill.')
     p_twill.add_argument('--render', action='store_true', help='Also render to file. Add auto to get an autonamed imagefile.')
@@ -386,7 +408,7 @@ def main(argv=sys.argv):
     # Drawdown generator
     p_drawdown = subparsers.add_parser(
         'drawdown',
-        help='Create a wif from a supplied image of a drawdown (and optionally render).')
+        help='Create a wif from a supplied image of a drawdown (optionally render).')
     p_drawdown.add_argument('imagefile')
     p_drawdown.add_argument('--shafts', default='8', help='How many shafts to use. E.g. 8, 8x16')
     p_drawdown.add_argument('--core', action='store_true', help='Reduce to non-repeating core draft')
@@ -399,7 +421,7 @@ def main(argv=sys.argv):
     # Image generator
     p_image = subparsers.add_parser(
         'image',
-        help='Create a wif from a supplied pictorial image (and optionally render).')
+        help='Create a wif from a supplied pictorial image (optionally render).')
     p_image.add_argument('imagefile')
     p_image.add_argument('--shafts', default='40', help='How many shafts to use. E.g. 40')
     p_image.add_argument('--repeats', default='2', help='How many repeats to create')
@@ -408,6 +430,15 @@ def main(argv=sys.argv):
     p_image.add_argument('--style', default='Default', help='Use a named style from styles.json in ~/.pyweaving directory.')
     p_image.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_image.set_defaults(function=gen_image)
+
+    # Colour finder
+    p_colors = subparsers.add_parser(
+        'colors',
+        help='Print out the most common colors in an image and save a color swatch.')
+    p_colors.add_argument('imagefile')
+    p_colors.add_argument('--count', default='6', help='How many colors to find.')
+    p_colors.add_argument('--size', default='20', help='Size(pixels) of each color square in the resulting swatch image.')
+    p_colors.set_defaults(function=find_colors)
 
     opts, args = p.parse_known_args(argv[1:])
     # copy directory to outfile if not supplied

@@ -1,9 +1,10 @@
 from __future__ import print_function
 
 from setuptools import setup #, find_packages
+#import versioneer
 
-
-setup()
+setup()#version=versioneer.get_version(),
+       #cmdclass=versioneer.get_cmdclass())
 	# name='pyweaving',
 	# version='0.0.8.dev',
 	# description='Python Weaving Tools',

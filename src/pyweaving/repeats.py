@@ -174,6 +174,10 @@ def prune_pattern(pattern):
     pass
 
 
+# two kinds of mirroring.
+# - a bounce - single in middle with refl headin gout. easy to find - look L,R of each item and you'll find them
+# - a mirror - exact same but reflected. I.e. a bounce with a single gap in middle, or a much larger gap in middle such as at border.
+# bounce is subset of mirror. so find all mirrors, classify bounces internall;y
 def find_mirrors(seq, min_match_len=2):
     """
     Find all repeats in the sequence.

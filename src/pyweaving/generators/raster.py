@@ -2,6 +2,8 @@
 from .. import Draft, Color, __version__, find_repeats
 from PIL import Image
 from copy import deepcopy
+from collections import namedtuple
+from random import sample as random_sample
 
 
 class Image_draft(object):
@@ -381,3 +383,163 @@ def extract_draft(image_filename, shafts=8, find_core=False):
     """
     im = Image_draft(image_filename, shafts, find_core)
     return im.draft
+
+
+# Find most common colors in an image
+
+
+Point = namedtuple('Point', ('coords', 'n', 'ct'))
+""" Point with coords (color in hsl*1000 format), N=3 (HSL) data dimension, and the count of howmany of that color are in the dataset"""
+
+Cluster = namedtuple('Cluster', ('points', 'center', 'n'))
+""" Cluster is a collection of points, center location(single point), and  N=3 (HSL) data dimension"""
+
+
+# def get_points(img):
+#    """
+#    Get the points in the image. Use hsl instead of rgb and *1000 so error testing is easier
+#    """
+#    points = []
+#    w, h = img.size
+#    for count, c in img.getcolors(w * h):
+#        hsl = Color(c).hsl
+#        points.append(Point([a*1000 for a in hsl], 3, count))
+#    return points
+
+
+def get_points(img, data_dim=3):
+    """
+    Get the points in the image. Use hsl instead of rgb and x1000 so error testing is easier.
+
+    Args:
+        img (Image): The image to examine.
+        data_dim(int): 3 for RGB (If used for XY then 2)
+    """
+    w, h = img.size
+    refcolor = Color()
+    return [Point([a*1000 for a in hsl], data_dim, count) for count, color in img.getcolors(w * h) if (hsl := refcolor.rgb2hsl(color))]
+
+
+def euclidean(p1, p2):
+    """
+    Fitness function to see how close the colors are to each other.
+    Simplified Euclidean test - faster when ignoring the sqrt().
+    """
+    return sum([
+        (p1.coords[i] - p2.coords[i]) ** 2 for i in range(p1.n)
+    ])
+
+
+def calculate_center(points, data_dim=3):
+    """
+    Find the center of the cluster of points.
+    """
+    vals = [0.0] * data_dim  # for i in range(data_dim)]
+    plen = 0
+    for p in points:
+        plen += p.ct
+        for i in range(data_dim):
+            vals[i] += (p.coords[i] * p.ct)
+    return Point([(v / plen) for v in vals], data_dim, 1)
+
+
+def kmeans(points, cluster_count, min_diff):
+    """
+    Classic k-means clustering algorithm. Clustes the points into cluster_count
+    clusters and stops when centroid stops moving (using min_diff as the test).
+    """
+    # randomly sample cluster_count starting points and make initial clusters.
+    clusters = [Cluster([p], p, p.n) for p in random_sample(points, cluster_count)]
+    # !will fail with ValueError if not enough different colors in image
+
+    refcount = 0  # see how many times we go through the loop.
+    # Proceed until error (diff) is small then halt
+    while True:
+        plists = [[] for i in range(cluster_count)]
+        refcount += 1
+
+        # move points into the cluster with the smallest distance to its center
+        for p in points:
+            smallest_distance = float('Inf')
+            for i in range(cluster_count):
+                distance = euclidean(p, clusters[i].center)
+                if distance < smallest_distance:
+                    smallest_distance = distance
+                    idx = i
+            plists[idx].append(p)
+
+        # for each cluster calculate new center and
+        # find max difference between center of cluster this iteraction vs previous
+        diff = 0
+        for i in range(cluster_count):
+            old = clusters[i]
+            center = calculate_center(plists[i], old.n)
+            new = Cluster(plists[i], center, old.n)
+            clusters[i] = new
+            diff = max(diff, euclidean(old.center, new.center))
+
+        # print(refcount,diff)
+        # if the difference is small - clustering has stabilised - so stop
+        if diff < min_diff:
+            break
+    print("refcount", refcount)
+    return clusters
+
+
+def rgbtohex(rgb):
+    """Convert rgb to hex string"""
+    return '#%s' % ''.join(('%02x' % p for p in rgb))
+
+
+# reference:
+# https://charlesleifer.com/blog/using-python-and-k-means-to-find-the-dominant-colors-in-images/
+
+
+def find_clustered_colors(img, num_clusters=3, scale_dim=200, error_metric=1):
+    """
+    """
+    # rescale to sampling size
+    img.thumbnail((scale_dim, scale_dim), resample=Image.ANTIALIAS, reducing_gap=2)
+
+    # Use k-means clustering to find minimal set of colors (center of each cluster)
+    points = get_points(img)
+    clusters = kmeans(points, num_clusters, error_metric)
+    # extract colors
+    refcol = Color()
+    # hsls = [map(float, c.center.coords) for c in clusters]
+    hsls = [c.center.coords for c in clusters]
+    rgbs = [refcol.hsl2rgb(h/1000, s/1000, ll/1000) for h, s, ll in hsls]
+    return rgbs
+    # return rgbtohex(rgbs)
+
+
+def find_common_colors(image_filename, count=8, image_scaled_size=200,
+                       error_metric=2, swatch_size=None, debug=False):
+    """
+    Cluster the colors into 'count' regions and return the centroid color of each cluster.
+    Save a swatch style image of these colors. Autoname to prevent overwriting.
+    """
+    swatch_image = None
+    rgbimage = Image.open(image_filename).convert('RGB')
+    found = sorted(find_clustered_colors(rgbimage, count, scale_dim=image_scaled_size,
+                                         error_metric=error_metric),
+                   key=sum)  # IWBNI we could sort in hsl order
+
+    if debug:  # save scaled image
+        dotpos = image_filename.rfind(".")
+        if dotpos:
+            newname = image_filename[:dotpos] + "-samplesref." + image_filename[dotpos + 1:]
+            rgbimage.save(newname)
+
+    colors = [Color(c) for c in found]
+    # Save to file if swatch_size defined
+    if swatch_size:
+        sq = swatch_size
+        # very rude but simple way to make color swatches.
+        collected = [Image.new(mode="RGB", size=(sq, sq), color=c.rgb) for c in colors]
+        swatch_image = Image.new(mode="RGB", size=(sq * len(colors), sq))
+        # paste each square color image into the swatch image
+        for x, img in enumerate(collected):
+            swatch_image.paste(img, (x*sq, 0))
+
+    return colors, swatch_image

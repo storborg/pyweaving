@@ -2,8 +2,9 @@ include tox.ini
 recursive-include docs *
 recursive-include tests *
 
-graft src
+
 
 prune docs/_build
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
+
