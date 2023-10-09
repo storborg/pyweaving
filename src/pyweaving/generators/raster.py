@@ -24,7 +24,7 @@ class Image_draft(object):
         feedback (bool, optional): write a sampleref image showing sample positions on image, defaults to True
     """
 
-    def __init__(self, imagefile, size_description, minimal=True, hreflect=True,
+    def __init__(self, imagefile, size_description, minimal=False, hreflect=True,
                  samples_per_cell=5, noise_threshold=0.1, feedback=True):
         self.filename = imagefile
         warpthreads, weftthreads = self.parse_size(size_description)
@@ -84,7 +84,7 @@ class Image_draft(object):
     def sample_image(self, warpcount, weftcount, scount, debug=False):
         """
         Sample image to get clean colour from original
-         - if debug set then export an aimge showing sample locations as red dots
+         - if debug set then export an image showing sample locations as red dots
 
         Args:
             warpcount (int): How many squares across are in the image.
@@ -395,18 +395,9 @@ Cluster = namedtuple('Cluster', ('points', 'center', 'n'))
 """ Cluster is a collection of points, center location(single point), and  N=3 (HSL) data dimension"""
 
 
-# def get_points(img):
-#    """
-#    Get the points in the image. Use hsl instead of rgb and *1000 so error testing is easier
-#    """
-#    points = []
-#    w, h = img.size
-#    for count, c in img.getcolors(w * h):
-#        hsl = Color(c).hsl
-#        points.append(Point([a*1000 for a in hsl], 3, count))
-#    return points
-
-
+def _shrt(a,b=2):
+    return(round(a*10**b)/10**b)
+    
 def get_points(img, data_dim=3):
     """
     Get the points in the image. Use hsl instead of rgb and x1000 so error testing is easier.
@@ -417,7 +408,9 @@ def get_points(img, data_dim=3):
     """
     w, h = img.size
     refcolor = Color()
-    return [Point([a*1000 for a in hsl], data_dim, count) for count, color in img.getcolors(w * h) if (hsl := refcolor.rgb2hsl(color))]
+    rgb_colors = img.getcolors(w * h)
+    return [Point([a*1000 for a in hsl], data_dim, count) for count, color in rgb_colors if (hsl := refcolor.rgb2okhsl((color)))]
+    
 
 
 def euclidean(p1, p2):
@@ -434,7 +427,7 @@ def calculate_center(points, data_dim=3):
     """
     Find the center of the cluster of points.
     """
-    vals = [0.0] * data_dim  # for i in range(data_dim)]
+    vals = [0.0] * data_dim
     plen = 0
     for p in points:
         plen += p.ct
@@ -443,20 +436,32 @@ def calculate_center(points, data_dim=3):
     return Point([(v / plen) for v in vals], data_dim, 1)
 
 
-def kmeans(points, cluster_count, min_diff):
+def kmeans(points, cluster_count, min_diff, method = 'random'):
     """
     Classic k-means clustering algorithm. Clustes the points into cluster_count
     clusters and stops when centroid stops moving (using min_diff as the test).
+    - method is used to calc the starting set of guesses
+      -  "random | popular | spread" random is probably best
     """
-    # randomly sample cluster_count starting points and make initial clusters.
-    clusters = [Cluster([p], p, p.n) for p in random_sample(points, cluster_count)]
+    # Create initial guesses
+    if method == 'random':
+        # randomly sample cluster_count starting points and make initial clusters.
+        clusters = [Cluster([p], p, p.n) for p in random_sample(points, cluster_count)]
+    elif method == 'popular':
+        # take the most populous (first in sorted list) - likley poor!
+        points.sort(reverse=True)
+        cluster_indices = [points[i] for i in range(cluster_count)]
+        clusters = [Cluster([p], p, p.n) for p in cluster_indices]
+    else:
+        # start with a range of hues - assuming even distribution of core colors - probably false
+        hues = [float(h*(1.0/(cluster_count-1))) for h in range(cluster_count)]
+        cluster_points = [Point(coords=[h*1000, 900, 900], n=3, ct=100) for h in hues]
+        clusters = [Cluster([p], p, p.n) for p in cluster_points]
     # !will fail with ValueError if not enough different colors in image
 
-    refcount = 0  # see how many times we go through the loop.
     # Proceed until error (diff) is small then halt
     while True:
         plists = [[] for i in range(cluster_count)]
-        refcount += 1
 
         # move points into the cluster with the smallest distance to its center
         for p in points:
@@ -477,12 +482,9 @@ def kmeans(points, cluster_count, min_diff):
             new = Cluster(plists[i], center, old.n)
             clusters[i] = new
             diff = max(diff, euclidean(old.center, new.center))
-
-        # print(refcount,diff)
         # if the difference is small - clustering has stabilised - so stop
         if diff < min_diff:
             break
-    print("refcount", refcount)
     return clusters
 
 
@@ -499,31 +501,30 @@ def find_clustered_colors(img, num_clusters=3, scale_dim=200, error_metric=1):
     """
     """
     # rescale to sampling size
-    img.thumbnail((scale_dim, scale_dim), resample=Image.ANTIALIAS, reducing_gap=2)
+    img.thumbnail((scale_dim, scale_dim), resample=Image.NEAREST, reducing_gap=2) # Image.ANTIALIAS
+    # img.thumbnail.show()
 
     # Use k-means clustering to find minimal set of colors (center of each cluster)
     points = get_points(img)
     clusters = kmeans(points, num_clusters, error_metric)
     # extract colors
     refcol = Color()
-    # hsls = [map(float, c.center.coords) for c in clusters]
     hsls = [c.center.coords for c in clusters]
-    rgbs = [refcol.hsl2rgb(h/1000, s/1000, ll/1000) for h, s, ll in hsls]
-    return rgbs
-    # return rgbtohex(rgbs)
+    rgbs = [refcol.okhsl2rgb(h/1000*360, s/1000, ll/1000) for h, s, ll in hsls]
+    return len(points), rgbs
 
 
 def find_common_colors(image_filename, count=8, image_scaled_size=200,
-                       error_metric=2, swatch_size=None, debug=False):
+                       error_metric=0.5, swatch_size=None, debug=False):
     """
     Cluster the colors into 'count' regions and return the centroid color of each cluster.
     Save a swatch style image of these colors. Autoname to prevent overwriting.
     """
     swatch_image = None
     rgbimage = Image.open(image_filename).convert('RGB')
-    found = sorted(find_clustered_colors(rgbimage, count, scale_dim=image_scaled_size,
-                                         error_metric=error_metric),
-                   key=sum)  # IWBNI we could sort in hsl order
+    pt_count,found = find_clustered_colors(rgbimage, count, scale_dim=image_scaled_size,
+                                           error_metric=error_metric)
+    found.sort(key=sum)  # IWBNI we could sort in hsl order
 
     if debug:  # save scaled image
         dotpos = image_filename.rfind(".")
@@ -542,4 +543,17 @@ def find_common_colors(image_filename, count=8, image_scaled_size=200,
         for x, img in enumerate(collected):
             swatch_image.paste(img, (x*sq, 0))
 
-    return colors, swatch_image
+    return colors, swatch_image, pt_count
+
+#
+def remap_image_colors(filename, image_width, aspect, colref, colcount):
+    """
+    """
+    if isinstance(colref, str):
+        colref = Image.open(colref).convert('RGB')
+    # colref is now a PIL image
+    colref_w, colref_h = colref.size
+    newcols = [colref.getpixel((x, colref_h//2)) for x in range(0, colref_w, colref_w//colcount)]
+    print(len(newcols),newcols)
+    # load filename and set each pixel to the closest color in newcols (linear distance using OKHSL)
+    

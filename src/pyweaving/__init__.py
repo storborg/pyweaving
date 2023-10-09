@@ -6,9 +6,9 @@ import json
 from .Color import Color, WHITE, BLACK, MID
 from .Drawstyle import Drawstyle
 from .Draft import WarpThread, WeftThread, Shaft, Treadle, Draft
-from .repeats import find_repeats
+from .repeats import find_repeats, find_mirrors, find_mirrors_repeats, prune_pattern
 
-__version__ = '0.8'
+__version__ = '0.5'
 
 # For Sphinx autodoc
 __all__ = ["Draft", "Color", "Drawstyle", "WarpThread", "WeftThread", "Shaft", "Treadle", "find_repeats"]

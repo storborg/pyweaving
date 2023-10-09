@@ -43,7 +43,7 @@ copyright = u'2014-2022, Scott Torborg'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '0.8'
+release = '0.5'
 
 # The short X.Y version. For now let's just make it the same.
 # version = '.'.join(s.split('.', 2)[:2])

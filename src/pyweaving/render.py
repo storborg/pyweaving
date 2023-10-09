@@ -3,12 +3,19 @@ import os.path
 import svgwrite
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
-from . import get_project_root, WHITE, BLACK, MID, WarpThread
+from . import get_project_root, WHITE, BLACK, MID, WarpThread, find_mirrors_repeats, prune_pattern
 
 
 homedir = get_project_root()
-font_path = os.path.join(homedir, 'data', 'Arial.ttf')
+font_path = os.path.join(homedir, 'data', 'LiberationSans-Regular')
 
+# Fix for missing draw.textsize in Pillow 10.0
+def get_text_dimensions(text_string, font):
+    " Calculate proper font metrics width height of text"
+    ascent, descent = font.getmetrics()
+    text_width = font.getmask(text_string).getbbox()[2]
+    text_height = font.getmask(text_string).getbbox()[3] + descent
+    return (text_width, text_height)
 
 # Helper function which calculates width of cells and stores in Draft on threads.
 # Also modifies modifies style
@@ -258,7 +265,8 @@ class ImageRenderer(object):
             if len(t) > len(longest):
                 longest = t
 
-        textw, texth = draw.textsize(longest, font=self.title_font)
+        # textw, texth = draw.textsize(longest, font=self.title_font)
+        textw, texth = get_text_dimensions(longest, font=self.title_font)
         lineheight = self.style.title_font_size_factor * 1.2  # (for spacing)
         endwidth = offsetx + textw / self.style.box_size
         endheight = int(offsety + lineheight * len(titles)) + 1
@@ -291,7 +299,8 @@ class ImageRenderer(object):
         for t in stats:
             if len(t) > len(longest):
                 longest = t
-        textw, texth = draw.textsize(longest, font=self.tick_font)
+        # textw, texth = draw.textsize(longest, font=self.tick_font)
+        textw, texth = get_text_dimensions(longest, font=self.tick_font)
         endwidth = offsetx + textw / self.pixels_per_square
         lineheight = self.style.title_font_size_factor * 1.02  # (for spacing)
         endheight = int(offsety + lineheight * len(stats)) + 1
@@ -321,7 +330,8 @@ class ImageRenderer(object):
             lines.append(note)
             if len(note) > len(longest):
                 longest = note
-        textw, texth = draw.textsize(longest, font=self.tick_font)
+        # textw, texth = draw.textsize(longest, font=self.tick_font)
+        textw, texth = get_text_dimensions(longest, font=self.tick_font)
         endwidth = offsetx + textw / self.pixels_per_square
         lineheight = self.style.title_font_size_factor * 1.02  # (for spacing)
         endheight = int(offsety + lineheight * len(lines)) + 1
@@ -562,7 +572,68 @@ class ImageRenderer(object):
             t_index -= 1
         #
         endwidth = int(distance/self.pixels_per_square)
+        self.paint_concise((offsetx,endheight), draw)
+        endheight += 5
         return (endwidth, endheight)
+
+    def paint_concise(self, startpos, draw):
+        seq = [w.shaft.index for w in self.draft.warp]
+        series = find_mirrors_repeats(seq)
+        # print("Mirrors")
+        # for i in series['mirrors']:
+            # print(len(i[1]), len(seq)-len(i[1])*len(i[0]),  i)
+        # print("Repeats", len(series['repeats']))
+        # for i in series['repeats']:
+            # print(len(i[1]), len(seq)-len(i[1])*len(i[0]), i)
+        #series['repeats'] = prune_pattern(series['repeats'], len(seq))
+        #
+        offsetx, offsety = startpos
+        box_dist = self.pixels_per_square
+        starty = offsety * self.pixels_per_square
+        distance = offsetx * self.pixels_per_square
+        previous = distance
+        col1 = (255,0,0)
+        col2 = (0,255,0)
+        col3 = (128,128,128)
+        col = col1
+        ypos = starty +2
+        maxlen = len(self.draft.warp) +2
+        for m in series['repeats']:
+            col = col1
+            for (x1,x2) in m[1]:
+                draw.line(((maxlen-x1)*box_dist, ypos,
+                          (maxlen-x2-1)*box_dist, ypos),
+                          fill=col)
+                draw.line(((maxlen-x1)*box_dist, ypos+1,
+                          (maxlen-x2-1)*box_dist, ypos+1),
+                          fill=col)
+                #
+                if col == col1:
+                    col = col2
+                else:
+                    col = col1
+            ypos += 3
+        ypos += 4
+        col1 = (128,128,33)
+        col2 = (0,200,200)
+        col = col1
+        for m in series['mirrors']:
+            col = col1
+            for (x1,x2) in m[1]:
+                draw.line(((maxlen-x1)*box_dist, ypos,
+                          (maxlen-x2-1)*box_dist, ypos),
+                          fill=col)
+                draw.line(((maxlen-x1)*box_dist, ypos+1,
+                          (maxlen-x2-1)*box_dist, ypos+1),
+                          fill=col)
+                #
+                if col == col1:
+                    col = col2
+                else:
+                    col = col1
+            ypos += 3
+        
+        
 
     def paint_weft_colors(self, startpos, draw):
         """
@@ -743,7 +814,8 @@ class ImageRenderer(object):
                               fill=self.tick_color)
                     if self.style.show_ticktext:
                         # draw text on left side, right justified
-                        textw, texth = draw.textsize(str(treadle_no), font=self.thread_font)
+                        # textw, texth = draw.textsize(str(treadle_no), font=self.thread_font)
+                        textw, texth = get_text_dimensions(str(treadle_no), font=self.thread_font)
                         draw.text((startx - textw * 1.6, starty + 2),
                                   str(treadle_no),
                                   font=self.tick_font,

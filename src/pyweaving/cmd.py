@@ -12,7 +12,7 @@ from .wif import WIFReader, WIFWriter
 from .render import ImageRenderer, SVGRenderer
 from .generators.tartan import tartan
 from .generators.twill import twill
-from .generators.raster import point_threaded, extract_draft, find_common_colors
+from .generators.raster import point_threaded, extract_draft, find_common_colors, remap_image_colors
 
 
 def outfile_if_missing_dir(infile, outfile):
@@ -67,12 +67,13 @@ def generate_unique_filename(label, directory, ext):
      - will produce names like 'foo-02.png'
 
     Args:
-        label (str): a filename withouta directory,
+        label (str): a filename without a directory,
         directory (str): a directory to look into to check for name collisions,
         ext (str): file extension like 'png'
     """
     result = label.replace(",", "_")
     result = result.replace(" ", "_")
+    result = result.replace("_-", "-")
     result, _ = os.path.splitext(result)
     # does file exist already ?
     if os.path.exists(result+"."+ext):
@@ -82,10 +83,12 @@ def generate_unique_filename(label, directory, ext):
         result += "-%02d" % (last + 1)
     result = result+"."+ext
     return result
-
-
+    
 def write_wif_auto(wif, opts, name_part, prefix):
     """
+    return result
+
+
     Does a few common tasks to sabve a file:
      - cleanup file removing illegal chars
      - use the current working directory if one is not supplied,
@@ -176,10 +179,13 @@ def find_colors(opts):
     """
     Will print out the most common colors found in an image.
     """
-    colors, swatch = find_common_colors(opts.imagefile, int(opts.count),
-                                        swatch_size=int(opts.size))  # test with image_scaled_size=100)
+    colors, swatch, col_total = find_common_colors(opts.imagefile, int(opts.count),
+                                                   swatch_size=int(opts.size))  # test with image_scaled_size=100)
     if colors:
-        print("Found", len(colors), "colors in", opts.imagefile, int(opts.count))
+        msg = ""
+        if int(opts.count) != len(colors):
+            msg = "We could not find %d distinct clusters of color." % (int(opts.count))
+        print("Found %d colors (From %d unique) in %s. %s" % (len(colors), col_total, opts.imagefile, msg))
         if int(opts.count) != len(colors):
             print("Even though %d colors were requested. Only %d clusters of color were found" % (opts.count, len(colors)))
         print(" - the random nature of initial sampling can lead to slightly different results each time")
@@ -190,9 +196,46 @@ def find_colors(opts):
         dotpos = opts.imagefile.rfind(".")
         current_dir = getcwd() + "\\"
         newname = generate_unique_filename("%s-colorrefx%d" % (opts.imagefile[:dotpos], len(colors)), current_dir, "png")
+        print("Writing image:", newname)
         swatch.save(newname)
-        print("Wrote image:", newname)
+        return swatch
 
+def remap_image(opts):
+    """
+    Remap colors in an image to those in a refcol file.
+    Also rescale image to width and aspect ratio.
+    - If no colref then reduce first to --count colors
+    - If no width then rescale to aspect and existing width. (ignore if aspect = 1
+    - only count is mandatory
+    """
+    filename = opts.imagefile
+    colcount = opts.count
+    imagewidth = int(opts.width)
+    #
+    divpos= opts.aspect.find("/")
+    aspect = 1
+    if divpos >0:
+        num = opts.aspect[:divpos]
+        den = opts.aspect[divpos+1:]
+        aspect = float(num)/float(den)
+    else: # single num
+        aspect = float(opts.aspect)
+    if imagewidth == 0:
+        # unsupplied so use image_width
+        # read imagefile and get width
+        pass
+    if opts.aspect == '1/1':
+        # unsupplied so maintain current aspect ratio
+        pass
+    if opts.colref:
+        colref = opts.colref
+    else: # none supplied
+        # so reduce first and use that as remap target.
+        opts.size=20
+        colref = find_colors(opts) # its a PIL image
+    # image_width may be 0, colref may be filename or PIL Image.
+    remap_image_colors(filename, imagewidth, aspect, colref, colcount)
+    
 
 def load_draft(infile):
     """
@@ -226,19 +269,28 @@ def render(opts):
             if opts.floats > 0:
                 style.set_floats(opts.floats - 1)
             if opts.outfile:
-                first4 = opts.outfile[:4]     # is it 'auto'
-                imagetype = opts.outfile[4:]  # and png or svg
-                if first4 == 'auto':
+                localdir, fileid = os.path.split(opts.outfile)
+                if fileid[:4] == 'auto':  # Generate an automatic and safe (unique) name.
+                    imagetype = fileid[4:]  # png or svg
                     current_dir = getcwd() + "\\"
-                    if imagetype in ['svg', 'png']:
+                    # Bug here:
+                    # if infile has a dir (os.path.split())
+                    # then that dir will be changed if it has a space in it to an underscore.
+                    # which will not find the directory.
+                    if imagetype == 'svg':
                         opts.outfile = generate_unique_filename(opts.infile, current_dir, imagetype)
-                    else:  # force to png
+                    else:  # use or override to png
                         opts.outfile = generate_unique_filename(opts.infile, current_dir, 'png')
+                else:  # outfile is not auto so just use it
+                    pass
                 #
+                print("out", opts.outfile)
                 if opts.outfile.endswith('.svg'):
                     SVGRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
-                else:
+                elif opts.outfile.endswith('.png'):
                     ImageRenderer(draft, style, opts.liftplan, opts.structure).save(opts.outfile)
+                else:
+                    print("File extension not recognised", opts.outfile)
             else:  # no outfile specified - show it
                 ImageRenderer(draft, style, opts.liftplan, opts.structure).show()
 
@@ -334,7 +386,7 @@ def main(argv=sys.argv):
     # Render a wif file
     p_render = subparsers.add_parser(
         'render', help='Render a draft on-screen or to file.')
-    p_render.add_argument('infile')
+    p_render.add_argument('infile', help='The wif file to load.')
     # will just show() if outfile not specified
     p_render.add_argument('outfile', nargs='?', help='use autopng or autosvg for a safely autonamed image file')
     p_render.add_argument('--liftplan', action='store_true', help='Show draft as a liftplan even if defined with a Tieup.')
@@ -385,62 +437,77 @@ def main(argv=sys.argv):
         'tartan',
         help='Create a wif from the tartan generator (optionally render).')
     p_tartan.add_argument('sett', help='The Tartan pattern "B46,G3,Y1,G4" or a tartan name.')
+    p_tartan.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.add_argument('--direction', default="Z", help='Twill direction S, Z(default).')
     p_tartan.add_argument('--repeats', type=int, default=1, help='How many times to repeat the sett.')
     p_tartan.add_argument('--render', action='store_true', help='Also render to file.')
     p_tartan.add_argument('--renderfile', default='auto', help='filename or "auto"(default) for an autoname.')
     p_tartan.add_argument('--style', default='Default', help='Use a named style from styles.json in ~/.pyweaving directory.')
-    p_tartan.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_tartan.set_defaults(function=gen_tartan)
 
     # Twill generator
     p_twill = subparsers.add_parser(
         'twill',
         help='Create a wif from the twill generator (optionally render).')
-    p_twill.add_argument('shape')
+    p_twill.add_argument('shape', default="2/1 2/2", help='Twill pairs separated by spaces. E.g. 2/2 or "1/2 2/1S"')
+    p_twill.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_twill.add_argument('--repeats', type=int, default=4, help='How many times to repeat the twill.')
     p_twill.add_argument('--render', action='store_true', help='Also render to file. Add auto to get an autonamed imagefile.')
     p_twill.add_argument('--renderfile', default='auto', help='filename or "auto"(default) for an autoname.')
     p_twill.add_argument('--style', default='Default', help='Use a named style from styles.json in ~/.pyweaving directory.')
-    p_twill.add_argument('outfile')
     p_twill.set_defaults(function=gen_twill)
 
     # Drawdown generator
     p_drawdown = subparsers.add_parser(
         'drawdown',
         help='Create a wif from a supplied image of a drawdown (optionally render).')
-    p_drawdown.add_argument('imagefile')
-    p_drawdown.add_argument('--shafts', default='8', help='How many shafts to use. E.g. 8, 8x16')
+    p_drawdown.add_argument('imagefile', help='The image file of the drawdown.')
+    p_drawdown.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
+    p_drawdown.add_argument('--shafts', default='8', help='How many shafts to use. E.g. 8, or 8x16')
     p_drawdown.add_argument('--core', action='store_true', help='Reduce to non-repeating core draft')
     p_drawdown.add_argument('--render', action='store_true', help='Also render to file. Add auto to get an autonamed imagefile.')
     p_drawdown.add_argument('--renderfile', default='auto', help='filename or "auto"(default) for an autoname.')
     p_drawdown.add_argument('--style', default='Default', help='Use a named style from styles.json in ~/.pyweaving directory.')
-    p_drawdown.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_drawdown.set_defaults(function=gen_from_drawdown)
 
     # Image generator
     p_image = subparsers.add_parser(
         'image',
         help='Create a wif from a supplied pictorial image (optionally render).')
-    p_image.add_argument('imagefile')
+    p_image.add_argument('imagefile', help='The image file to load.')
+    p_image.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_image.add_argument('--shafts', default='40', help='How many shafts to use. E.g. 40')
     p_image.add_argument('--repeats', default='2', help='How many repeats to create')
     p_image.add_argument('--render', action='store_true', help='Also render to file. Add auto to get an autonamed imagefile.')
     p_image.add_argument('--renderfile', default='auto', help='filename or "auto"(default) for an autoname.')
     p_image.add_argument('--style', default='Default', help='Use a named style from styles.json in ~/.pyweaving directory.')
-    p_image.add_argument('outfile', default='auto', help='Save to this file or "auto"(default) for an autoname in current directory.')
     p_image.set_defaults(function=gen_image)
 
     # Colour finder
     p_colors = subparsers.add_parser(
         'colors',
         help='Print out the most common colors in an image and save a color swatch.')
-    p_colors.add_argument('imagefile')
-    p_colors.add_argument('--count', default='6', help='How many colors to find.')
-    p_colors.add_argument('--size', default='20', help='Size(pixels) of each color square in the resulting swatch image.')
+    p_colors.add_argument('imagefile', help='The image file to examine.')
+    p_colors.add_argument('--count', type=int, default=6, help='How many colors to find.')
+    p_colors.add_argument('--size', type=int, default=20, help='Size(pixels) of each color square in the resulting swatch image.')
     p_colors.set_defaults(function=find_colors)
 
-    opts, args = p.parse_known_args(argv[1:])
+    # Colour finder
+    p_remap = subparsers.add_parser(
+        'remap',
+        help='Load and save an image while reducing colors to supplied ref-image and rescale aspect ratio.')
+    p_remap.add_argument('imagefile', help='The image file to remap.')
+    p_remap.add_argument('--width', type=int, default=0, help='Width(pixels) of saved image.')
+    p_remap.add_argument('--aspect', default='1/1', help='Aspect ratio of image. Typically "PPI/EPI"')
+    p_remap.add_argument('--colref', help='Image of line of colors.')
+    p_remap.add_argument('--count', type=int, default=8, required=True, help='Number of colors in colref image.(required)')
+    p_remap.set_defaults(function=remap_image)
+
+    opts, unknown = p.parse_known_args(argv[1:])
+    if unknown:
+        print("UNKNOWN keywords found:", unknown)
+        print("  - Probably you have misstyped an argument name.")
+        print('  - Get help by adding "-h" on the end. E.g. "pyweaving render -h" (assuming your main argument is "render"')
     # copy directory to outfile if not supplied
     if 'outfile' in opts and opts.outfile and "infile" in opts:
         opts.outfile = outfile_if_missing_dir(opts.infile, opts.outfile)

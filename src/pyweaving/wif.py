@@ -425,7 +425,8 @@ class WIFReader(object):
         if treadling:
             self.put_tieup(draft)
         draft.process_draft()
-
+        for w in wif_palette:
+            print(w, wif_palette[w], [hex(a)[2:] for a in wif_palette[w]])
         return draft
 
 

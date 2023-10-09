@@ -145,7 +145,7 @@ def tartan(sett, repeats=1, direction="z"):
         # warp
         for ii in range(repeats):
             for color, count in warp_colors:
-                for jj in range(count, 0, -1):  # (count//2) for visualisation
+                for jj in range(count, 0, -1):
                     s = thread_no % shaft_count
                     if direction == "S":
                         s = shaft_count - s - 1
@@ -158,7 +158,7 @@ def tartan(sett, repeats=1, direction="z"):
         #
         for ii in range(repeats):
             for color, count in weft_colors:
-                for jj in range(count):  # (count//2) for visualisation
+                for jj in range(count):
                     t = thread_no % shaft_count
                     draft.add_weft_thread(
                         color=color,
@@ -168,6 +168,7 @@ def tartan(sett, repeats=1, direction="z"):
         #
         draft.title = name.replace(", ", "_").replace(" ", "_").replace("__", "_")
         draft.title = draft.title.replace(",", "_").replace(" ", "_")
+        draft.title = draft.title.replace("_-", "-")
         # also create draft_title list for render
         draft.draft_title = [draft.title]
         draft.notes.append("from: %s in %s twill" % (sett, direction))
@@ -209,6 +210,7 @@ def find_named_tartan(desired_name):
     # unique ?
     if len(matching) == 1:
         # process it
+        print("Found:",matching[0])
         found = True
         colors, pattern = _parse_tartan_description(pattern[pattern.find("=")+2:])
     elif len(matching) > 1:  # several found
