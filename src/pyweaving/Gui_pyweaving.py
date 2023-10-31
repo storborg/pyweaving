@@ -4,13 +4,33 @@ from PIL import Image, ImageTk
 import subprocess
 import json
 from pathlib import Path
-# from os.path import join
+from pyweaving import get_project_root
+from shutil import copyfile
+from os import mkdir
 
+
+# copy files we need if this is first time this program is run
+homepath = Path.home() / "Documents" / ".pyweavings"
+Logo_file = homepath / "pyweaving-logo-100.png"
+theme_file = homepath / "orange.json"
+styles_file = homepath / "styles.json"
+pyweaving_data_dir = get_project_root() / "data"
+if not Path.exists(homepath):
+    # create homedir
+    mkdir(homepath)
+if not Path.exists(Logo_file):
+    copyfile(pyweaving_data_dir / "pyweaving-logo-100.png", Logo_file)
+if not Path.exists(theme_file):
+    copyfile(pyweaving_data_dir / "orange.json", theme_file)
+if not Path.exists(styles_file):
+    print(pyweaving_data_dir / "styles.json", styles_file)
+    copyfile(pyweaving_data_dir / "styles.json", styles_file)
 
 ctk.set_appearance_mode("system")  # Modes: system (default), light, dark
 # ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-ctk.set_default_color_theme("./orange.json")
+ctk.set_default_color_theme(theme_file)
 
+# Logo_path = Path.home() / "Documents" / ".pyweaving" / "pyweaving-logo-100.png"
 tablabels = {"color":"Finding Colors", "remap":"Remapping", "render":"Render", "tartan":"Tartan"}
 
 # Globals
@@ -350,8 +370,8 @@ class App(ctk.CTk):
         
         
         # LOGO
-        logo = ctk.CTkImage(light_image=Image.open("pyweaving-logo-100.png"),
-                            dark_image=Image.open("pyweaving-logo-100.png"),
+        logo = ctk.CTkImage(light_image=Image.open(Logo_file),
+                            dark_image=Image.open(Logo_file),
                             size=(84, 100))
         button_epl = ctk.CTkButton(self, text= '', image=logo, fg_color='transparent')
         button_epl.grid(row=1, column=1, padx=2, pady=2, sticky="se")
