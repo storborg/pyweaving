@@ -234,7 +234,14 @@ def remap_image(opts):
         opts.size=20
         colref = find_colors(opts) # its a PIL image
     # image_width may be 0, colref may be filename or PIL Image.
-    remap_image_colors(filename, imagewidth, aspect, colref, colcount)
+    newimage = remap_image_colors(filename, imagewidth, aspect, colref, colcount, filter=opts.filter)
+    # Save
+    current_dir = getcwd() + "\\"
+    newname = os.path.splitext(filename)
+    # newimage.save(newname[0]+"_remapped"+newname[1])
+    newname = generate_unique_filename(newname[0]+"_remapped", current_dir, "png")
+    print("Writing image:", newname)
+    newimage.save(newname)
     
 
 def load_draft(infile):
@@ -492,7 +499,7 @@ def main(argv=sys.argv):
     p_colors.add_argument('--size', type=int, default=20, help='Size(pixels) of each color square in the resulting swatch image.')
     p_colors.set_defaults(function=find_colors)
 
-    # Colour finder
+    # Colour remapper
     p_remap = subparsers.add_parser(
         'remap',
         help='Load and save an image while reducing colors to supplied ref-image and rescale aspect ratio.')
@@ -501,6 +508,7 @@ def main(argv=sys.argv):
     p_remap.add_argument('--aspect', default='1/1', help='Aspect ratio of image. Typically "PPI/EPI"')
     p_remap.add_argument('--colref', help='Image of line of colors.')
     p_remap.add_argument('--count', type=int, default=8, required=True, help='Number of colors in colref image.(required)')
+    p_remap.add_argument('--filter', action='store_true', help='Replace isolated pixels with neighbours.')
     p_remap.set_defaults(function=remap_image)
 
     opts, unknown = p.parse_known_args(argv[1:])

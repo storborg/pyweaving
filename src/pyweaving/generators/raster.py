@@ -1,9 +1,11 @@
 
 from .. import Draft, Color, __version__, find_repeats
-from PIL import Image
+from PIL import Image, ImageFilter
 from copy import deepcopy
 from collections import namedtuple
 from random import sample as random_sample
+
+from math import sqrt, dist
 
 
 class Image_draft(object):
@@ -96,7 +98,6 @@ class Image_draft(object):
         if weftcount:
             # got w,h so use resize
             self.image = self.image.resize((sample_width, weftcount*scount), Image.NEAREST)
-            print(self.image.size)
         else:  # only got warpsize - so assume sq pixels
             # resample image in-place
             self.image.thumbnail((sample_width, self.image.size[1]), Image.NEAREST)
@@ -108,7 +109,6 @@ class Image_draft(object):
             line = []
             for x in range(start, self.image.size[0], scount):
                 rgb = self.image.getpixel((x, y))
-                # print(x,y,rgb)
                 self.image.putpixel((x, y), (200, 0, 0))
                 line.append(rgb)
             result.append(line)
@@ -410,8 +410,6 @@ def get_points(img, data_dim=3):
     refcolor = Color()
     rgb_colors = img.getcolors(w * h)
     return [Point([a*1000 for a in hsl], data_dim, count) for count, color in rgb_colors if (hsl := refcolor.rgb2okhsl((color)))]
-    
-
 
 def euclidean(p1, p2):
     """
@@ -421,7 +419,6 @@ def euclidean(p1, p2):
     return sum([
         (p1.coords[i] - p2.coords[i]) ** 2 for i in range(p1.n)
     ])
-
 
 def calculate_center(points, data_dim=3):
     """
@@ -434,7 +431,6 @@ def calculate_center(points, data_dim=3):
         for i in range(data_dim):
             vals[i] += (p.coords[i] * p.ct)
     return Point([(v / plen) for v in vals], data_dim, 1)
-
 
 def kmeans(points, cluster_count, min_diff, method = 'random'):
     """
@@ -487,16 +483,12 @@ def kmeans(points, cluster_count, min_diff, method = 'random'):
             break
     return clusters
 
-
 def rgbtohex(rgb):
     """Convert rgb to hex string"""
     return '#%s' % ''.join(('%02x' % p for p in rgb))
 
-
 # reference:
 # https://charlesleifer.com/blog/using-python-and-k-means-to-find-the-dominant-colors-in-images/
-
-
 def find_clustered_colors(img, num_clusters=3, scale_dim=200, error_metric=1):
     """
     """
@@ -513,7 +505,8 @@ def find_clustered_colors(img, num_clusters=3, scale_dim=200, error_metric=1):
     rgbs = [refcol.okhsl2rgb(h/1000*360, s/1000, ll/1000) for h, s, ll in hsls]
     return len(points), rgbs
 
-
+# remapping support 
+    
 def find_common_colors(image_filename, count=8, image_scaled_size=200,
                        error_metric=0.5, swatch_size=None, debug=False):
     """
@@ -545,15 +538,82 @@ def find_common_colors(image_filename, count=8, image_scaled_size=200,
 
     return colors, swatch_image, pt_count
 
-#
-def remap_image_colors(filename, image_width, aspect, colref, colcount):
+def nearest_color(triplet, triplets):
+    """
+    Find the color with the closest 3D distance to the triplet
+     - in RGB or okhsl space
+    Return the index into triplets where that color is defined.
+    """
+    closest = 10000
+    target = None
+    for i,t in enumerate(triplets):
+        # close = sqrt((t[0]-triplet[0])**2 + (t[1]-triplet[1])**2 + (t[2]-triplet[2])**2)
+        close = dist(triplet, t) # using internal math support
+        # sqrt not required as distance test only - gives same result.
+        close = (t[0]-triplet[0])**2 + (t[1]-triplet[1])**2 + (t[2]-triplet[2])**2
+        if close < closest:
+            closest = close
+            target = i
+    return target
+
+def remap_image_colors(filename, image_width, aspect, colref, colcount, mode="okhsl", filter=True):
     """
     """
+    refcolor = Color()
     if isinstance(colref, str):
         colref = Image.open(colref).convert('RGB')
     # colref is now a PIL image
+    # sample the desired colors
     colref_w, colref_h = colref.size
-    newcols = [colref.getpixel((x, colref_h//2)) for x in range(0, colref_w, colref_w//colcount)]
-    print(len(newcols),newcols)
-    # load filename and set each pixel to the closest color in newcols (linear distance using OKHSL)
+    step = colref_w//colcount
+    #! get two rows of colors
+    # existing_map and newcols
+    # existing on top 1/4, new on bottom 1/4
+    existing_map = [colref.getpixel((x+step//2, colref_h//4)) for x in range(0, colref_w-2, step)]
+    newcols = [colref.getpixel((x+step//2, 3*colref_h//4)) for x in range(0, colref_w-2, step)]
+    if mode=="okhsl":
+        # newcols_ok = [refcolor.rgb2okhsl(p) for p in newcols]
+        existing_map_ok = [refcolor.rgb2okhsl(p) for p in existing_map]
+    # Load filename
+    # Set each pixel to the closest color in newcols (linear distance using OKHSL)
+    print("Remapping image", filename)
+    rgbimage = Image.open(filename).convert('RGB')
+    data = [] # make a new image
+    cached_colors = {}
+    for pixel in rgbimage.getdata(): # image as single line array
+        if pixel in cached_colors:
+            nearest = cached_colors[pixel]
+        else:
+            if mode=="okhsl":
+                okhsl = refcolor.rgb2okhsl(pixel)
+                #nearest = nearest_color(okhsl, newcols_ok) #! existing_map
+                nearest = nearest_color(okhsl, existing_map_ok)
+            else: # RGB closeness
+                #nearest = nearest_color(pixel, newcols)
+                nearest = nearest_color(pixel, existing_map)
+            cached_colors[pixel] = nearest
+        #
+        data.append(newcols[nearest])
+    rgbimage.putdata(data)
+    # Check for isolated pixels
+    if filter:
+        rgbimage = rgbimage.filter(ImageFilter.ModeFilter(3))
+    # Change aspect
+    w, h = rgbimage.size
+    # only resize if we have to.
+    out = None
+    if image_width == 0:
+        # not changing width - just aspect
+        if aspect != 1:
+            print(" Resize height to:", int(h*aspect), "(%4.2f)"%aspect)
+            out = rgbimage.resize((w, int(h*aspect)), Image.NEAREST)
+    else:
+        existing_aspect = w/h
+        print(" Resize w,h from scaled: %d (%4.2f) to: %d (%4.2f)" %(int(h*aspect), existing_aspect, int(image_width/existing_aspect*aspect), aspect))
+        out = rgbimage.resize((image_width, int(image_width/existing_aspect*aspect)), Image.NEAREST)
+    # Save
+    if out:
+        return out
+    else:
+        return rgbimage
     
