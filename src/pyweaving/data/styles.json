@@ -97,6 +97,12 @@
      "derived_from": "mincolor",
      "drawdown_style": "boxshaded"
      },
+"mincolorlighter" : {"name": "mincolorlighter",
+     "derived_from": "minimal",
+     "warpstyle": {"ticks": false, "usethread_color": true, "style": "solid"},
+     "weftstyle": {"ticks": false, "usethread_color": true, "style": "solid"},
+	 "boxstyle": {"size": 20, "outline_color": [120, 120, 120], "fill_color": [0, 0, 0], "vector_width": 0.5}
+     },
  "finely_spaced": {"name": "finely_spaced",
      "derived_from": "Default",
      "tieupstyle": {"ticks": false, "style": "solid"},

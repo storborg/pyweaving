@@ -1,0 +1,2696 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink" baseProfile="full" height="1640.0px" version="1.1" viewBox="0 0 1360 1640" width="1360.0px">
+  <defs>
+    <style type="text/css"><![CDATA[.inducator {fill:rgb(243,243,243);}
+.box {fill:none; stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:0.5}
+.floats {fill:rgb(200,0,0); stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:1}
+.css_boxfill_color {fill:rgb(0,0,0);}
+.css_boxblack {fill:rgb(0,0,0); stroke:rgb(120,120,120); stroke-alignment: inner;  stroke-width:0.5}
+.css_boxwhite {fill:rgb(255,255,255); stroke:rgb(120,120,120); stroke-alignment: inner;  stroke-width:0.5}
+.ticks {stroke:rgb(200,0,0); stroke-width:1}
+.indents {stroke:rgb(20,20,20); stroke-width:2}
+.floatshigh {stroke:rgb(255,25,25); stroke-width:2}
+.floatsshad {stroke:rgb(160,0,0); stroke-width:2}
+.css_boxblackshad {stroke:rgb(0,0,0); stroke-width:2}
+.css_boxwhiteshad {stroke:rgb(255,255,255); stroke-width:2}
+.tick_text {font-size:20px; font-family:Arial; text-anchor:start;  fill:rgb(0,0,0); stroke:none; stroke-width:0}
+.tick_text_r {font-size:20px; font-family:Arial; text-anchor:end;  fill:rgb(0,0,0); stroke:none; stroke-width:0}
+.ticks_text {font-size:20px; font-family:Arial; text-anchor:start;  fill:rgb(200,0,0); stroke:none; stroke-width:0}
+.ticks_text_r {font-size:20px; font-family:Arial; text-anchor:end;  fill:rgb(200,0,0); stroke:none; stroke-width:0}
+.thread_text_b {font-size:16px; font-family:Arial; dominant-baseline:central;  text-anchor:middle;  fill:rgb(0,0,0); stroke:none; stroke-width:0}
+.thread_text_w {font-size:16px; font-family:Arial; dominant-baseline:central;  text-anchor:middle;  fill:rgb(255,255,255); stroke:none; stroke-width:0}
+.title_text {font-size:30px; font-family:Arial; text-anchor:start;  fill:rgb(0,0,0); stroke:none; stroke-width:0}
+.warpcol0 {fill:rgb(33,144,233); stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:0.5}
+.warpcol0flat {fill:rgb(33,144,233); stroke:rgb(33,144,233); stroke-alignment: inner;  stroke-width:1.0}
+.warpcol0high {stroke:rgb(130,193,243); stroke-width:2}
+.warpcol0high2 {stroke:rgb(130,193,243); stroke-width:1.0}
+.warpcol0shad {stroke:rgb(19,116,194); stroke-width:2}
+.warpcol0shad2 {stroke:rgb(19,116,194); stroke-width:1.0}
+.warpcol1 {fill:rgb(255,144,100); stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:0.5}
+.warpcol1flat {fill:rgb(255,144,100); stroke:rgb(255,144,100); stroke-alignment: inner;  stroke-width:1.0}
+.warpcol1high {stroke:rgb(255,246,242); stroke-width:2}
+.warpcol1high2 {stroke:rgb(255,246,242); stroke-width:1.0}
+.warpcol1shad {stroke:rgb(255,93,29); stroke-width:2}
+.warpcol1shad2 {stroke:rgb(255,93,29); stroke-width:1.0}
+.weftcol0 {fill:rgb(33,144,233); stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:0.5}
+.weftcol0flat {fill:rgb(33,144,233); stroke:rgb(33,144,233); stroke-alignment: inner;  stroke-width:1.0}
+.weftcol0high {stroke:rgb(130,193,243); stroke-width:2}
+.weftcol0high2 {stroke:rgb(130,193,243); stroke-width:1.0}
+.weftcol0shad {stroke:rgb(19,116,194); stroke-width:2}
+.weftcol0shad2 {stroke:rgb(19,116,194); stroke-width:1.0}
+.weftcol1 {fill:rgb(255,144,100); stroke:rgb(20,20,20); stroke-alignment: inner;  stroke-width:0.5}
+.weftcol1flat {fill:rgb(255,144,100); stroke:rgb(255,144,100); stroke-alignment: inner;  stroke-width:1.0}
+.weftcol1high {stroke:rgb(255,246,242); stroke-width:2}
+.weftcol1high2 {stroke:rgb(255,246,242); stroke-width:1.0}
+.weftcol1shad {stroke:rgb(255,93,29); stroke-width:2}
+.weftcol1shad2 {stroke:rgb(255,93,29); stroke-width:1.0}
+]]></style>
+    <g id="th401">
+      <rect class="warpcol0" height="42.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="42.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="42.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="42.0" y2="42.0"/>
+      <line class="warpcol0shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol0high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol0shad2" x1="1.5" x2="1.5" y1="1" y2="41.0"/>
+      <line class="warpcol0high" x1="3" x2="3" y1="2.0" y2="41.0"/>
+      <line class="warpcol0shad" x1="1" x2="17.0" y1="40.0" y2="40.0"/>
+      <line class="warpcol0shad" x1="16.0" x2="16.0" y1="1" y2="41.0"/>
+    </g>
+    <g id="th1401">
+      <rect class="warpcol0" height="142.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="142.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="142.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="142.0" y2="142.0"/>
+      <line class="warpcol0shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol0high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol0shad2" x1="1.5" x2="1.5" y1="1" y2="141.0"/>
+      <line class="warpcol0high" x1="3" x2="3" y1="2.0" y2="141.0"/>
+      <line class="warpcol0shad" x1="1" x2="17.0" y1="140.0" y2="140.0"/>
+      <line class="warpcol0shad" x1="16.0" x2="16.0" y1="1" y2="141.0"/>
+    </g>
+    <g id="th601">
+      <rect class="warpcol0" height="62.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="62.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="62.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="62.0" y2="62.0"/>
+      <line class="warpcol0shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol0high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol0shad2" x1="1.5" x2="1.5" y1="1" y2="61.0"/>
+      <line class="warpcol0high" x1="3" x2="3" y1="2.0" y2="61.0"/>
+      <line class="warpcol0shad" x1="1" x2="17.0" y1="60.0" y2="60.0"/>
+      <line class="warpcol0shad" x1="16.0" x2="16.0" y1="1" y2="61.0"/>
+    </g>
+    <g id="th1201">
+      <rect class="warpcol1" height="22.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="22.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="22.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="22.0" y2="22.0"/>
+      <line class="warpcol1shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol1high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol1shad2" x1="1.5" x2="1.5" y1="1" y2="21.0"/>
+      <line class="warpcol1high" x1="3" x2="3" y1="2.0" y2="21.0"/>
+      <line class="warpcol1shad" x1="1" x2="17.0" y1="20.0" y2="20.0"/>
+      <line class="warpcol1shad" x1="16.0" x2="16.0" y1="1" y2="21.0"/>
+    </g>
+    <g id="th1601">
+      <rect class="warpcol1" height="62.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="62.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="62.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="62.0" y2="62.0"/>
+      <line class="warpcol1shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol1high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol1shad2" x1="1.5" x2="1.5" y1="1" y2="61.0"/>
+      <line class="warpcol1high" x1="3" x2="3" y1="2.0" y2="61.0"/>
+      <line class="warpcol1shad" x1="1" x2="17.0" y1="60.0" y2="60.0"/>
+      <line class="warpcol1shad" x1="16.0" x2="16.0" y1="1" y2="61.0"/>
+    </g>
+    <g id="th201">
+      <rect class="warpcol0" height="22.0" width="18.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="18.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="22.0"/>
+      <line class="indents" x1="18.0" x2="18.0" y1="0" y2="22.0"/>
+      <line class="indents" x1="0" x2="18.0" y1="22.0" y2="22.0"/>
+      <line class="warpcol0shad2" x1="1" x2="17.0" y1="1" y2="1"/>
+      <line class="warpcol0high" x1="2.0" x2="17.0" y1="3" y2="3"/>
+      <line class="warpcol0shad2" x1="1.5" x2="1.5" y1="1" y2="21.0"/>
+      <line class="warpcol0high" x1="3" x2="3" y1="2.0" y2="21.0"/>
+      <line class="warpcol0shad" x1="1" x2="17.0" y1="20.0" y2="20.0"/>
+      <line class="warpcol0shad" x1="16.0" x2="16.0" y1="1" y2="21.0"/>
+    </g>
+    <g id="th2200">
+      <rect class="weftcol0" height="18.0" width="222.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="222.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="222.0" x2="222.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="222.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol0shad2" x1="1" x2="221.0" y1="1" y2="1"/>
+      <line class="weftcol0high" x1="2.0" x2="221.0" y1="3" y2="3"/>
+      <line class="weftcol0shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol0high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol0shad" x1="1" x2="221.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol0shad" x1="220.0" x2="220.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th200">
+      <rect class="weftcol0" height="18.0" width="22.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="22.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="22.0" x2="22.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="22.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol0shad2" x1="1" x2="21.0" y1="1" y2="1"/>
+      <line class="weftcol0high" x1="2.0" x2="21.0" y1="3" y2="3"/>
+      <line class="weftcol0shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol0high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol0shad" x1="1" x2="21.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol0shad" x1="20.0" x2="20.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th1200">
+      <rect class="weftcol1" height="18.0" width="22.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="22.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="22.0" x2="22.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="22.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol1shad2" x1="1" x2="21.0" y1="1" y2="1"/>
+      <line class="weftcol1high" x1="2.0" x2="21.0" y1="3" y2="3"/>
+      <line class="weftcol1shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol1high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol1shad" x1="1" x2="21.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol1shad" x1="20.0" x2="20.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th1600">
+      <rect class="weftcol1" height="18.0" width="62.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="62.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="62.0" x2="62.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="62.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol1shad2" x1="1" x2="61.0" y1="1" y2="1"/>
+      <line class="weftcol1high" x1="2.0" x2="61.0" y1="3" y2="3"/>
+      <line class="weftcol1shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol1high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol1shad" x1="1" x2="61.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol1shad" x1="60.0" x2="60.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th400">
+      <rect class="weftcol0" height="18.0" width="42.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="42.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="42.0" x2="42.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="42.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol0shad2" x1="1" x2="41.0" y1="1" y2="1"/>
+      <line class="weftcol0high" x1="2.0" x2="41.0" y1="3" y2="3"/>
+      <line class="weftcol0shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol0high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol0shad" x1="1" x2="41.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol0shad" x1="40.0" x2="40.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th1400">
+      <rect class="weftcol0" height="18.0" width="142.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="142.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="142.0" x2="142.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="142.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol0shad2" x1="1" x2="141.0" y1="1" y2="1"/>
+      <line class="weftcol0high" x1="2.0" x2="141.0" y1="3" y2="3"/>
+      <line class="weftcol0shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol0high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol0shad" x1="1" x2="141.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol0shad" x1="140.0" x2="140.0" y1="1" y2="17.0"/>
+    </g>
+    <g id="th600">
+      <rect class="weftcol0" height="18.0" width="62.0" x="0" y="0"/>
+      <line class="indents" x1="0" x2="62.0" y1="0" y2="0"/>
+      <line class="indents" x1="0" x2="0" y1="0" y2="18.0"/>
+      <line class="indents" x1="62.0" x2="62.0" y1="0" y2="18.0"/>
+      <line class="indents" x1="0" x2="62.0" y1="18.0" y2="18.0"/>
+      <line class="weftcol0shad2" x1="1" x2="61.0" y1="1" y2="1"/>
+      <line class="weftcol0high" x1="2.0" x2="61.0" y1="3" y2="3"/>
+      <line class="weftcol0shad2" x1="1.5" x2="1.5" y1="1" y2="17.0"/>
+      <line class="weftcol0high" x1="3" x2="3" y1="2.0" y2="17.0"/>
+      <line class="weftcol0shad" x1="1" x2="61.0" y1="16.0" y2="16.0"/>
+      <line class="weftcol0shad" x1="60.0" x2="60.0" y1="1" y2="17.0"/>
+    </g>
+  </defs>
+  <g id="titles">
+    <text class="tick_text" x="20.0" y="46.0">from: pyweaving stimson 63365.wif</text>
+  </g>
+  <g id="ministats">
+    <text class="tick_text" x="20.0" y="86.0">Threadcounts: Warp 50  Weft 50</text>
+    <text class="tick_text" x="20.0" y="112.0">8 shafts. 8 treadles.</text>
+    <text class="tick_text" x="20.0" y="138.0">2 unique yarns (color/spacing)</text>
+    <text class="tick_text" x="20.0" y="164.0">Longest floats: (warp/back) 7/7 , (weft/back) 11/11</text>
+    <text class="tick_text" x="20.0" y="190.0">Balanced weave warp:weft = 1 : 0.8</text>
+    <text class="tick_text" x="20.0" y="216.0">Floating Selvedges may be required. Longest edge warp float is: 7</text>
+  </g>
+  <g id="warp_colors">
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="60.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="80.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="100.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="120.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="140.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="160.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="180.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="200.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="220.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="240.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="260.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="280.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="300.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="320.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="340.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="360.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="380.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="400.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="420.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="440.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="460.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="480.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="500.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="520.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="540.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="560.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="580.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="600.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="620.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="640.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="660.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="680.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="700.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="720.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="740.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="760.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="780.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="800.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="820.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="840.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="860.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="880.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="900.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="920.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="940.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="960.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="980.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="1000.0" y="242.00000000000003"/>
+    <rect class="warpcol1" height="19.99999999999997" width="20.0" x="1020.0" y="242.00000000000003"/>
+    <rect class="warpcol0" height="19.99999999999997" width="20.0" x="1040.0" y="242.00000000000003"/>
+  </g>
+  <g id="heddles">
+    <text class="tick_text_r" x="40.0" y="340.0">  5</text>
+    <text class="tick_text_r" x="40.0" y="360.0">  5</text>
+    <text class="tick_text_r" x="40.0" y="380.0">  8</text>
+    <text class="tick_text_r" x="40.0" y="400.0">  8</text>
+    <text class="tick_text_r" x="40.0" y="420.0">  8</text>
+    <text class="tick_text_r" x="40.0" y="440.0">  8</text>
+    <text class="tick_text_r" x="40.0" y="460.0">  4</text>
+    <text class="tick_text_r" x="40.0" y="480.0">  4</text>
+    <text class="tick_text_r" x="40.0" y="500.0"> 50</text>
+  </g>
+  <g id="threading">
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="342.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="60.0" y="342.0"/>
+    <text class="thread_text_b" x="70.0" y="352.0">7</text>
+    <rect class="box" height="20.0" width="20.0" x="60.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="80.0" y="322.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="80.0" y="322.0"/>
+    <text class="thread_text_w" x="90.0" y="332.0">8</text>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="100.0" y="382.0"/>
+    <text class="thread_text_b" x="110.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="100.0" y="322.0"/>
+    <line class="ticks" x1="100.0" x2="100.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="102.0" y="298.0">48</text>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="120.0" y="362.0"/>
+    <text class="thread_text_w" x="130.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="120.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="140.0" y="422.0"/>
+    <text class="thread_text_b" x="150.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="140.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="160.0" y="402.0"/>
+    <text class="thread_text_w" x="170.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="160.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="462.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="180.0" y="462.0"/>
+    <text class="thread_text_b" x="190.0" y="472.0">1</text>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="180.0" y="322.0"/>
+    <line class="ticks" x1="180.0" x2="180.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="182.0" y="298.0">44</text>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="442.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="200.0" y="442.0"/>
+    <text class="thread_text_w" x="210.0" y="452.0">2</text>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="200.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="220.0" y="422.0"/>
+    <text class="thread_text_b" x="230.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="220.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="240.0" y="402.0"/>
+    <text class="thread_text_w" x="250.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="240.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="260.0" y="382.0"/>
+    <text class="thread_text_b" x="270.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="260.0" y="322.0"/>
+    <line class="ticks" x1="260.0" x2="260.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="262.0" y="298.0">40</text>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="280.0" y="362.0"/>
+    <text class="thread_text_w" x="290.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="280.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="342.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="300.0" y="342.0"/>
+    <text class="thread_text_b" x="310.0" y="352.0">7</text>
+    <rect class="box" height="20.0" width="20.0" x="300.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="320.0" y="322.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="320.0" y="322.0"/>
+    <text class="thread_text_w" x="330.0" y="332.0">8</text>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="340.0" y="382.0"/>
+    <text class="thread_text_b" x="350.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="340.0" y="322.0"/>
+    <line class="ticks" x1="340.0" x2="340.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="342.0" y="298.0">36</text>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="360.0" y="362.0"/>
+    <text class="thread_text_w" x="370.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="360.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="380.0" y="422.0"/>
+    <text class="thread_text_b" x="390.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="380.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="400.0" y="402.0"/>
+    <text class="thread_text_w" x="410.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="400.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="462.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="420.0" y="462.0"/>
+    <text class="thread_text_b" x="430.0" y="472.0">1</text>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="420.0" y="322.0"/>
+    <line class="ticks" x1="420.0" x2="420.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="422.0" y="298.0">32</text>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="442.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="440.0" y="442.0"/>
+    <text class="thread_text_w" x="450.0" y="452.0">2</text>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="440.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="460.0" y="422.0"/>
+    <text class="thread_text_b" x="470.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="460.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="480.0" y="402.0"/>
+    <text class="thread_text_w" x="490.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="480.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="500.0" y="382.0"/>
+    <text class="thread_text_b" x="510.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="500.0" y="322.0"/>
+    <line class="ticks" x1="500.0" x2="500.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="502.0" y="298.0">28</text>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="520.0" y="362.0"/>
+    <text class="thread_text_w" x="530.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="520.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="342.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="540.0" y="342.0"/>
+    <text class="thread_text_b" x="550.0" y="352.0">7</text>
+    <rect class="box" height="20.0" width="20.0" x="540.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="560.0" y="322.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="560.0" y="322.0"/>
+    <text class="thread_text_w" x="570.0" y="332.0">8</text>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="580.0" y="382.0"/>
+    <text class="thread_text_b" x="590.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="580.0" y="322.0"/>
+    <line class="ticks" x1="580.0" x2="580.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="582.0" y="298.0">24</text>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="600.0" y="362.0"/>
+    <text class="thread_text_w" x="610.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="600.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="620.0" y="422.0"/>
+    <text class="thread_text_b" x="630.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="620.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="640.0" y="402.0"/>
+    <text class="thread_text_w" x="650.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="640.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="462.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="660.0" y="462.0"/>
+    <text class="thread_text_b" x="670.0" y="472.0">1</text>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="660.0" y="322.0"/>
+    <line class="ticks" x1="660.0" x2="660.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="662.0" y="298.0">20</text>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="442.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="680.0" y="442.0"/>
+    <text class="thread_text_w" x="690.0" y="452.0">2</text>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="680.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="700.0" y="422.0"/>
+    <text class="thread_text_b" x="710.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="700.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="720.0" y="402.0"/>
+    <text class="thread_text_w" x="730.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="720.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="740.0" y="382.0"/>
+    <text class="thread_text_b" x="750.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="740.0" y="322.0"/>
+    <line class="ticks" x1="740.0" x2="740.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="742.0" y="298.0">16</text>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="760.0" y="362.0"/>
+    <text class="thread_text_w" x="770.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="760.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="342.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="780.0" y="342.0"/>
+    <text class="thread_text_b" x="790.0" y="352.0">7</text>
+    <rect class="box" height="20.0" width="20.0" x="780.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="800.0" y="322.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="800.0" y="322.0"/>
+    <text class="thread_text_w" x="810.0" y="332.0">8</text>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="820.0" y="382.0"/>
+    <text class="thread_text_b" x="830.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="820.0" y="322.0"/>
+    <line class="ticks" x1="820.0" x2="820.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="822.0" y="298.0">12</text>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="840.0" y="362.0"/>
+    <text class="thread_text_w" x="850.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="840.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="860.0" y="422.0"/>
+    <text class="thread_text_b" x="870.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="860.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="880.0" y="402.0"/>
+    <text class="thread_text_w" x="890.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="880.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="462.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="900.0" y="462.0"/>
+    <text class="thread_text_b" x="910.0" y="472.0">1</text>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="900.0" y="322.0"/>
+    <line class="ticks" x1="900.0" x2="900.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="902.0" y="298.0">8</text>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="442.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="920.0" y="442.0"/>
+    <text class="thread_text_w" x="930.0" y="452.0">2</text>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="920.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="422.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="940.0" y="422.0"/>
+    <text class="thread_text_b" x="950.0" y="432.0">3</text>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="940.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="402.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="960.0" y="402.0"/>
+    <text class="thread_text_w" x="970.0" y="412.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="960.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="382.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="980.0" y="382.0"/>
+    <text class="thread_text_b" x="990.0" y="392.0">5</text>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="980.0" y="322.0"/>
+    <line class="ticks" x1="980.0" x2="980.0" y1="282.0" y2="322.0"/>
+    <text class="ticks_text" x="982.0" y="298.0">4</text>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="362.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="1000.0" y="362.0"/>
+    <text class="thread_text_w" x="1010.0" y="372.0">6</text>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1000.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="342.0"/>
+    <rect class="warpcol1" height="20.0" width="20.0" x="1020.0" y="342.0"/>
+    <text class="thread_text_b" x="1030.0" y="352.0">7</text>
+    <rect class="box" height="20.0" width="20.0" x="1020.0" y="322.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="462.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="442.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="422.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="402.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="382.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="362.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="342.0"/>
+    <rect class="box" height="20.0" width="20.0" x="1040.0" y="322.0"/>
+    <rect class="warpcol0" height="20.0" width="20.0" x="1040.0" y="322.0"/>
+    <text class="thread_text_w" x="1050.0" y="332.0">8</text>
+  </g>
+  <g id="ministats">
+    <text class="tick_text" x="1080.0" y="262.0">(Rising shed)</text>
+  </g>
+  <g id="treadling">
+    <rect class="box" height="20.0" width="20" x="1080.0" y="502.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1080.0" y="502.0"/>
+    <text class="thread_text_w" x="1090.0" y="512.0">1</text>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="502.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="522.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1100.0" y="522.0"/>
+    <text class="thread_text_b" x="1110.0" y="532.0">2</text>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="522.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="542.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="542.0"/>
+    <text class="thread_text_w" x="1130.0" y="552.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="542.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="562.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="562.0"/>
+    <text class="thread_text_b" x="1150.0" y="572.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="562.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="562.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="582.0" y2="582.0"/>
+    <text class="ticks_text" x="1245.0" y="579.5">4</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="582.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="582.0"/>
+    <text class="thread_text_w" x="1170.0" y="592.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="582.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="602.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="602.0"/>
+    <text class="thread_text_b" x="1190.0" y="612.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="602.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="622.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1200.0" y="622.0"/>
+    <text class="thread_text_w" x="1210.0" y="632.0">7</text>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="622.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="642.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="642.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1220.0" y="642.0"/>
+    <text class="thread_text_b" x="1230.0" y="652.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="662.0" y2="662.0"/>
+    <text class="ticks_text" x="1245.0" y="659.5">8</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="662.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="662.0"/>
+    <text class="thread_text_w" x="1170.0" y="672.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="662.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="682.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="682.0"/>
+    <text class="thread_text_b" x="1190.0" y="692.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="682.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="702.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="702.0"/>
+    <text class="thread_text_w" x="1130.0" y="712.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="702.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="722.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="722.0"/>
+    <text class="thread_text_b" x="1150.0" y="732.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="722.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="722.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="742.0" y2="742.0"/>
+    <text class="ticks_text" x="1245.0" y="739.5">12</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="742.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1080.0" y="742.0"/>
+    <text class="thread_text_w" x="1090.0" y="752.0">1</text>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="742.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="762.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1100.0" y="762.0"/>
+    <text class="thread_text_b" x="1110.0" y="772.0">2</text>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="762.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="782.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="782.0"/>
+    <text class="thread_text_w" x="1130.0" y="792.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="782.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="802.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="802.0"/>
+    <text class="thread_text_b" x="1150.0" y="812.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="802.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="802.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="822.0" y2="822.0"/>
+    <text class="ticks_text" x="1245.0" y="819.5">16</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="822.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="822.0"/>
+    <text class="thread_text_w" x="1170.0" y="832.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="822.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="842.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="842.0"/>
+    <text class="thread_text_b" x="1190.0" y="852.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="842.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="862.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1200.0" y="862.0"/>
+    <text class="thread_text_w" x="1210.0" y="872.0">7</text>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="862.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="882.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="882.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1220.0" y="882.0"/>
+    <text class="thread_text_b" x="1230.0" y="892.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="902.0" y2="902.0"/>
+    <text class="ticks_text" x="1245.0" y="899.5">20</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="902.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="902.0"/>
+    <text class="thread_text_w" x="1170.0" y="912.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="902.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="922.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="922.0"/>
+    <text class="thread_text_b" x="1190.0" y="932.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="922.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="942.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="942.0"/>
+    <text class="thread_text_w" x="1130.0" y="952.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="942.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="962.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="962.0"/>
+    <text class="thread_text_b" x="1150.0" y="972.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="962.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="962.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="982.0" y2="982.0"/>
+    <text class="ticks_text" x="1245.0" y="979.5">24</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="982.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1080.0" y="982.0"/>
+    <text class="thread_text_w" x="1090.0" y="992.0">1</text>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="982.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1002.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1100.0" y="1002.0"/>
+    <text class="thread_text_b" x="1110.0" y="1012.0">2</text>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1002.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1022.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="1022.0"/>
+    <text class="thread_text_w" x="1130.0" y="1032.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1022.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1042.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="1042.0"/>
+    <text class="thread_text_b" x="1150.0" y="1052.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1042.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1042.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1062.0" y2="1062.0"/>
+    <text class="ticks_text" x="1245.0" y="1059.5">28</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1062.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="1062.0"/>
+    <text class="thread_text_w" x="1170.0" y="1072.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1062.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1082.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="1082.0"/>
+    <text class="thread_text_b" x="1190.0" y="1092.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1082.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1102.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1200.0" y="1102.0"/>
+    <text class="thread_text_w" x="1210.0" y="1112.0">7</text>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1102.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1122.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1122.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1220.0" y="1122.0"/>
+    <text class="thread_text_b" x="1230.0" y="1132.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1142.0" y2="1142.0"/>
+    <text class="ticks_text" x="1245.0" y="1139.5">32</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1142.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="1142.0"/>
+    <text class="thread_text_w" x="1170.0" y="1152.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1142.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1162.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="1162.0"/>
+    <text class="thread_text_b" x="1190.0" y="1172.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1162.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1182.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="1182.0"/>
+    <text class="thread_text_w" x="1130.0" y="1192.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1182.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1202.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="1202.0"/>
+    <text class="thread_text_b" x="1150.0" y="1212.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1202.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1202.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1222.0" y2="1222.0"/>
+    <text class="ticks_text" x="1245.0" y="1219.5">36</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1222.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1080.0" y="1222.0"/>
+    <text class="thread_text_w" x="1090.0" y="1232.0">1</text>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1222.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1242.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1100.0" y="1242.0"/>
+    <text class="thread_text_b" x="1110.0" y="1252.0">2</text>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1242.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1262.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="1262.0"/>
+    <text class="thread_text_w" x="1130.0" y="1272.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1262.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1282.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="1282.0"/>
+    <text class="thread_text_b" x="1150.0" y="1292.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1282.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1282.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1302.0" y2="1302.0"/>
+    <text class="ticks_text" x="1245.0" y="1299.5">40</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1302.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="1302.0"/>
+    <text class="thread_text_w" x="1170.0" y="1312.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1302.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1322.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="1322.0"/>
+    <text class="thread_text_b" x="1190.0" y="1332.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1322.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1342.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1200.0" y="1342.0"/>
+    <text class="thread_text_w" x="1210.0" y="1352.0">7</text>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1342.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1362.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1362.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1220.0" y="1362.0"/>
+    <text class="thread_text_b" x="1230.0" y="1372.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1382.0" y2="1382.0"/>
+    <text class="ticks_text" x="1245.0" y="1379.5">44</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1382.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1160.0" y="1382.0"/>
+    <text class="thread_text_w" x="1170.0" y="1392.0">5</text>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1382.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1402.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1180.0" y="1402.0"/>
+    <text class="thread_text_b" x="1190.0" y="1412.0">6</text>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1402.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1422.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1120.0" y="1422.0"/>
+    <text class="thread_text_w" x="1130.0" y="1432.0">3</text>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1422.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1442.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1140.0" y="1442.0"/>
+    <text class="thread_text_b" x="1150.0" y="1452.0">4</text>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1442.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1442.0"/>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="1462.0" y2="1462.0"/>
+    <text class="ticks_text" x="1245.0" y="1459.5">48</text>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1462.0"/>
+    <rect class="weftcol0" height="20.0" width="20.0" x="1080.0" y="1462.0"/>
+    <text class="thread_text_w" x="1090.0" y="1472.0">1</text>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1462.0"/>
+    <rect class="box" height="20.0" width="20" x="1080.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1100.0" y="1482.0"/>
+    <rect class="weftcol1" height="20.0" width="20.0" x="1100.0" y="1482.0"/>
+    <text class="thread_text_b" x="1110.0" y="1492.0">2</text>
+    <rect class="box" height="20.0" width="20" x="1120.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1140.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1160.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1180.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1200.0" y="1482.0"/>
+    <rect class="box" height="20.0" width="20" x="1220.0" y="1482.0"/>
+  </g>
+  <g id="tieup">
+    <rect class="box" height="20" width="20" x="1080.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="442.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="402.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="362.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="342.0"/>
+    <rect class="box" height="20" width="20" x="1080.0" y="322.0"/>
+    <text class="thread_text_b" x="1090.0" y="332.0">8</text>
+    <rect class="box" height="20" width="20" x="1100.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1100.0" y="442.0"/>
+    <rect class="box" height="20" width="20" x="1100.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1100.0" y="402.0"/>
+    <text class="thread_text_b" x="1110.0" y="412.0">4</text>
+    <rect class="box" height="20" width="20" x="1100.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1100.0" y="362.0"/>
+    <text class="thread_text_b" x="1110.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1100.0" y="342.0"/>
+    <text class="thread_text_b" x="1110.0" y="352.0">7</text>
+    <rect class="box" height="20" width="20" x="1100.0" y="322.0"/>
+    <text class="thread_text_b" x="1110.0" y="332.0">8</text>
+    <rect class="box" height="20" width="20" x="1120.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="442.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="402.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="362.0"/>
+    <text class="thread_text_b" x="1130.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1120.0" y="342.0"/>
+    <rect class="box" height="20" width="20" x="1120.0" y="322.0"/>
+    <rect class="box" height="20" width="20" x="1140.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1140.0" y="442.0"/>
+    <text class="thread_text_b" x="1150.0" y="452.0">2</text>
+    <rect class="box" height="20" width="20" x="1140.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1140.0" y="402.0"/>
+    <text class="thread_text_b" x="1150.0" y="412.0">4</text>
+    <rect class="box" height="20" width="20" x="1140.0" y="382.0"/>
+    <text class="thread_text_b" x="1150.0" y="392.0">5</text>
+    <rect class="box" height="20" width="20" x="1140.0" y="362.0"/>
+    <text class="thread_text_b" x="1150.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1140.0" y="342.0"/>
+    <rect class="box" height="20" width="20" x="1140.0" y="322.0"/>
+    <text class="thread_text_b" x="1150.0" y="332.0">8</text>
+    <line class="ticks" x1="1160.0" x2="1160.0" y1="282.0" y2="321.0"/>
+    <text class="ticks_text_r" x="1156.0" y="302.0">4</text>
+    <rect class="box" height="20" width="20" x="1160.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="442.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="402.0"/>
+    <text class="thread_text_b" x="1170.0" y="412.0">4</text>
+    <rect class="box" height="20" width="20" x="1160.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="362.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="342.0"/>
+    <rect class="box" height="20" width="20" x="1160.0" y="322.0"/>
+    <text class="thread_text_b" x="1170.0" y="332.0">8</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1180.0" y="442.0"/>
+    <text class="thread_text_b" x="1190.0" y="452.0">2</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="422.0"/>
+    <text class="thread_text_b" x="1190.0" y="432.0">3</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="402.0"/>
+    <text class="thread_text_b" x="1190.0" y="412.0">4</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1180.0" y="362.0"/>
+    <text class="thread_text_b" x="1190.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="342.0"/>
+    <text class="thread_text_b" x="1190.0" y="352.0">7</text>
+    <rect class="box" height="20" width="20" x="1180.0" y="322.0"/>
+    <text class="thread_text_b" x="1190.0" y="332.0">8</text>
+    <rect class="box" height="20" width="20" x="1200.0" y="462.0"/>
+    <rect class="box" height="20" width="20" x="1200.0" y="442.0"/>
+    <text class="thread_text_b" x="1210.0" y="452.0">2</text>
+    <rect class="box" height="20" width="20" x="1200.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1200.0" y="402.0"/>
+    <rect class="box" height="20" width="20" x="1200.0" y="382.0"/>
+    <rect class="box" height="20" width="20" x="1200.0" y="362.0"/>
+    <text class="thread_text_b" x="1210.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1200.0" y="342.0"/>
+    <text class="thread_text_b" x="1210.0" y="352.0">7</text>
+    <rect class="box" height="20" width="20" x="1200.0" y="322.0"/>
+    <text class="thread_text_b" x="1210.0" y="332.0">8</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="462.0"/>
+    <text class="thread_text_b" x="1230.0" y="472.0">1</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="442.0"/>
+    <text class="thread_text_b" x="1230.0" y="452.0">2</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="422.0"/>
+    <rect class="box" height="20" width="20" x="1220.0" y="402.0"/>
+    <text class="thread_text_b" x="1230.0" y="412.0">4</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="402.0" y2="402.0"/>
+    <text class="ticks_text" x="1244.0" y="422.0">4</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="382.0"/>
+    <text class="thread_text_b" x="1230.0" y="392.0">5</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="362.0"/>
+    <text class="thread_text_b" x="1230.0" y="372.0">6</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="342.0"/>
+    <text class="thread_text_b" x="1230.0" y="352.0">7</text>
+    <rect class="box" height="20" width="20" x="1220.0" y="322.0"/>
+    <text class="thread_text_b" x="1230.0" y="332.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1280.0" y1="322.0" y2="322.0"/>
+    <text class="ticks_text" x="1244.0" y="342.0">8</text>
+    <line class="ticks" x1="1240.0" x2="1240.0" y1="282.0" y2="321.0"/>
+    <text class="ticks_text_r" x="1236.0" y="302.0">8</text>
+  </g>
+  <g id="weft_colors">
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="502.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="522.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="542.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="562.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="582.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="602.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="622.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="642.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="662.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="682.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="702.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="722.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="742.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="762.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="782.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="802.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="822.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="842.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="862.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="882.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="902.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="922.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="942.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="962.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="982.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1002.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1022.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1042.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1062.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1082.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1102.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1122.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1142.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1162.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1182.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1202.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1222.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1242.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1262.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1282.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1302.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1322.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1342.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1362.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1382.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1402.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1422.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1442.0"/>
+    <rect class="weftcol0" height="20.0" width="20" x="1300.0" y="1462.0"/>
+    <rect class="weftcol1" height="20.0" width="20" x="1300.0" y="1482.0"/>
+  </g>
+  <g id="drawdown">
+    <use x="1041.0" xlink:href="#th401" y="501.0"/>
+    <use x="1041.0" xlink:href="#th1401" y="561.0"/>
+    <use x="1041.0" xlink:href="#th601" y="721.0"/>
+    <use x="1041.0" xlink:href="#th1401" y="801.0"/>
+    <use x="1041.0" xlink:href="#th601" y="961.0"/>
+    <use x="1041.0" xlink:href="#th1401" y="1041.0"/>
+    <use x="1041.0" xlink:href="#th601" y="1201.0"/>
+    <use x="1041.0" xlink:href="#th1401" y="1281.0"/>
+    <use x="1041.0" xlink:href="#th601" y="1441.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="521.0"/>
+    <use x="1021.0" xlink:href="#th1601" y="601.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="681.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="761.0"/>
+    <use x="1021.0" xlink:href="#th1601" y="841.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="921.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="1001.0"/>
+    <use x="1021.0" xlink:href="#th1601" y="1081.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="1241.0"/>
+    <use x="1021.0" xlink:href="#th1601" y="1321.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="1021.0" xlink:href="#th1201" y="1481.0"/>
+    <use x="1001.0" xlink:href="#th601" y="521.0"/>
+    <use x="1001.0" xlink:href="#th601" y="601.0"/>
+    <use x="1001.0" xlink:href="#th601" y="681.0"/>
+    <use x="1001.0" xlink:href="#th601" y="761.0"/>
+    <use x="1001.0" xlink:href="#th601" y="841.0"/>
+    <use x="1001.0" xlink:href="#th601" y="921.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1001.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1081.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1161.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1241.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1321.0"/>
+    <use x="1001.0" xlink:href="#th601" y="1401.0"/>
+    <use x="1001.0" xlink:href="#th201" y="1481.0"/>
+    <use x="981.0" xlink:href="#th1201" y="561.0"/>
+    <use x="981.0" xlink:href="#th1201" y="641.0"/>
+    <use x="981.0" xlink:href="#th1201" y="721.0"/>
+    <use x="981.0" xlink:href="#th1201" y="801.0"/>
+    <use x="981.0" xlink:href="#th1201" y="881.0"/>
+    <use x="981.0" xlink:href="#th1201" y="961.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="981.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="961.0" xlink:href="#th201" y="521.0"/>
+    <use x="961.0" xlink:href="#th601" y="561.0"/>
+    <use x="961.0" xlink:href="#th601" y="641.0"/>
+    <use x="961.0" xlink:href="#th201" y="721.0"/>
+    <use x="961.0" xlink:href="#th201" y="761.0"/>
+    <use x="961.0" xlink:href="#th601" y="801.0"/>
+    <use x="961.0" xlink:href="#th601" y="881.0"/>
+    <use x="961.0" xlink:href="#th201" y="961.0"/>
+    <use x="961.0" xlink:href="#th201" y="1001.0"/>
+    <use x="961.0" xlink:href="#th601" y="1041.0"/>
+    <use x="961.0" xlink:href="#th601" y="1121.0"/>
+    <use x="961.0" xlink:href="#th201" y="1201.0"/>
+    <use x="961.0" xlink:href="#th201" y="1241.0"/>
+    <use x="961.0" xlink:href="#th601" y="1281.0"/>
+    <use x="961.0" xlink:href="#th601" y="1361.0"/>
+    <use x="961.0" xlink:href="#th201" y="1441.0"/>
+    <use x="961.0" xlink:href="#th201" y="1481.0"/>
+    <use x="941.0" xlink:href="#th1201" y="601.0"/>
+    <use x="941.0" xlink:href="#th1201" y="681.0"/>
+    <use x="941.0" xlink:href="#th1201" y="841.0"/>
+    <use x="941.0" xlink:href="#th1201" y="921.0"/>
+    <use x="941.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="941.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="941.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="941.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="921.0" xlink:href="#th201" y="561.0"/>
+    <use x="921.0" xlink:href="#th601" y="601.0"/>
+    <use x="921.0" xlink:href="#th201" y="681.0"/>
+    <use x="921.0" xlink:href="#th201" y="721.0"/>
+    <use x="921.0" xlink:href="#th201" y="801.0"/>
+    <use x="921.0" xlink:href="#th601" y="841.0"/>
+    <use x="921.0" xlink:href="#th201" y="921.0"/>
+    <use x="921.0" xlink:href="#th201" y="961.0"/>
+    <use x="921.0" xlink:href="#th201" y="1041.0"/>
+    <use x="921.0" xlink:href="#th601" y="1081.0"/>
+    <use x="921.0" xlink:href="#th201" y="1161.0"/>
+    <use x="921.0" xlink:href="#th201" y="1201.0"/>
+    <use x="921.0" xlink:href="#th201" y="1281.0"/>
+    <use x="921.0" xlink:href="#th601" y="1321.0"/>
+    <use x="921.0" xlink:href="#th201" y="1401.0"/>
+    <use x="921.0" xlink:href="#th201" y="1441.0"/>
+    <use x="901.0" xlink:href="#th1201" y="641.0"/>
+    <use x="901.0" xlink:href="#th1201" y="881.0"/>
+    <use x="901.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="901.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="881.0" xlink:href="#th201" y="521.0"/>
+    <use x="881.0" xlink:href="#th601" y="561.0"/>
+    <use x="881.0" xlink:href="#th601" y="641.0"/>
+    <use x="881.0" xlink:href="#th201" y="721.0"/>
+    <use x="881.0" xlink:href="#th201" y="761.0"/>
+    <use x="881.0" xlink:href="#th601" y="801.0"/>
+    <use x="881.0" xlink:href="#th601" y="881.0"/>
+    <use x="881.0" xlink:href="#th201" y="961.0"/>
+    <use x="881.0" xlink:href="#th201" y="1001.0"/>
+    <use x="881.0" xlink:href="#th601" y="1041.0"/>
+    <use x="881.0" xlink:href="#th601" y="1121.0"/>
+    <use x="881.0" xlink:href="#th201" y="1201.0"/>
+    <use x="881.0" xlink:href="#th201" y="1241.0"/>
+    <use x="881.0" xlink:href="#th601" y="1281.0"/>
+    <use x="881.0" xlink:href="#th601" y="1361.0"/>
+    <use x="881.0" xlink:href="#th201" y="1441.0"/>
+    <use x="881.0" xlink:href="#th201" y="1481.0"/>
+    <use x="861.0" xlink:href="#th1201" y="601.0"/>
+    <use x="861.0" xlink:href="#th1201" y="681.0"/>
+    <use x="861.0" xlink:href="#th1201" y="841.0"/>
+    <use x="861.0" xlink:href="#th1201" y="921.0"/>
+    <use x="861.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="861.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="861.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="861.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="841.0" xlink:href="#th601" y="521.0"/>
+    <use x="841.0" xlink:href="#th601" y="601.0"/>
+    <use x="841.0" xlink:href="#th601" y="681.0"/>
+    <use x="841.0" xlink:href="#th601" y="761.0"/>
+    <use x="841.0" xlink:href="#th601" y="841.0"/>
+    <use x="841.0" xlink:href="#th601" y="921.0"/>
+    <use x="841.0" xlink:href="#th601" y="1001.0"/>
+    <use x="841.0" xlink:href="#th601" y="1081.0"/>
+    <use x="841.0" xlink:href="#th601" y="1161.0"/>
+    <use x="841.0" xlink:href="#th601" y="1241.0"/>
+    <use x="841.0" xlink:href="#th601" y="1321.0"/>
+    <use x="841.0" xlink:href="#th601" y="1401.0"/>
+    <use x="841.0" xlink:href="#th201" y="1481.0"/>
+    <use x="821.0" xlink:href="#th1201" y="561.0"/>
+    <use x="821.0" xlink:href="#th1201" y="641.0"/>
+    <use x="821.0" xlink:href="#th1201" y="721.0"/>
+    <use x="821.0" xlink:href="#th1201" y="801.0"/>
+    <use x="821.0" xlink:href="#th1201" y="881.0"/>
+    <use x="821.0" xlink:href="#th1201" y="961.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="821.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="801.0" xlink:href="#th401" y="501.0"/>
+    <use x="801.0" xlink:href="#th1401" y="561.0"/>
+    <use x="801.0" xlink:href="#th601" y="721.0"/>
+    <use x="801.0" xlink:href="#th1401" y="801.0"/>
+    <use x="801.0" xlink:href="#th601" y="961.0"/>
+    <use x="801.0" xlink:href="#th1401" y="1041.0"/>
+    <use x="801.0" xlink:href="#th601" y="1201.0"/>
+    <use x="801.0" xlink:href="#th1401" y="1281.0"/>
+    <use x="801.0" xlink:href="#th601" y="1441.0"/>
+    <use x="781.0" xlink:href="#th1201" y="521.0"/>
+    <use x="781.0" xlink:href="#th1601" y="601.0"/>
+    <use x="781.0" xlink:href="#th1201" y="681.0"/>
+    <use x="781.0" xlink:href="#th1201" y="761.0"/>
+    <use x="781.0" xlink:href="#th1601" y="841.0"/>
+    <use x="781.0" xlink:href="#th1201" y="921.0"/>
+    <use x="781.0" xlink:href="#th1201" y="1001.0"/>
+    <use x="781.0" xlink:href="#th1601" y="1081.0"/>
+    <use x="781.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="781.0" xlink:href="#th1201" y="1241.0"/>
+    <use x="781.0" xlink:href="#th1601" y="1321.0"/>
+    <use x="781.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="781.0" xlink:href="#th1201" y="1481.0"/>
+    <use x="761.0" xlink:href="#th601" y="521.0"/>
+    <use x="761.0" xlink:href="#th601" y="601.0"/>
+    <use x="761.0" xlink:href="#th601" y="681.0"/>
+    <use x="761.0" xlink:href="#th601" y="761.0"/>
+    <use x="761.0" xlink:href="#th601" y="841.0"/>
+    <use x="761.0" xlink:href="#th601" y="921.0"/>
+    <use x="761.0" xlink:href="#th601" y="1001.0"/>
+    <use x="761.0" xlink:href="#th601" y="1081.0"/>
+    <use x="761.0" xlink:href="#th601" y="1161.0"/>
+    <use x="761.0" xlink:href="#th601" y="1241.0"/>
+    <use x="761.0" xlink:href="#th601" y="1321.0"/>
+    <use x="761.0" xlink:href="#th601" y="1401.0"/>
+    <use x="761.0" xlink:href="#th201" y="1481.0"/>
+    <use x="741.0" xlink:href="#th1201" y="561.0"/>
+    <use x="741.0" xlink:href="#th1201" y="641.0"/>
+    <use x="741.0" xlink:href="#th1201" y="721.0"/>
+    <use x="741.0" xlink:href="#th1201" y="801.0"/>
+    <use x="741.0" xlink:href="#th1201" y="881.0"/>
+    <use x="741.0" xlink:href="#th1201" y="961.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="741.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="721.0" xlink:href="#th201" y="521.0"/>
+    <use x="721.0" xlink:href="#th601" y="561.0"/>
+    <use x="721.0" xlink:href="#th601" y="641.0"/>
+    <use x="721.0" xlink:href="#th201" y="721.0"/>
+    <use x="721.0" xlink:href="#th201" y="761.0"/>
+    <use x="721.0" xlink:href="#th601" y="801.0"/>
+    <use x="721.0" xlink:href="#th601" y="881.0"/>
+    <use x="721.0" xlink:href="#th201" y="961.0"/>
+    <use x="721.0" xlink:href="#th201" y="1001.0"/>
+    <use x="721.0" xlink:href="#th601" y="1041.0"/>
+    <use x="721.0" xlink:href="#th601" y="1121.0"/>
+    <use x="721.0" xlink:href="#th201" y="1201.0"/>
+    <use x="721.0" xlink:href="#th201" y="1241.0"/>
+    <use x="721.0" xlink:href="#th601" y="1281.0"/>
+    <use x="721.0" xlink:href="#th601" y="1361.0"/>
+    <use x="721.0" xlink:href="#th201" y="1441.0"/>
+    <use x="721.0" xlink:href="#th201" y="1481.0"/>
+    <use x="701.0" xlink:href="#th1201" y="601.0"/>
+    <use x="701.0" xlink:href="#th1201" y="681.0"/>
+    <use x="701.0" xlink:href="#th1201" y="841.0"/>
+    <use x="701.0" xlink:href="#th1201" y="921.0"/>
+    <use x="701.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="701.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="701.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="701.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="681.0" xlink:href="#th201" y="561.0"/>
+    <use x="681.0" xlink:href="#th601" y="601.0"/>
+    <use x="681.0" xlink:href="#th201" y="681.0"/>
+    <use x="681.0" xlink:href="#th201" y="721.0"/>
+    <use x="681.0" xlink:href="#th201" y="801.0"/>
+    <use x="681.0" xlink:href="#th601" y="841.0"/>
+    <use x="681.0" xlink:href="#th201" y="921.0"/>
+    <use x="681.0" xlink:href="#th201" y="961.0"/>
+    <use x="681.0" xlink:href="#th201" y="1041.0"/>
+    <use x="681.0" xlink:href="#th601" y="1081.0"/>
+    <use x="681.0" xlink:href="#th201" y="1161.0"/>
+    <use x="681.0" xlink:href="#th201" y="1201.0"/>
+    <use x="681.0" xlink:href="#th201" y="1281.0"/>
+    <use x="681.0" xlink:href="#th601" y="1321.0"/>
+    <use x="681.0" xlink:href="#th201" y="1401.0"/>
+    <use x="681.0" xlink:href="#th201" y="1441.0"/>
+    <use x="661.0" xlink:href="#th1201" y="641.0"/>
+    <use x="661.0" xlink:href="#th1201" y="881.0"/>
+    <use x="661.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="661.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="641.0" xlink:href="#th201" y="521.0"/>
+    <use x="641.0" xlink:href="#th601" y="561.0"/>
+    <use x="641.0" xlink:href="#th601" y="641.0"/>
+    <use x="641.0" xlink:href="#th201" y="721.0"/>
+    <use x="641.0" xlink:href="#th201" y="761.0"/>
+    <use x="641.0" xlink:href="#th601" y="801.0"/>
+    <use x="641.0" xlink:href="#th601" y="881.0"/>
+    <use x="641.0" xlink:href="#th201" y="961.0"/>
+    <use x="641.0" xlink:href="#th201" y="1001.0"/>
+    <use x="641.0" xlink:href="#th601" y="1041.0"/>
+    <use x="641.0" xlink:href="#th601" y="1121.0"/>
+    <use x="641.0" xlink:href="#th201" y="1201.0"/>
+    <use x="641.0" xlink:href="#th201" y="1241.0"/>
+    <use x="641.0" xlink:href="#th601" y="1281.0"/>
+    <use x="641.0" xlink:href="#th601" y="1361.0"/>
+    <use x="641.0" xlink:href="#th201" y="1441.0"/>
+    <use x="641.0" xlink:href="#th201" y="1481.0"/>
+    <use x="621.0" xlink:href="#th1201" y="601.0"/>
+    <use x="621.0" xlink:href="#th1201" y="681.0"/>
+    <use x="621.0" xlink:href="#th1201" y="841.0"/>
+    <use x="621.0" xlink:href="#th1201" y="921.0"/>
+    <use x="621.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="621.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="621.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="621.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="601.0" xlink:href="#th601" y="521.0"/>
+    <use x="601.0" xlink:href="#th601" y="601.0"/>
+    <use x="601.0" xlink:href="#th601" y="681.0"/>
+    <use x="601.0" xlink:href="#th601" y="761.0"/>
+    <use x="601.0" xlink:href="#th601" y="841.0"/>
+    <use x="601.0" xlink:href="#th601" y="921.0"/>
+    <use x="601.0" xlink:href="#th601" y="1001.0"/>
+    <use x="601.0" xlink:href="#th601" y="1081.0"/>
+    <use x="601.0" xlink:href="#th601" y="1161.0"/>
+    <use x="601.0" xlink:href="#th601" y="1241.0"/>
+    <use x="601.0" xlink:href="#th601" y="1321.0"/>
+    <use x="601.0" xlink:href="#th601" y="1401.0"/>
+    <use x="601.0" xlink:href="#th201" y="1481.0"/>
+    <use x="581.0" xlink:href="#th1201" y="561.0"/>
+    <use x="581.0" xlink:href="#th1201" y="641.0"/>
+    <use x="581.0" xlink:href="#th1201" y="721.0"/>
+    <use x="581.0" xlink:href="#th1201" y="801.0"/>
+    <use x="581.0" xlink:href="#th1201" y="881.0"/>
+    <use x="581.0" xlink:href="#th1201" y="961.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="581.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="561.0" xlink:href="#th401" y="501.0"/>
+    <use x="561.0" xlink:href="#th1401" y="561.0"/>
+    <use x="561.0" xlink:href="#th601" y="721.0"/>
+    <use x="561.0" xlink:href="#th1401" y="801.0"/>
+    <use x="561.0" xlink:href="#th601" y="961.0"/>
+    <use x="561.0" xlink:href="#th1401" y="1041.0"/>
+    <use x="561.0" xlink:href="#th601" y="1201.0"/>
+    <use x="561.0" xlink:href="#th1401" y="1281.0"/>
+    <use x="561.0" xlink:href="#th601" y="1441.0"/>
+    <use x="541.0" xlink:href="#th1201" y="521.0"/>
+    <use x="541.0" xlink:href="#th1601" y="601.0"/>
+    <use x="541.0" xlink:href="#th1201" y="681.0"/>
+    <use x="541.0" xlink:href="#th1201" y="761.0"/>
+    <use x="541.0" xlink:href="#th1601" y="841.0"/>
+    <use x="541.0" xlink:href="#th1201" y="921.0"/>
+    <use x="541.0" xlink:href="#th1201" y="1001.0"/>
+    <use x="541.0" xlink:href="#th1601" y="1081.0"/>
+    <use x="541.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="541.0" xlink:href="#th1201" y="1241.0"/>
+    <use x="541.0" xlink:href="#th1601" y="1321.0"/>
+    <use x="541.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="541.0" xlink:href="#th1201" y="1481.0"/>
+    <use x="521.0" xlink:href="#th601" y="521.0"/>
+    <use x="521.0" xlink:href="#th601" y="601.0"/>
+    <use x="521.0" xlink:href="#th601" y="681.0"/>
+    <use x="521.0" xlink:href="#th601" y="761.0"/>
+    <use x="521.0" xlink:href="#th601" y="841.0"/>
+    <use x="521.0" xlink:href="#th601" y="921.0"/>
+    <use x="521.0" xlink:href="#th601" y="1001.0"/>
+    <use x="521.0" xlink:href="#th601" y="1081.0"/>
+    <use x="521.0" xlink:href="#th601" y="1161.0"/>
+    <use x="521.0" xlink:href="#th601" y="1241.0"/>
+    <use x="521.0" xlink:href="#th601" y="1321.0"/>
+    <use x="521.0" xlink:href="#th601" y="1401.0"/>
+    <use x="521.0" xlink:href="#th201" y="1481.0"/>
+    <use x="501.0" xlink:href="#th1201" y="561.0"/>
+    <use x="501.0" xlink:href="#th1201" y="641.0"/>
+    <use x="501.0" xlink:href="#th1201" y="721.0"/>
+    <use x="501.0" xlink:href="#th1201" y="801.0"/>
+    <use x="501.0" xlink:href="#th1201" y="881.0"/>
+    <use x="501.0" xlink:href="#th1201" y="961.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="501.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="481.0" xlink:href="#th201" y="521.0"/>
+    <use x="481.0" xlink:href="#th601" y="561.0"/>
+    <use x="481.0" xlink:href="#th601" y="641.0"/>
+    <use x="481.0" xlink:href="#th201" y="721.0"/>
+    <use x="481.0" xlink:href="#th201" y="761.0"/>
+    <use x="481.0" xlink:href="#th601" y="801.0"/>
+    <use x="481.0" xlink:href="#th601" y="881.0"/>
+    <use x="481.0" xlink:href="#th201" y="961.0"/>
+    <use x="481.0" xlink:href="#th201" y="1001.0"/>
+    <use x="481.0" xlink:href="#th601" y="1041.0"/>
+    <use x="481.0" xlink:href="#th601" y="1121.0"/>
+    <use x="481.0" xlink:href="#th201" y="1201.0"/>
+    <use x="481.0" xlink:href="#th201" y="1241.0"/>
+    <use x="481.0" xlink:href="#th601" y="1281.0"/>
+    <use x="481.0" xlink:href="#th601" y="1361.0"/>
+    <use x="481.0" xlink:href="#th201" y="1441.0"/>
+    <use x="481.0" xlink:href="#th201" y="1481.0"/>
+    <use x="461.0" xlink:href="#th1201" y="601.0"/>
+    <use x="461.0" xlink:href="#th1201" y="681.0"/>
+    <use x="461.0" xlink:href="#th1201" y="841.0"/>
+    <use x="461.0" xlink:href="#th1201" y="921.0"/>
+    <use x="461.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="461.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="461.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="461.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="441.0" xlink:href="#th201" y="561.0"/>
+    <use x="441.0" xlink:href="#th601" y="601.0"/>
+    <use x="441.0" xlink:href="#th201" y="681.0"/>
+    <use x="441.0" xlink:href="#th201" y="721.0"/>
+    <use x="441.0" xlink:href="#th201" y="801.0"/>
+    <use x="441.0" xlink:href="#th601" y="841.0"/>
+    <use x="441.0" xlink:href="#th201" y="921.0"/>
+    <use x="441.0" xlink:href="#th201" y="961.0"/>
+    <use x="441.0" xlink:href="#th201" y="1041.0"/>
+    <use x="441.0" xlink:href="#th601" y="1081.0"/>
+    <use x="441.0" xlink:href="#th201" y="1161.0"/>
+    <use x="441.0" xlink:href="#th201" y="1201.0"/>
+    <use x="441.0" xlink:href="#th201" y="1281.0"/>
+    <use x="441.0" xlink:href="#th601" y="1321.0"/>
+    <use x="441.0" xlink:href="#th201" y="1401.0"/>
+    <use x="441.0" xlink:href="#th201" y="1441.0"/>
+    <use x="421.0" xlink:href="#th1201" y="641.0"/>
+    <use x="421.0" xlink:href="#th1201" y="881.0"/>
+    <use x="421.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="421.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="401.0" xlink:href="#th201" y="521.0"/>
+    <use x="401.0" xlink:href="#th601" y="561.0"/>
+    <use x="401.0" xlink:href="#th601" y="641.0"/>
+    <use x="401.0" xlink:href="#th201" y="721.0"/>
+    <use x="401.0" xlink:href="#th201" y="761.0"/>
+    <use x="401.0" xlink:href="#th601" y="801.0"/>
+    <use x="401.0" xlink:href="#th601" y="881.0"/>
+    <use x="401.0" xlink:href="#th201" y="961.0"/>
+    <use x="401.0" xlink:href="#th201" y="1001.0"/>
+    <use x="401.0" xlink:href="#th601" y="1041.0"/>
+    <use x="401.0" xlink:href="#th601" y="1121.0"/>
+    <use x="401.0" xlink:href="#th201" y="1201.0"/>
+    <use x="401.0" xlink:href="#th201" y="1241.0"/>
+    <use x="401.0" xlink:href="#th601" y="1281.0"/>
+    <use x="401.0" xlink:href="#th601" y="1361.0"/>
+    <use x="401.0" xlink:href="#th201" y="1441.0"/>
+    <use x="401.0" xlink:href="#th201" y="1481.0"/>
+    <use x="381.0" xlink:href="#th1201" y="601.0"/>
+    <use x="381.0" xlink:href="#th1201" y="681.0"/>
+    <use x="381.0" xlink:href="#th1201" y="841.0"/>
+    <use x="381.0" xlink:href="#th1201" y="921.0"/>
+    <use x="381.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="381.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="381.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="381.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="361.0" xlink:href="#th601" y="521.0"/>
+    <use x="361.0" xlink:href="#th601" y="601.0"/>
+    <use x="361.0" xlink:href="#th601" y="681.0"/>
+    <use x="361.0" xlink:href="#th601" y="761.0"/>
+    <use x="361.0" xlink:href="#th601" y="841.0"/>
+    <use x="361.0" xlink:href="#th601" y="921.0"/>
+    <use x="361.0" xlink:href="#th601" y="1001.0"/>
+    <use x="361.0" xlink:href="#th601" y="1081.0"/>
+    <use x="361.0" xlink:href="#th601" y="1161.0"/>
+    <use x="361.0" xlink:href="#th601" y="1241.0"/>
+    <use x="361.0" xlink:href="#th601" y="1321.0"/>
+    <use x="361.0" xlink:href="#th601" y="1401.0"/>
+    <use x="361.0" xlink:href="#th201" y="1481.0"/>
+    <use x="341.0" xlink:href="#th1201" y="561.0"/>
+    <use x="341.0" xlink:href="#th1201" y="641.0"/>
+    <use x="341.0" xlink:href="#th1201" y="721.0"/>
+    <use x="341.0" xlink:href="#th1201" y="801.0"/>
+    <use x="341.0" xlink:href="#th1201" y="881.0"/>
+    <use x="341.0" xlink:href="#th1201" y="961.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="341.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="321.0" xlink:href="#th401" y="501.0"/>
+    <use x="321.0" xlink:href="#th1401" y="561.0"/>
+    <use x="321.0" xlink:href="#th601" y="721.0"/>
+    <use x="321.0" xlink:href="#th1401" y="801.0"/>
+    <use x="321.0" xlink:href="#th601" y="961.0"/>
+    <use x="321.0" xlink:href="#th1401" y="1041.0"/>
+    <use x="321.0" xlink:href="#th601" y="1201.0"/>
+    <use x="321.0" xlink:href="#th1401" y="1281.0"/>
+    <use x="321.0" xlink:href="#th601" y="1441.0"/>
+    <use x="301.0" xlink:href="#th1201" y="521.0"/>
+    <use x="301.0" xlink:href="#th1601" y="601.0"/>
+    <use x="301.0" xlink:href="#th1201" y="681.0"/>
+    <use x="301.0" xlink:href="#th1201" y="761.0"/>
+    <use x="301.0" xlink:href="#th1601" y="841.0"/>
+    <use x="301.0" xlink:href="#th1201" y="921.0"/>
+    <use x="301.0" xlink:href="#th1201" y="1001.0"/>
+    <use x="301.0" xlink:href="#th1601" y="1081.0"/>
+    <use x="301.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="301.0" xlink:href="#th1201" y="1241.0"/>
+    <use x="301.0" xlink:href="#th1601" y="1321.0"/>
+    <use x="301.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="301.0" xlink:href="#th1201" y="1481.0"/>
+    <use x="281.0" xlink:href="#th601" y="521.0"/>
+    <use x="281.0" xlink:href="#th601" y="601.0"/>
+    <use x="281.0" xlink:href="#th601" y="681.0"/>
+    <use x="281.0" xlink:href="#th601" y="761.0"/>
+    <use x="281.0" xlink:href="#th601" y="841.0"/>
+    <use x="281.0" xlink:href="#th601" y="921.0"/>
+    <use x="281.0" xlink:href="#th601" y="1001.0"/>
+    <use x="281.0" xlink:href="#th601" y="1081.0"/>
+    <use x="281.0" xlink:href="#th601" y="1161.0"/>
+    <use x="281.0" xlink:href="#th601" y="1241.0"/>
+    <use x="281.0" xlink:href="#th601" y="1321.0"/>
+    <use x="281.0" xlink:href="#th601" y="1401.0"/>
+    <use x="281.0" xlink:href="#th201" y="1481.0"/>
+    <use x="261.0" xlink:href="#th1201" y="561.0"/>
+    <use x="261.0" xlink:href="#th1201" y="641.0"/>
+    <use x="261.0" xlink:href="#th1201" y="721.0"/>
+    <use x="261.0" xlink:href="#th1201" y="801.0"/>
+    <use x="261.0" xlink:href="#th1201" y="881.0"/>
+    <use x="261.0" xlink:href="#th1201" y="961.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="261.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="241.0" xlink:href="#th201" y="521.0"/>
+    <use x="241.0" xlink:href="#th601" y="561.0"/>
+    <use x="241.0" xlink:href="#th601" y="641.0"/>
+    <use x="241.0" xlink:href="#th201" y="721.0"/>
+    <use x="241.0" xlink:href="#th201" y="761.0"/>
+    <use x="241.0" xlink:href="#th601" y="801.0"/>
+    <use x="241.0" xlink:href="#th601" y="881.0"/>
+    <use x="241.0" xlink:href="#th201" y="961.0"/>
+    <use x="241.0" xlink:href="#th201" y="1001.0"/>
+    <use x="241.0" xlink:href="#th601" y="1041.0"/>
+    <use x="241.0" xlink:href="#th601" y="1121.0"/>
+    <use x="241.0" xlink:href="#th201" y="1201.0"/>
+    <use x="241.0" xlink:href="#th201" y="1241.0"/>
+    <use x="241.0" xlink:href="#th601" y="1281.0"/>
+    <use x="241.0" xlink:href="#th601" y="1361.0"/>
+    <use x="241.0" xlink:href="#th201" y="1441.0"/>
+    <use x="241.0" xlink:href="#th201" y="1481.0"/>
+    <use x="221.0" xlink:href="#th1201" y="601.0"/>
+    <use x="221.0" xlink:href="#th1201" y="681.0"/>
+    <use x="221.0" xlink:href="#th1201" y="841.0"/>
+    <use x="221.0" xlink:href="#th1201" y="921.0"/>
+    <use x="221.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="221.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="221.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="221.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="201.0" xlink:href="#th201" y="561.0"/>
+    <use x="201.0" xlink:href="#th601" y="601.0"/>
+    <use x="201.0" xlink:href="#th201" y="681.0"/>
+    <use x="201.0" xlink:href="#th201" y="721.0"/>
+    <use x="201.0" xlink:href="#th201" y="801.0"/>
+    <use x="201.0" xlink:href="#th601" y="841.0"/>
+    <use x="201.0" xlink:href="#th201" y="921.0"/>
+    <use x="201.0" xlink:href="#th201" y="961.0"/>
+    <use x="201.0" xlink:href="#th201" y="1041.0"/>
+    <use x="201.0" xlink:href="#th601" y="1081.0"/>
+    <use x="201.0" xlink:href="#th201" y="1161.0"/>
+    <use x="201.0" xlink:href="#th201" y="1201.0"/>
+    <use x="201.0" xlink:href="#th201" y="1281.0"/>
+    <use x="201.0" xlink:href="#th601" y="1321.0"/>
+    <use x="201.0" xlink:href="#th201" y="1401.0"/>
+    <use x="201.0" xlink:href="#th201" y="1441.0"/>
+    <use x="181.0" xlink:href="#th1201" y="641.0"/>
+    <use x="181.0" xlink:href="#th1201" y="881.0"/>
+    <use x="181.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="181.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="161.0" xlink:href="#th201" y="521.0"/>
+    <use x="161.0" xlink:href="#th601" y="561.0"/>
+    <use x="161.0" xlink:href="#th601" y="641.0"/>
+    <use x="161.0" xlink:href="#th201" y="721.0"/>
+    <use x="161.0" xlink:href="#th201" y="761.0"/>
+    <use x="161.0" xlink:href="#th601" y="801.0"/>
+    <use x="161.0" xlink:href="#th601" y="881.0"/>
+    <use x="161.0" xlink:href="#th201" y="961.0"/>
+    <use x="161.0" xlink:href="#th201" y="1001.0"/>
+    <use x="161.0" xlink:href="#th601" y="1041.0"/>
+    <use x="161.0" xlink:href="#th601" y="1121.0"/>
+    <use x="161.0" xlink:href="#th201" y="1201.0"/>
+    <use x="161.0" xlink:href="#th201" y="1241.0"/>
+    <use x="161.0" xlink:href="#th601" y="1281.0"/>
+    <use x="161.0" xlink:href="#th601" y="1361.0"/>
+    <use x="161.0" xlink:href="#th201" y="1441.0"/>
+    <use x="161.0" xlink:href="#th201" y="1481.0"/>
+    <use x="141.0" xlink:href="#th1201" y="601.0"/>
+    <use x="141.0" xlink:href="#th1201" y="681.0"/>
+    <use x="141.0" xlink:href="#th1201" y="841.0"/>
+    <use x="141.0" xlink:href="#th1201" y="921.0"/>
+    <use x="141.0" xlink:href="#th1201" y="1081.0"/>
+    <use x="141.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="141.0" xlink:href="#th1201" y="1321.0"/>
+    <use x="141.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="121.0" xlink:href="#th601" y="521.0"/>
+    <use x="121.0" xlink:href="#th601" y="601.0"/>
+    <use x="121.0" xlink:href="#th601" y="681.0"/>
+    <use x="121.0" xlink:href="#th601" y="761.0"/>
+    <use x="121.0" xlink:href="#th601" y="841.0"/>
+    <use x="121.0" xlink:href="#th601" y="921.0"/>
+    <use x="121.0" xlink:href="#th601" y="1001.0"/>
+    <use x="121.0" xlink:href="#th601" y="1081.0"/>
+    <use x="121.0" xlink:href="#th601" y="1161.0"/>
+    <use x="121.0" xlink:href="#th601" y="1241.0"/>
+    <use x="121.0" xlink:href="#th601" y="1321.0"/>
+    <use x="121.0" xlink:href="#th601" y="1401.0"/>
+    <use x="121.0" xlink:href="#th201" y="1481.0"/>
+    <use x="101.0" xlink:href="#th1201" y="561.0"/>
+    <use x="101.0" xlink:href="#th1201" y="641.0"/>
+    <use x="101.0" xlink:href="#th1201" y="721.0"/>
+    <use x="101.0" xlink:href="#th1201" y="801.0"/>
+    <use x="101.0" xlink:href="#th1201" y="881.0"/>
+    <use x="101.0" xlink:href="#th1201" y="961.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1041.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1121.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1201.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1281.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1361.0"/>
+    <use x="101.0" xlink:href="#th1201" y="1441.0"/>
+    <use x="81.0" xlink:href="#th401" y="501.0"/>
+    <use x="81.0" xlink:href="#th1401" y="561.0"/>
+    <use x="81.0" xlink:href="#th601" y="721.0"/>
+    <use x="81.0" xlink:href="#th1401" y="801.0"/>
+    <use x="81.0" xlink:href="#th601" y="961.0"/>
+    <use x="81.0" xlink:href="#th1401" y="1041.0"/>
+    <use x="81.0" xlink:href="#th601" y="1201.0"/>
+    <use x="81.0" xlink:href="#th1401" y="1281.0"/>
+    <use x="81.0" xlink:href="#th601" y="1441.0"/>
+    <use x="61.0" xlink:href="#th1201" y="521.0"/>
+    <use x="61.0" xlink:href="#th1601" y="601.0"/>
+    <use x="61.0" xlink:href="#th1201" y="681.0"/>
+    <use x="61.0" xlink:href="#th1201" y="761.0"/>
+    <use x="61.0" xlink:href="#th1601" y="841.0"/>
+    <use x="61.0" xlink:href="#th1201" y="921.0"/>
+    <use x="61.0" xlink:href="#th1201" y="1001.0"/>
+    <use x="61.0" xlink:href="#th1601" y="1081.0"/>
+    <use x="61.0" xlink:href="#th1201" y="1161.0"/>
+    <use x="61.0" xlink:href="#th1201" y="1241.0"/>
+    <use x="61.0" xlink:href="#th1601" y="1321.0"/>
+    <use x="61.0" xlink:href="#th1201" y="1401.0"/>
+    <use x="61.0" xlink:href="#th1201" y="1481.0"/>
+    <use x="819.0" xlink:href="#th2200" y="503.0"/>
+    <use x="579.0" xlink:href="#th2200" y="503.0"/>
+    <use x="339.0" xlink:href="#th2200" y="503.0"/>
+    <use x="99.0" xlink:href="#th2200" y="503.0"/>
+    <use x="59.0" xlink:href="#th200" y="503.0"/>
+    <use x="979.0" xlink:href="#th1200" y="523.0"/>
+    <use x="899.0" xlink:href="#th1600" y="523.0"/>
+    <use x="859.0" xlink:href="#th1200" y="523.0"/>
+    <use x="819.0" xlink:href="#th1200" y="523.0"/>
+    <use x="739.0" xlink:href="#th1200" y="523.0"/>
+    <use x="659.0" xlink:href="#th1600" y="523.0"/>
+    <use x="619.0" xlink:href="#th1200" y="523.0"/>
+    <use x="579.0" xlink:href="#th1200" y="523.0"/>
+    <use x="499.0" xlink:href="#th1200" y="523.0"/>
+    <use x="419.0" xlink:href="#th1600" y="523.0"/>
+    <use x="379.0" xlink:href="#th1200" y="523.0"/>
+    <use x="339.0" xlink:href="#th1200" y="523.0"/>
+    <use x="259.0" xlink:href="#th1200" y="523.0"/>
+    <use x="179.0" xlink:href="#th1600" y="523.0"/>
+    <use x="139.0" xlink:href="#th1200" y="523.0"/>
+    <use x="99.0" xlink:href="#th1200" y="523.0"/>
+    <use x="1019.0" xlink:href="#th400" y="543.0"/>
+    <use x="859.0" xlink:href="#th1400" y="543.0"/>
+    <use x="779.0" xlink:href="#th600" y="543.0"/>
+    <use x="619.0" xlink:href="#th1400" y="543.0"/>
+    <use x="539.0" xlink:href="#th600" y="543.0"/>
+    <use x="379.0" xlink:href="#th1400" y="543.0"/>
+    <use x="299.0" xlink:href="#th600" y="543.0"/>
+    <use x="139.0" xlink:href="#th1400" y="543.0"/>
+    <use x="59.0" xlink:href="#th600" y="543.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="563.0"/>
+    <use x="939.0" xlink:href="#th1200" y="563.0"/>
+    <use x="899.0" xlink:href="#th1200" y="563.0"/>
+    <use x="859.0" xlink:href="#th1200" y="563.0"/>
+    <use x="779.0" xlink:href="#th1200" y="563.0"/>
+    <use x="699.0" xlink:href="#th1200" y="563.0"/>
+    <use x="659.0" xlink:href="#th1200" y="563.0"/>
+    <use x="619.0" xlink:href="#th1200" y="563.0"/>
+    <use x="539.0" xlink:href="#th1200" y="563.0"/>
+    <use x="459.0" xlink:href="#th1200" y="563.0"/>
+    <use x="419.0" xlink:href="#th1200" y="563.0"/>
+    <use x="379.0" xlink:href="#th1200" y="563.0"/>
+    <use x="299.0" xlink:href="#th1200" y="563.0"/>
+    <use x="219.0" xlink:href="#th1200" y="563.0"/>
+    <use x="179.0" xlink:href="#th1200" y="563.0"/>
+    <use x="139.0" xlink:href="#th1200" y="563.0"/>
+    <use x="59.0" xlink:href="#th1200" y="563.0"/>
+    <use x="979.0" xlink:href="#th600" y="583.0"/>
+    <use x="899.0" xlink:href="#th600" y="583.0"/>
+    <use x="819.0" xlink:href="#th600" y="583.0"/>
+    <use x="739.0" xlink:href="#th600" y="583.0"/>
+    <use x="659.0" xlink:href="#th600" y="583.0"/>
+    <use x="579.0" xlink:href="#th600" y="583.0"/>
+    <use x="499.0" xlink:href="#th600" y="583.0"/>
+    <use x="419.0" xlink:href="#th600" y="583.0"/>
+    <use x="339.0" xlink:href="#th600" y="583.0"/>
+    <use x="259.0" xlink:href="#th600" y="583.0"/>
+    <use x="179.0" xlink:href="#th600" y="583.0"/>
+    <use x="99.0" xlink:href="#th600" y="583.0"/>
+    <use x="59.0" xlink:href="#th200" y="583.0"/>
+    <use x="979.0" xlink:href="#th1200" y="603.0"/>
+    <use x="899.0" xlink:href="#th1200" y="603.0"/>
+    <use x="819.0" xlink:href="#th1200" y="603.0"/>
+    <use x="739.0" xlink:href="#th1200" y="603.0"/>
+    <use x="659.0" xlink:href="#th1200" y="603.0"/>
+    <use x="579.0" xlink:href="#th1200" y="603.0"/>
+    <use x="499.0" xlink:href="#th1200" y="603.0"/>
+    <use x="419.0" xlink:href="#th1200" y="603.0"/>
+    <use x="339.0" xlink:href="#th1200" y="603.0"/>
+    <use x="259.0" xlink:href="#th1200" y="603.0"/>
+    <use x="179.0" xlink:href="#th1200" y="603.0"/>
+    <use x="99.0" xlink:href="#th1200" y="603.0"/>
+    <use x="939.0" xlink:href="#th600" y="623.0"/>
+    <use x="859.0" xlink:href="#th600" y="623.0"/>
+    <use x="819.0" xlink:href="#th200" y="623.0"/>
+    <use x="699.0" xlink:href="#th600" y="623.0"/>
+    <use x="619.0" xlink:href="#th600" y="623.0"/>
+    <use x="579.0" xlink:href="#th200" y="623.0"/>
+    <use x="459.0" xlink:href="#th600" y="623.0"/>
+    <use x="379.0" xlink:href="#th600" y="623.0"/>
+    <use x="339.0" xlink:href="#th200" y="623.0"/>
+    <use x="219.0" xlink:href="#th600" y="623.0"/>
+    <use x="139.0" xlink:href="#th600" y="623.0"/>
+    <use x="99.0" xlink:href="#th200" y="623.0"/>
+    <use x="939.0" xlink:href="#th1200" y="643.0"/>
+    <use x="859.0" xlink:href="#th1200" y="643.0"/>
+    <use x="699.0" xlink:href="#th1200" y="643.0"/>
+    <use x="619.0" xlink:href="#th1200" y="643.0"/>
+    <use x="459.0" xlink:href="#th1200" y="643.0"/>
+    <use x="379.0" xlink:href="#th1200" y="643.0"/>
+    <use x="219.0" xlink:href="#th1200" y="643.0"/>
+    <use x="139.0" xlink:href="#th1200" y="643.0"/>
+    <use x="979.0" xlink:href="#th600" y="663.0"/>
+    <use x="899.0" xlink:href="#th600" y="663.0"/>
+    <use x="819.0" xlink:href="#th600" y="663.0"/>
+    <use x="739.0" xlink:href="#th600" y="663.0"/>
+    <use x="659.0" xlink:href="#th600" y="663.0"/>
+    <use x="579.0" xlink:href="#th600" y="663.0"/>
+    <use x="499.0" xlink:href="#th600" y="663.0"/>
+    <use x="419.0" xlink:href="#th600" y="663.0"/>
+    <use x="339.0" xlink:href="#th600" y="663.0"/>
+    <use x="259.0" xlink:href="#th600" y="663.0"/>
+    <use x="179.0" xlink:href="#th600" y="663.0"/>
+    <use x="99.0" xlink:href="#th600" y="663.0"/>
+    <use x="59.0" xlink:href="#th200" y="663.0"/>
+    <use x="979.0" xlink:href="#th1200" y="683.0"/>
+    <use x="899.0" xlink:href="#th1200" y="683.0"/>
+    <use x="819.0" xlink:href="#th1200" y="683.0"/>
+    <use x="739.0" xlink:href="#th1200" y="683.0"/>
+    <use x="659.0" xlink:href="#th1200" y="683.0"/>
+    <use x="579.0" xlink:href="#th1200" y="683.0"/>
+    <use x="499.0" xlink:href="#th1200" y="683.0"/>
+    <use x="419.0" xlink:href="#th1200" y="683.0"/>
+    <use x="339.0" xlink:href="#th1200" y="683.0"/>
+    <use x="259.0" xlink:href="#th1200" y="683.0"/>
+    <use x="179.0" xlink:href="#th1200" y="683.0"/>
+    <use x="99.0" xlink:href="#th1200" y="683.0"/>
+    <use x="1019.0" xlink:href="#th400" y="703.0"/>
+    <use x="859.0" xlink:href="#th1400" y="703.0"/>
+    <use x="779.0" xlink:href="#th600" y="703.0"/>
+    <use x="619.0" xlink:href="#th1400" y="703.0"/>
+    <use x="539.0" xlink:href="#th600" y="703.0"/>
+    <use x="379.0" xlink:href="#th1400" y="703.0"/>
+    <use x="299.0" xlink:href="#th600" y="703.0"/>
+    <use x="139.0" xlink:href="#th1400" y="703.0"/>
+    <use x="59.0" xlink:href="#th600" y="703.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="723.0"/>
+    <use x="939.0" xlink:href="#th1200" y="723.0"/>
+    <use x="899.0" xlink:href="#th1200" y="723.0"/>
+    <use x="859.0" xlink:href="#th1200" y="723.0"/>
+    <use x="779.0" xlink:href="#th1200" y="723.0"/>
+    <use x="699.0" xlink:href="#th1200" y="723.0"/>
+    <use x="659.0" xlink:href="#th1200" y="723.0"/>
+    <use x="619.0" xlink:href="#th1200" y="723.0"/>
+    <use x="539.0" xlink:href="#th1200" y="723.0"/>
+    <use x="459.0" xlink:href="#th1200" y="723.0"/>
+    <use x="419.0" xlink:href="#th1200" y="723.0"/>
+    <use x="379.0" xlink:href="#th1200" y="723.0"/>
+    <use x="299.0" xlink:href="#th1200" y="723.0"/>
+    <use x="219.0" xlink:href="#th1200" y="723.0"/>
+    <use x="179.0" xlink:href="#th1200" y="723.0"/>
+    <use x="139.0" xlink:href="#th1200" y="723.0"/>
+    <use x="59.0" xlink:href="#th1200" y="723.0"/>
+    <use x="819.0" xlink:href="#th2200" y="743.0"/>
+    <use x="579.0" xlink:href="#th2200" y="743.0"/>
+    <use x="339.0" xlink:href="#th2200" y="743.0"/>
+    <use x="99.0" xlink:href="#th2200" y="743.0"/>
+    <use x="59.0" xlink:href="#th200" y="743.0"/>
+    <use x="979.0" xlink:href="#th1200" y="763.0"/>
+    <use x="899.0" xlink:href="#th1600" y="763.0"/>
+    <use x="859.0" xlink:href="#th1200" y="763.0"/>
+    <use x="819.0" xlink:href="#th1200" y="763.0"/>
+    <use x="739.0" xlink:href="#th1200" y="763.0"/>
+    <use x="659.0" xlink:href="#th1600" y="763.0"/>
+    <use x="619.0" xlink:href="#th1200" y="763.0"/>
+    <use x="579.0" xlink:href="#th1200" y="763.0"/>
+    <use x="499.0" xlink:href="#th1200" y="763.0"/>
+    <use x="419.0" xlink:href="#th1600" y="763.0"/>
+    <use x="379.0" xlink:href="#th1200" y="763.0"/>
+    <use x="339.0" xlink:href="#th1200" y="763.0"/>
+    <use x="259.0" xlink:href="#th1200" y="763.0"/>
+    <use x="179.0" xlink:href="#th1600" y="763.0"/>
+    <use x="139.0" xlink:href="#th1200" y="763.0"/>
+    <use x="99.0" xlink:href="#th1200" y="763.0"/>
+    <use x="1019.0" xlink:href="#th400" y="783.0"/>
+    <use x="859.0" xlink:href="#th1400" y="783.0"/>
+    <use x="779.0" xlink:href="#th600" y="783.0"/>
+    <use x="619.0" xlink:href="#th1400" y="783.0"/>
+    <use x="539.0" xlink:href="#th600" y="783.0"/>
+    <use x="379.0" xlink:href="#th1400" y="783.0"/>
+    <use x="299.0" xlink:href="#th600" y="783.0"/>
+    <use x="139.0" xlink:href="#th1400" y="783.0"/>
+    <use x="59.0" xlink:href="#th600" y="783.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="803.0"/>
+    <use x="939.0" xlink:href="#th1200" y="803.0"/>
+    <use x="899.0" xlink:href="#th1200" y="803.0"/>
+    <use x="859.0" xlink:href="#th1200" y="803.0"/>
+    <use x="779.0" xlink:href="#th1200" y="803.0"/>
+    <use x="699.0" xlink:href="#th1200" y="803.0"/>
+    <use x="659.0" xlink:href="#th1200" y="803.0"/>
+    <use x="619.0" xlink:href="#th1200" y="803.0"/>
+    <use x="539.0" xlink:href="#th1200" y="803.0"/>
+    <use x="459.0" xlink:href="#th1200" y="803.0"/>
+    <use x="419.0" xlink:href="#th1200" y="803.0"/>
+    <use x="379.0" xlink:href="#th1200" y="803.0"/>
+    <use x="299.0" xlink:href="#th1200" y="803.0"/>
+    <use x="219.0" xlink:href="#th1200" y="803.0"/>
+    <use x="179.0" xlink:href="#th1200" y="803.0"/>
+    <use x="139.0" xlink:href="#th1200" y="803.0"/>
+    <use x="59.0" xlink:href="#th1200" y="803.0"/>
+    <use x="979.0" xlink:href="#th600" y="823.0"/>
+    <use x="899.0" xlink:href="#th600" y="823.0"/>
+    <use x="819.0" xlink:href="#th600" y="823.0"/>
+    <use x="739.0" xlink:href="#th600" y="823.0"/>
+    <use x="659.0" xlink:href="#th600" y="823.0"/>
+    <use x="579.0" xlink:href="#th600" y="823.0"/>
+    <use x="499.0" xlink:href="#th600" y="823.0"/>
+    <use x="419.0" xlink:href="#th600" y="823.0"/>
+    <use x="339.0" xlink:href="#th600" y="823.0"/>
+    <use x="259.0" xlink:href="#th600" y="823.0"/>
+    <use x="179.0" xlink:href="#th600" y="823.0"/>
+    <use x="99.0" xlink:href="#th600" y="823.0"/>
+    <use x="59.0" xlink:href="#th200" y="823.0"/>
+    <use x="979.0" xlink:href="#th1200" y="843.0"/>
+    <use x="899.0" xlink:href="#th1200" y="843.0"/>
+    <use x="819.0" xlink:href="#th1200" y="843.0"/>
+    <use x="739.0" xlink:href="#th1200" y="843.0"/>
+    <use x="659.0" xlink:href="#th1200" y="843.0"/>
+    <use x="579.0" xlink:href="#th1200" y="843.0"/>
+    <use x="499.0" xlink:href="#th1200" y="843.0"/>
+    <use x="419.0" xlink:href="#th1200" y="843.0"/>
+    <use x="339.0" xlink:href="#th1200" y="843.0"/>
+    <use x="259.0" xlink:href="#th1200" y="843.0"/>
+    <use x="179.0" xlink:href="#th1200" y="843.0"/>
+    <use x="99.0" xlink:href="#th1200" y="843.0"/>
+    <use x="939.0" xlink:href="#th600" y="863.0"/>
+    <use x="859.0" xlink:href="#th600" y="863.0"/>
+    <use x="819.0" xlink:href="#th200" y="863.0"/>
+    <use x="699.0" xlink:href="#th600" y="863.0"/>
+    <use x="619.0" xlink:href="#th600" y="863.0"/>
+    <use x="579.0" xlink:href="#th200" y="863.0"/>
+    <use x="459.0" xlink:href="#th600" y="863.0"/>
+    <use x="379.0" xlink:href="#th600" y="863.0"/>
+    <use x="339.0" xlink:href="#th200" y="863.0"/>
+    <use x="219.0" xlink:href="#th600" y="863.0"/>
+    <use x="139.0" xlink:href="#th600" y="863.0"/>
+    <use x="99.0" xlink:href="#th200" y="863.0"/>
+    <use x="939.0" xlink:href="#th1200" y="883.0"/>
+    <use x="859.0" xlink:href="#th1200" y="883.0"/>
+    <use x="699.0" xlink:href="#th1200" y="883.0"/>
+    <use x="619.0" xlink:href="#th1200" y="883.0"/>
+    <use x="459.0" xlink:href="#th1200" y="883.0"/>
+    <use x="379.0" xlink:href="#th1200" y="883.0"/>
+    <use x="219.0" xlink:href="#th1200" y="883.0"/>
+    <use x="139.0" xlink:href="#th1200" y="883.0"/>
+    <use x="979.0" xlink:href="#th600" y="903.0"/>
+    <use x="899.0" xlink:href="#th600" y="903.0"/>
+    <use x="819.0" xlink:href="#th600" y="903.0"/>
+    <use x="739.0" xlink:href="#th600" y="903.0"/>
+    <use x="659.0" xlink:href="#th600" y="903.0"/>
+    <use x="579.0" xlink:href="#th600" y="903.0"/>
+    <use x="499.0" xlink:href="#th600" y="903.0"/>
+    <use x="419.0" xlink:href="#th600" y="903.0"/>
+    <use x="339.0" xlink:href="#th600" y="903.0"/>
+    <use x="259.0" xlink:href="#th600" y="903.0"/>
+    <use x="179.0" xlink:href="#th600" y="903.0"/>
+    <use x="99.0" xlink:href="#th600" y="903.0"/>
+    <use x="59.0" xlink:href="#th200" y="903.0"/>
+    <use x="979.0" xlink:href="#th1200" y="923.0"/>
+    <use x="899.0" xlink:href="#th1200" y="923.0"/>
+    <use x="819.0" xlink:href="#th1200" y="923.0"/>
+    <use x="739.0" xlink:href="#th1200" y="923.0"/>
+    <use x="659.0" xlink:href="#th1200" y="923.0"/>
+    <use x="579.0" xlink:href="#th1200" y="923.0"/>
+    <use x="499.0" xlink:href="#th1200" y="923.0"/>
+    <use x="419.0" xlink:href="#th1200" y="923.0"/>
+    <use x="339.0" xlink:href="#th1200" y="923.0"/>
+    <use x="259.0" xlink:href="#th1200" y="923.0"/>
+    <use x="179.0" xlink:href="#th1200" y="923.0"/>
+    <use x="99.0" xlink:href="#th1200" y="923.0"/>
+    <use x="1019.0" xlink:href="#th400" y="943.0"/>
+    <use x="859.0" xlink:href="#th1400" y="943.0"/>
+    <use x="779.0" xlink:href="#th600" y="943.0"/>
+    <use x="619.0" xlink:href="#th1400" y="943.0"/>
+    <use x="539.0" xlink:href="#th600" y="943.0"/>
+    <use x="379.0" xlink:href="#th1400" y="943.0"/>
+    <use x="299.0" xlink:href="#th600" y="943.0"/>
+    <use x="139.0" xlink:href="#th1400" y="943.0"/>
+    <use x="59.0" xlink:href="#th600" y="943.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="963.0"/>
+    <use x="939.0" xlink:href="#th1200" y="963.0"/>
+    <use x="899.0" xlink:href="#th1200" y="963.0"/>
+    <use x="859.0" xlink:href="#th1200" y="963.0"/>
+    <use x="779.0" xlink:href="#th1200" y="963.0"/>
+    <use x="699.0" xlink:href="#th1200" y="963.0"/>
+    <use x="659.0" xlink:href="#th1200" y="963.0"/>
+    <use x="619.0" xlink:href="#th1200" y="963.0"/>
+    <use x="539.0" xlink:href="#th1200" y="963.0"/>
+    <use x="459.0" xlink:href="#th1200" y="963.0"/>
+    <use x="419.0" xlink:href="#th1200" y="963.0"/>
+    <use x="379.0" xlink:href="#th1200" y="963.0"/>
+    <use x="299.0" xlink:href="#th1200" y="963.0"/>
+    <use x="219.0" xlink:href="#th1200" y="963.0"/>
+    <use x="179.0" xlink:href="#th1200" y="963.0"/>
+    <use x="139.0" xlink:href="#th1200" y="963.0"/>
+    <use x="59.0" xlink:href="#th1200" y="963.0"/>
+    <use x="819.0" xlink:href="#th2200" y="983.0"/>
+    <use x="579.0" xlink:href="#th2200" y="983.0"/>
+    <use x="339.0" xlink:href="#th2200" y="983.0"/>
+    <use x="99.0" xlink:href="#th2200" y="983.0"/>
+    <use x="59.0" xlink:href="#th200" y="983.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="899.0" xlink:href="#th1600" y="1003.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="659.0" xlink:href="#th1600" y="1003.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="419.0" xlink:href="#th1600" y="1003.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="179.0" xlink:href="#th1600" y="1003.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1003.0"/>
+    <use x="1019.0" xlink:href="#th400" y="1023.0"/>
+    <use x="859.0" xlink:href="#th1400" y="1023.0"/>
+    <use x="779.0" xlink:href="#th600" y="1023.0"/>
+    <use x="619.0" xlink:href="#th1400" y="1023.0"/>
+    <use x="539.0" xlink:href="#th600" y="1023.0"/>
+    <use x="379.0" xlink:href="#th1400" y="1023.0"/>
+    <use x="299.0" xlink:href="#th600" y="1023.0"/>
+    <use x="139.0" xlink:href="#th1400" y="1023.0"/>
+    <use x="59.0" xlink:href="#th600" y="1023.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="779.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="539.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="299.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="59.0" xlink:href="#th1200" y="1043.0"/>
+    <use x="979.0" xlink:href="#th600" y="1063.0"/>
+    <use x="899.0" xlink:href="#th600" y="1063.0"/>
+    <use x="819.0" xlink:href="#th600" y="1063.0"/>
+    <use x="739.0" xlink:href="#th600" y="1063.0"/>
+    <use x="659.0" xlink:href="#th600" y="1063.0"/>
+    <use x="579.0" xlink:href="#th600" y="1063.0"/>
+    <use x="499.0" xlink:href="#th600" y="1063.0"/>
+    <use x="419.0" xlink:href="#th600" y="1063.0"/>
+    <use x="339.0" xlink:href="#th600" y="1063.0"/>
+    <use x="259.0" xlink:href="#th600" y="1063.0"/>
+    <use x="179.0" xlink:href="#th600" y="1063.0"/>
+    <use x="99.0" xlink:href="#th600" y="1063.0"/>
+    <use x="59.0" xlink:href="#th200" y="1063.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1083.0"/>
+    <use x="939.0" xlink:href="#th600" y="1103.0"/>
+    <use x="859.0" xlink:href="#th600" y="1103.0"/>
+    <use x="819.0" xlink:href="#th200" y="1103.0"/>
+    <use x="699.0" xlink:href="#th600" y="1103.0"/>
+    <use x="619.0" xlink:href="#th600" y="1103.0"/>
+    <use x="579.0" xlink:href="#th200" y="1103.0"/>
+    <use x="459.0" xlink:href="#th600" y="1103.0"/>
+    <use x="379.0" xlink:href="#th600" y="1103.0"/>
+    <use x="339.0" xlink:href="#th200" y="1103.0"/>
+    <use x="219.0" xlink:href="#th600" y="1103.0"/>
+    <use x="139.0" xlink:href="#th600" y="1103.0"/>
+    <use x="99.0" xlink:href="#th200" y="1103.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1123.0"/>
+    <use x="979.0" xlink:href="#th600" y="1143.0"/>
+    <use x="899.0" xlink:href="#th600" y="1143.0"/>
+    <use x="819.0" xlink:href="#th600" y="1143.0"/>
+    <use x="739.0" xlink:href="#th600" y="1143.0"/>
+    <use x="659.0" xlink:href="#th600" y="1143.0"/>
+    <use x="579.0" xlink:href="#th600" y="1143.0"/>
+    <use x="499.0" xlink:href="#th600" y="1143.0"/>
+    <use x="419.0" xlink:href="#th600" y="1143.0"/>
+    <use x="339.0" xlink:href="#th600" y="1143.0"/>
+    <use x="259.0" xlink:href="#th600" y="1143.0"/>
+    <use x="179.0" xlink:href="#th600" y="1143.0"/>
+    <use x="99.0" xlink:href="#th600" y="1143.0"/>
+    <use x="59.0" xlink:href="#th200" y="1143.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1163.0"/>
+    <use x="1019.0" xlink:href="#th400" y="1183.0"/>
+    <use x="859.0" xlink:href="#th1400" y="1183.0"/>
+    <use x="779.0" xlink:href="#th600" y="1183.0"/>
+    <use x="619.0" xlink:href="#th1400" y="1183.0"/>
+    <use x="539.0" xlink:href="#th600" y="1183.0"/>
+    <use x="379.0" xlink:href="#th1400" y="1183.0"/>
+    <use x="299.0" xlink:href="#th600" y="1183.0"/>
+    <use x="139.0" xlink:href="#th1400" y="1183.0"/>
+    <use x="59.0" xlink:href="#th600" y="1183.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="779.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="539.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="299.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="59.0" xlink:href="#th1200" y="1203.0"/>
+    <use x="819.0" xlink:href="#th2200" y="1223.0"/>
+    <use x="579.0" xlink:href="#th2200" y="1223.0"/>
+    <use x="339.0" xlink:href="#th2200" y="1223.0"/>
+    <use x="99.0" xlink:href="#th2200" y="1223.0"/>
+    <use x="59.0" xlink:href="#th200" y="1223.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="899.0" xlink:href="#th1600" y="1243.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="659.0" xlink:href="#th1600" y="1243.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="419.0" xlink:href="#th1600" y="1243.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="179.0" xlink:href="#th1600" y="1243.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1243.0"/>
+    <use x="1019.0" xlink:href="#th400" y="1263.0"/>
+    <use x="859.0" xlink:href="#th1400" y="1263.0"/>
+    <use x="779.0" xlink:href="#th600" y="1263.0"/>
+    <use x="619.0" xlink:href="#th1400" y="1263.0"/>
+    <use x="539.0" xlink:href="#th600" y="1263.0"/>
+    <use x="379.0" xlink:href="#th1400" y="1263.0"/>
+    <use x="299.0" xlink:href="#th600" y="1263.0"/>
+    <use x="139.0" xlink:href="#th1400" y="1263.0"/>
+    <use x="59.0" xlink:href="#th600" y="1263.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="779.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="539.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="299.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="59.0" xlink:href="#th1200" y="1283.0"/>
+    <use x="979.0" xlink:href="#th600" y="1303.0"/>
+    <use x="899.0" xlink:href="#th600" y="1303.0"/>
+    <use x="819.0" xlink:href="#th600" y="1303.0"/>
+    <use x="739.0" xlink:href="#th600" y="1303.0"/>
+    <use x="659.0" xlink:href="#th600" y="1303.0"/>
+    <use x="579.0" xlink:href="#th600" y="1303.0"/>
+    <use x="499.0" xlink:href="#th600" y="1303.0"/>
+    <use x="419.0" xlink:href="#th600" y="1303.0"/>
+    <use x="339.0" xlink:href="#th600" y="1303.0"/>
+    <use x="259.0" xlink:href="#th600" y="1303.0"/>
+    <use x="179.0" xlink:href="#th600" y="1303.0"/>
+    <use x="99.0" xlink:href="#th600" y="1303.0"/>
+    <use x="59.0" xlink:href="#th200" y="1303.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1323.0"/>
+    <use x="939.0" xlink:href="#th600" y="1343.0"/>
+    <use x="859.0" xlink:href="#th600" y="1343.0"/>
+    <use x="819.0" xlink:href="#th200" y="1343.0"/>
+    <use x="699.0" xlink:href="#th600" y="1343.0"/>
+    <use x="619.0" xlink:href="#th600" y="1343.0"/>
+    <use x="579.0" xlink:href="#th200" y="1343.0"/>
+    <use x="459.0" xlink:href="#th600" y="1343.0"/>
+    <use x="379.0" xlink:href="#th600" y="1343.0"/>
+    <use x="339.0" xlink:href="#th200" y="1343.0"/>
+    <use x="219.0" xlink:href="#th600" y="1343.0"/>
+    <use x="139.0" xlink:href="#th600" y="1343.0"/>
+    <use x="99.0" xlink:href="#th200" y="1343.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1363.0"/>
+    <use x="979.0" xlink:href="#th600" y="1383.0"/>
+    <use x="899.0" xlink:href="#th600" y="1383.0"/>
+    <use x="819.0" xlink:href="#th600" y="1383.0"/>
+    <use x="739.0" xlink:href="#th600" y="1383.0"/>
+    <use x="659.0" xlink:href="#th600" y="1383.0"/>
+    <use x="579.0" xlink:href="#th600" y="1383.0"/>
+    <use x="499.0" xlink:href="#th600" y="1383.0"/>
+    <use x="419.0" xlink:href="#th600" y="1383.0"/>
+    <use x="339.0" xlink:href="#th600" y="1383.0"/>
+    <use x="259.0" xlink:href="#th600" y="1383.0"/>
+    <use x="179.0" xlink:href="#th600" y="1383.0"/>
+    <use x="99.0" xlink:href="#th600" y="1383.0"/>
+    <use x="59.0" xlink:href="#th200" y="1383.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1403.0"/>
+    <use x="1019.0" xlink:href="#th400" y="1423.0"/>
+    <use x="859.0" xlink:href="#th1400" y="1423.0"/>
+    <use x="779.0" xlink:href="#th600" y="1423.0"/>
+    <use x="619.0" xlink:href="#th1400" y="1423.0"/>
+    <use x="539.0" xlink:href="#th600" y="1423.0"/>
+    <use x="379.0" xlink:href="#th1400" y="1423.0"/>
+    <use x="299.0" xlink:href="#th600" y="1423.0"/>
+    <use x="139.0" xlink:href="#th1400" y="1423.0"/>
+    <use x="59.0" xlink:href="#th600" y="1423.0"/>
+    <use x="1019.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="939.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="899.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="779.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="699.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="659.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="539.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="459.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="419.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="299.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="219.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="179.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="59.0" xlink:href="#th1200" y="1443.0"/>
+    <use x="819.0" xlink:href="#th2200" y="1463.0"/>
+    <use x="579.0" xlink:href="#th2200" y="1463.0"/>
+    <use x="339.0" xlink:href="#th2200" y="1463.0"/>
+    <use x="99.0" xlink:href="#th2200" y="1463.0"/>
+    <use x="59.0" xlink:href="#th200" y="1463.0"/>
+    <use x="979.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="899.0" xlink:href="#th1600" y="1483.0"/>
+    <use x="859.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="819.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="739.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="659.0" xlink:href="#th1600" y="1483.0"/>
+    <use x="619.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="579.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="499.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="419.0" xlink:href="#th1600" y="1483.0"/>
+    <use x="379.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="339.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="259.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="179.0" xlink:href="#th1600" y="1483.0"/>
+    <use x="139.0" xlink:href="#th1200" y="1483.0"/>
+    <use x="99.0" xlink:href="#th1200" y="1483.0"/>
+  </g>
+  <g id="start_indicator">
+    <polygon class="indicator" points="1040.0,488.0 1060.0,488.0 1050.0,500.0"/>
+  </g>
+  <g id="notes">
+    <text class="tick_text" x="60.0" y="1547.9999999999998">Notes:</text>
+    <text class="tick_text" x="60.0" y="1573.9999999999998">(source program: pyweaving.  Version: 0.5)</text>
+    <text class="tick_text" x="60.0" y="1600.0">(created on Thursday, April 07, 2022, 15:47)</text>
+  </g>
+</svg>
