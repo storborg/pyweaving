@@ -33,21 +33,21 @@ def satin(unit_size=5, direction='Z', warp_color=(0, 0, 100), weft_color=(255, 2
         4,6 are irregular satins, the rest are balanced.
         def would be unit=5,count=2 (5,2)
     """
-    counts = find_satin_counts(unit_size)
+    counts = find_regular_satin_counts(unit_size)
     shaft_ids = []
-    if counts: # regular satin
+    if counts:  # regular satin
         # fill count with first one - but ideally specified
-        shaft_ids = [counts[0]]*unit_size
-    else: # find irregular satin
+        shaft_ids = [counts[0]] * unit_size
+    else:  # find irregular satin
         pass
-        shaft_ids = [4,3,2,2,3,4] # for a unit=4
+        shaft_ids = [4, 3, 2, 2, 3, 4]  # !for a unit=4
     print(shaft_ids)
     #
     draft = Draft(num_shafts=unit_size, num_treadles=unit_size)
     # tieup
     for ii in range(len(shaft_ids)):
         for jj in range(unit_size):
-            draft.treadles[ii].shafts.add(draft.shafts[(ii + jj) % shafts]) #!!
+            draft.treadles[ii].shafts.add(draft.shafts[(ii + jj) % shafts])  # !!
 
 
 def twill(size=2, warp_color=(0, 0, 100), weft_color=(255, 255, 255)):

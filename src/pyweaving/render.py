@@ -4,10 +4,15 @@ import svgwrite
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
 from . import get_project_root, WHITE, BLACK, MID, WarpThread, find_mirrors_repeats, prune_pattern
-
+from io import BytesIO
 
 homedir = get_project_root()
-font_path = os.path.join(homedir, 'data', 'LiberationSans-Regular')
+# font_path = os.path.join(homedir, 'data', 'LiberationSans-Regular')
+font_path = homedir / 'data' / 'LiberationSans.ttf'
+# font_path = os.path.join(homedir, 'data', 'LiberationSans-Regular.ttf')
+# font_path = "C:\Users\Asus\Documents\GitHub\pyweaving\src\pyweaving\data\LiberationSans-Regular.ttf"
+# font_path = str(homedir / 'data' / 'Arial.ttf')
+
 
 # Fix for missing draw.textsize in Pillow 10.0
 def get_text_dimensions(text_string, font):
@@ -16,6 +21,7 @@ def get_text_dimensions(text_string, font):
     text_width = font.getmask(text_string).getbbox()[2]
     text_height = font.getmask(text_string).getbbox()[3] + descent
     return (text_width, text_height)
+
 
 # Helper function which calculates width of cells and stores in Draft on threads.
 # Also modifies modifies style
@@ -117,9 +123,12 @@ class ImageRenderer(object):
         self.thread_font_size = int(round(self.pixels_per_square * 0.8))
         self.title_font_size = int(round(self.pixels_per_square * self.style.title_font_size_factor))
 
-        self.tick_font = ImageFont.truetype(font_path, self.tick_font_size)
-        self.thread_font = ImageFont.truetype(font_path, self.thread_font_size)
-        self.title_font = ImageFont.truetype(font_path, self.title_font_size)
+        # self.tick_font = ImageFont.truetype(font_path, self.tick_font_size)
+        self.tick_font = ImageFont.truetype(font=BytesIO(open(font_path, "rb").read()), size=self.tick_font_size)
+        # self.thread_font = ImageFont.truetype(font_path, self.thread_font_size)
+        self.thread_font = ImageFont.truetype(font=BytesIO(open(font_path, "rb").read()), size=self.thread_font_size)
+        # self.title_font = ImageFont.truetype(font_path, self.title_font_size)
+        self.title_font = ImageFont.truetype(font=BytesIO(open(font_path, "rb").read()), size=self.title_font_size)
 
     def pad_image(self, im):
         """
@@ -571,8 +580,8 @@ class ImageRenderer(object):
             previous = distance
             t_index -= 1
         #
-        endwidth = int(distance/self.pixels_per_square)
-        self.paint_concise((offsetx,endheight), draw)
+        endwidth = int(distance / self.pixels_per_square)
+        self.paint_concise((offsetx, endheight), draw)
         endheight += 5
         return (endwidth, endheight)
 
@@ -581,31 +590,31 @@ class ImageRenderer(object):
         series = find_mirrors_repeats(seq)
         # print("Mirrors")
         # for i in series['mirrors']:
-            # print(len(i[1]), len(seq)-len(i[1])*len(i[0]),  i)
+        #     print(len(i[1]), len(seq)-len(i[1])*len(i[0]),  i)
         # print("Repeats", len(series['repeats']))
         # for i in series['repeats']:
-            # print(len(i[1]), len(seq)-len(i[1])*len(i[0]), i)
-        #series['repeats'] = prune_pattern(series['repeats'], len(seq))
+        #    print(len(i[1]), len(seq)-len(i[1])*len(i[0]), i)
+        # series['repeats'] = prune_pattern(series['repeats'], len(seq))
         #
         offsetx, offsety = startpos
         box_dist = self.pixels_per_square
         starty = offsety * self.pixels_per_square
         distance = offsetx * self.pixels_per_square
         previous = distance
-        col1 = (255,0,0)
-        col2 = (0,255,0)
-        col3 = (128,128,128)
+        col1 = (255, 0, 0)
+        col2 = (0, 255, 0)
+        col3 = (128, 128, 128)
         col = col1
-        ypos = starty +2
-        maxlen = len(self.draft.warp) +2
+        ypos = starty + 2
+        maxlen = len(self.draft.warp) + 2
         for m in series['repeats']:
             col = col1
-            for (x1,x2) in m[1]:
-                draw.line(((maxlen-x1)*box_dist, ypos,
-                          (maxlen-x2-1)*box_dist, ypos),
+            for (x1, x2) in m[1]:
+                draw.line(((maxlen - x1) * box_dist, ypos,
+                          (maxlen - x2 - 1) * box_dist, ypos),
                           fill=col)
-                draw.line(((maxlen-x1)*box_dist, ypos+1,
-                          (maxlen-x2-1)*box_dist, ypos+1),
+                draw.line(((maxlen - x1) * box_dist, ypos + 1,
+                          (maxlen - x2 - 1) * box_dist, ypos + 1),
                           fill=col)
                 #
                 if col == col1:
@@ -614,17 +623,17 @@ class ImageRenderer(object):
                     col = col1
             ypos += 3
         ypos += 4
-        col1 = (128,128,33)
-        col2 = (0,200,200)
+        col1 = (128, 128, 33)
+        col2 = (0, 200, 200)
         col = col1
         for m in series['mirrors']:
             col = col1
-            for (x1,x2) in m[1]:
-                draw.line(((maxlen-x1)*box_dist, ypos,
-                          (maxlen-x2-1)*box_dist, ypos),
+            for (x1, x2) in m[1]:
+                draw.line(((maxlen - x1) * box_dist, ypos,
+                          (maxlen - x2 - 1) * box_dist, ypos),
                           fill=col)
-                draw.line(((maxlen-x1)*box_dist, ypos+1,
-                          (maxlen-x2-1)*box_dist, ypos+1),
+                draw.line(((maxlen - x1) * box_dist, ypos + 1,
+                          (maxlen - x2 - 1) * box_dist, ypos + 1),
                           fill=col)
                 #
                 if col == col1:
@@ -632,8 +641,6 @@ class ImageRenderer(object):
                 else:
                     col = col1
             ypos += 3
-        
-        
 
     def paint_weft_colors(self, startpos, draw):
         """

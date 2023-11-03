@@ -83,7 +83,8 @@ def generate_unique_filename(label, directory, ext):
         result += "-%02d" % (last + 1)
     result = result+"."+ext
     return result
-    
+
+
 def write_wif_auto(wif, opts, name_part, prefix):
     """
     return result
@@ -200,6 +201,7 @@ def find_colors(opts):
         swatch.save(newname)
         return swatch
 
+
 def remap_image(opts):
     """
     Remap colors in an image to those in a refcol file.
@@ -212,13 +214,13 @@ def remap_image(opts):
     colcount = opts.count
     imagewidth = int(opts.width)
     #
-    divpos= opts.aspect.find("/")
+    divpos = opts.aspect.find("/")
     aspect = 1
-    if divpos >0:
+    if divpos > 0:
         num = opts.aspect[:divpos]
-        den = opts.aspect[divpos+1:]
-        aspect = float(num)/float(den)
-    else: # single num
+        den = opts.aspect[divpos + 1:]
+        aspect = float(num) / float(den)
+    else:  # single num
         aspect = float(opts.aspect)
     if imagewidth == 0:
         # unsupplied so use image_width
@@ -229,20 +231,20 @@ def remap_image(opts):
         pass
     if opts.colref:
         colref = opts.colref
-    else: # none supplied
+    else:  # none supplied
         # so reduce first and use that as remap target.
-        opts.size=20
-        colref = find_colors(opts) # its a PIL image
+        opts.size = 20
+        colref = find_colors(opts)  # its a PIL image
     # image_width may be 0, colref may be filename or PIL Image.
     newimage = remap_image_colors(filename, imagewidth, aspect, colref, colcount, filter=opts.filter)
     # Save
     current_dir = getcwd() + "\\"
     newname = os.path.splitext(filename)
     # newimage.save(newname[0]+"_remapped"+newname[1])
-    newname = generate_unique_filename(newname[0]+"_remapped", current_dir, "png")
+    newname = generate_unique_filename(newname[0] + "_remapped", current_dir, "png")
     print("Writing image:", newname)
     newimage.save(newname)
-    
+
 
 def load_draft(infile):
     """

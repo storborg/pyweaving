@@ -210,7 +210,7 @@ def find_named_tartan(desired_name):
     # unique ?
     if len(matching) == 1:
         # process it
-        print("Found:",matching[0])
+        print("Found:", matching[0])
         found = True
         colors, pattern = _parse_tartan_description(pattern[pattern.find("=")+2:])
     elif len(matching) > 1:  # several found

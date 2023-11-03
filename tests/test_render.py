@@ -41,25 +41,25 @@ class TestRender(TestCase):
         with NamedTemporaryFile(suffix='.png', delete=False) as f:
             tempfname = f.name
             ImageRenderer(draft, get_style('Default')).save(tempfname)
-        os.remove(tempfname) # windows requires delete=False and manual cleanup to work
+        os.remove(tempfname)  # windows requires delete=False and manual cleanup to work
 
     def test_image_liftplan(self):
         draft = self.make_draft()
         with NamedTemporaryFile(suffix='.png', delete=False) as f:
             tempfname = f.name
             ImageRenderer(draft, get_style('Default'), show_liftplan=True).save(tempfname)
-        os.remove(tempfname) # windows requires delete=False and manual cleanup to work
+        os.remove(tempfname)  # windows requires delete=False and manual cleanup to work
 
     def test_svg_basic(self):
         draft = self.make_draft()
         with NamedTemporaryFile(suffix='.svg', delete=False) as f:
             tempfname = f.name
             SVGRenderer(draft, get_style('Default')).save(tempfname)
-        os.remove(tempfname) # windows requires delete=False and manual cleanup to work
+        os.remove(tempfname)  # windows requires delete=False and manual cleanup to work
 
     def test_svg_liftplan(self):
         draft = self.make_draft()
         with NamedTemporaryFile(suffix='.svg', delete=False) as f:
             tempfname = f.name
             SVGRenderer(draft, get_style('Default'), show_liftplan=True).save(tempfname)
-        os.remove(tempfname) # windows requires delete=False and manual cleanup to work
+        os.remove(tempfname)  # windows requires delete=False and manual cleanup to work

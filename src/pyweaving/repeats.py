@@ -420,8 +420,8 @@ def parse_mirrors(seq, mirrors):
             end = max_mirror[1]  # where to stop parsing
         # 
         for m in mirrors:
-            #if m[1] != max_mirror[1]:
-            repeats = [p for p in m[-1]]# if p < max_mirror[0] + max_mirror[1]]
+            # if m[1] != max_mirror[1]:
+            repeats = [p for p in m[-1]]  # if p < max_mirror[0] + max_mirror[1]]
             print("", repeats)
             if repeats:
                 print("seq=%s %d %s" % (m[2], len(repeats), "mirror repeats"))
@@ -431,8 +431,8 @@ def find_mirrors_repeats(seq, min_match_len=2, debug=False):
     Gather the mirrors and repeats into a series of ranges
     """
     results = {'mirrors': [], 'repeats': []}
-    #repeats = find_repeats(seq, min_match_len)
-    #mirrors = find_mirrors(seq, min_match_len)
+    # repeats = find_repeats(seq, min_match_len)
+    # mirrors = find_mirrors(seq, min_match_len)
     # Mirrors
     # for m in mirrors:
         # start, window, sample, positions = m
@@ -449,7 +449,7 @@ def find_mirrors_repeats(seq, min_match_len=2, debug=False):
         # series = [[start,start+window-1]]
         # series.extend([[p,p+window-1] for p in positions])
         # results['repeats'].append([sample,series])
-    #print(results)
+    # print(results)
     # for r in results['repeats']:
         # rr = Repeat(r, len(seq))
         # print("",rr)
@@ -480,7 +480,8 @@ class Span(object):
         self.span = [self.start, self.end]
         self.count = len(self.positions)
         self.remainder = seqlen - len(self.seq) * self.count
-        
+
+
     def __repr__(self):
         label = self.seq
         lab_len = len(label)
@@ -488,7 +489,6 @@ class Span(object):
             label = "%s..(%d)..%s" %(str(label[:4])[:-1], lab_len-8, str(label[-4:])[1:])
         return "<Span: %s start:%d count:%d children:%s remainder:%d>" %(label, self.start, self.count, self.children, self.remainder)
 
-        
 
 class Pattern(object):
     """
@@ -515,9 +515,11 @@ class Pattern(object):
         # entire system should now be elaborated
         self.find_atoms()
         self.determine_series()
-    
+
+
     def __repr__(self):
         return "<Pattern:(%d)%s Repeats:%d Mirrors:%d>" %(self.seqlen, self.sequence, len(self.repeats), len(self.mirrors))
+
 
     def exact_sample_match(self, sequence, collection, debug=True):
         """
@@ -533,6 +535,7 @@ class Pattern(object):
             print(" .exists")
         return matched
 
+
     def already_collected_repeat(self, possible, pos, collection, debug=False):
         """
         Is the possible, at pos, in the collection already.
@@ -540,8 +543,8 @@ class Pattern(object):
         """
         poss_len = len(possible)
         matched = False
-        for start, window, _, positions in collection: # (start, window, sample, positions)
-            if False:#poss_len > len(sample):
+        for start, window, _, positions in collection:  # (start, window, sample, positions)
+            if False:  # poss_len > len(sample):
                 range_chk = []
             else:
                 ranges = [[start,start+window]]
@@ -553,6 +556,7 @@ class Pattern(object):
             if matched:
                 break
         return matched
+
 
     def expand_repeat(self, seq, start, window, newpos, debug=False):
         """
@@ -567,7 +571,7 @@ class Pattern(object):
         while seq[newpos:newpos+window] == sample and newpos >= start+window:
             window += 1
             sample = seq[start: start + window]
-            #print(" ",window, start+window, seq[start: start + window], seq[newpos:newpos+window])
+            # print(" ",window, start+window, seq[start: start + window], seq[newpos:newpos+window])
         # found max seq
         window -= 1
         found_starts = [newpos]
@@ -582,6 +586,7 @@ class Pattern(object):
             print(" expanded to", [start, window, sample, found_starts])
         # return all found
         return [start, window, sample, found_starts]
+
 
     def find_repeats(self, seq, min_match_len=2, debug=False):
         collection = []
@@ -622,8 +627,10 @@ class Pattern(object):
             print()
         return results
 
+
     def is_mirror(self,seq):
         return seq==seq[::-1]
+
 
     def expand_mirror(self, seq, start, window, newpos, debug=True):
         """
@@ -653,7 +660,7 @@ class Pattern(object):
         sample = seq[start: start + span]
         if self.is_mirror(sample):
             sample_rev = sample[::-1]
-            #print(" =",newpos, end, sample, seq[newpos:end])
+            # print(" =",newpos, end, sample, seq[newpos:end])
             # search for more of this mirror
             i = end#+span+1
             while i < len(seq) - span+1:
@@ -691,6 +698,7 @@ class Pattern(object):
 ##                break
 ##        return matched
 
+
     def already_collected_mirror(self, possible, pos, collection, debug=True):
         """
         Is the possible, in the collection already.
@@ -704,7 +712,7 @@ class Pattern(object):
             if debug:
                 print(".",possible, sample, size_diff//2, size_diff//2+poss_len)
             if size_diff > 0 and size_diff % 2 == 0:
-                #check = [possible == sample[i:i+poss_len] for i in range(size_diff//2)]
+                # check = [possible == sample[i:i+poss_len] for i in range(size_diff//2)]
                 check = possible == sample[size_diff//2:size_diff//2+poss_len]
                 print(" .centercheck",check)
                 if check:
@@ -717,7 +725,7 @@ class Pattern(object):
                             matched = True
                             break
         return matched
-            
+
 
     def find_mirrors(self, seq, min_match_len=2, debug=False):
         """
@@ -747,7 +755,7 @@ class Pattern(object):
                             expanded = self.expand_mirror(seq, start, window, pos)
                             if debug:
                                 print(" possible=", expanded, len(collection))
-                                #print(" -",self.already_collected(expanded[2], pos, collection), expanded[2])
+                                # print(" -",self.already_collected(expanded[2], pos, collection), expanded[2])
                             if expanded and not self.exact_sample_match(expanded, collection) and not self.already_collected_mirror(expanded[2], pos, collection):
                                 collection.append(expanded)
                                 if debug:
@@ -793,7 +801,7 @@ class Pattern(object):
                 if m.is_inside(m2):
                     ok = False
                     break
-            if ok: # also check the gathered ones
+            if ok:  # also check the gathered ones
                 if debug:
                     print(" Checked mirrors - checking results:")
                 for m2 in results:
@@ -817,7 +825,7 @@ class Pattern(object):
             last = r.positions[0]
             count = 0
             for next in r.positions[1:]:
-                #print("",last,next)
+                # print("",last,next)
                 if last[1] == next[0]-1:
                     count += 1
                     # adjacent so collect for new Repeat
@@ -825,10 +833,10 @@ class Pattern(object):
                         adj_positions[1] = next[1]
                     else:
                         adj_positions = [last[0],next[1]]
-                else: # run ended
+                else:  # run ended
                     if count > 0:
-                        #save new repeat
-                        #print("new", adj_positions)
+                        # save new repeat
+                        # print("new", adj_positions)
                         count += 1
                         temp = Span([r.seq*count, [adj_positions]], self.seqlen)
                         temp.children = [r,count]
@@ -838,14 +846,14 @@ class Pattern(object):
                 last = next
             # traversed that repeat
             if count > 0:
-                #save new repeat
+                # save new repeat
                 count+=1
-                #print(" new_int", r.seq, count)
+                # print(" new_int", r.seq, count)
                 temp = Span([r.seq*count, [adj_positions]], self.seqlen)
                 temp.children = [r,count]
                 spans.append(temp)
         if spans:
-            #print(" New", count)
+            # print(" New", count)
             self.spans.extend(spans)
         
     def examine_mirrors(self):
@@ -868,7 +876,7 @@ class Repeat(object):
     """
     def __init__(self, input_series, seqlen):
         self.seq = input_series[0]
-        #print(input_series)
+        # print(input_series)
         self.children = []
         # might not need these. e.g if self.children
         self.irreducible = False  # contains no repeats also indicates processed?
@@ -904,7 +912,7 @@ class Mirror(object):
         self.positions = input_series[1]
         self.start = self.positions[0][0]
         self.count = len(self.positions)
-        #print("Mrem",seqlen,len(self.seq),self.positions, self.seq)
+        # print("Mrem",seqlen,len(self.seq),self.positions, self.seq)
         self.remainder = seqlen - len(self.seq) * self.count
     
     def __repr__(self):
@@ -928,20 +936,20 @@ class Mirror(object):
         """
         result = False
         # is it a single
-        #print(self)
+        # print(self)
         if mirror.count == 1 and mirror.children == [] and mirror.length >= self.length:
             # is it inside
             dist1 = mirror.start - self.start
             dist2 = (mirror.start + mirror.length) - (self.start + self.length)
-            #print("  checking",dist1,dist2,"-",mirror.start, mirror.count, mirror.length,mirror)
+            # print("  checking",dist1,dist2,"-",mirror.start, mirror.count, mirror.length,mirror)
             if balanced:
                 if dist1 == -dist2:
                     result = True
             else:
                 result = True
-        #print("  ",result)
+        # print("  ",result)
         return result
- 
+
     def find_gap(self, seq):
         """
         How long is the gap inside this mirror.
@@ -961,7 +969,7 @@ class Mirror(object):
                 gap = 1
         else:  # we found a bigger gap
             gap = seqlen - gapstart * 2
-        #print("Gap", gap, gapstart, len(seq), seq)
+        # print("Gap", gap, gapstart, len(seq), seq)
         return gap
 
 # if there a halfway mirror (+-2 given ends may not be perfetcly reflected)
@@ -978,7 +986,7 @@ def prune_pattern(patterns, seqlen):
     """
     Prune to a minmal pattern
     - Expects list of patterns structured from find_mirrors_repeats()
-      - (just the repeats or the mirrors)
+    - (just the repeats or the mirrors)
     - look for smaller redundant patterns inside larger ones and remove
     Returns one or more minimal sequences of the pattern. If more than one - then similar
     """
@@ -1000,7 +1008,7 @@ def prune_pattern(patterns, seqlen):
     for seq,pos in p_sort:
         firsts = [a for a,b in pos]
         secs = [b for a,b in pos]
-        print(firsts, secs)#, list(zip(secs, firsts[1:])))
+        print(firsts, secs)  #, list(zip(secs, firsts[1:])))
         count = [e==s+1 for s,e in zip(secs, firsts[1:])].count(True)
         print("",count,seq,pos)
         if count:
@@ -1009,12 +1017,12 @@ def prune_pattern(patterns, seqlen):
     # find sequences following each other.
     for this_pattern in patterns:
         seq, pos = this_pattern
-        curr_pos = 1 # overall position in each this_pattern
+        curr_pos = 1  # overall position in each this_pattern
         this_seq = [[seq,[pos[0]]]]
         
-        #add to connected sequences
+        # add to connected sequences
         connected.append(follow_repeat(curr_pos, seqlen, patterns))
-        #find one with least remailnder or most repeats?
+        # find one with least remailnder or most repeats?
     print("connected",len(connected),connected[:2])
 
 
@@ -1063,10 +1071,10 @@ def follow_repeat(curr_pos, maxpos, patterns):
     # return sequence
     # recurse on less patterns
     this_seq = [patterns[0][0],[]]
-    #print("\nStarting with", len(patterns))
+    # print("\nStarting with", len(patterns))
     for seq, pos in patterns:
         # collect the adjacents then move onto the next pattern
-        #print("begin =",seq)
+        # print("begin =",seq)
         adjacent = True
         pcount = 0
         while adjacent and pcount < len(pos):
@@ -1076,7 +1084,7 @@ def follow_repeat(curr_pos, maxpos, patterns):
                 this_seq[-1].append(pos[pcount])
                 # now at end
                 # continue (if adjacent) or do we start scanning remaining patterns
-                #print("",end, pos[pcount+1][0])
+                # print("",end, pos[pcount+1][0])
                 adjacent = pcount+1<len(pos) and end+1 == pos[pcount+1][0]
                 curr_pos = end+1
             pcount += 1
@@ -1086,53 +1094,51 @@ def follow_repeat(curr_pos, maxpos, patterns):
             return this_seq
         else:
             this_seq.append(follow_repeat(curr_pos, maxpos, rem_patterns))
-            
-        
+
 
 if __name__ == "__main__":
-
     # Mirror tests
-    seq = [1, 3, 4, 5, 6, 7, 5, 4, 6, 5, 4, 3] #. long seq internal
-    seq = [1, 3, 4, 5, 6, 7, 4, 6, 5, 4, 3] #. long seq internal gap2
-    seq = [1, 3, 4, 5, 6, 4, 3, 5, 4, 3, 6, 3, 1, 5, 4, 3] #. 1,3 ans 3,4 mirrors
-    seq = [1, 2, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 6] #. ok bigger seq after smaller seq
-    #seq = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 6, 1, 3, 2, 1] #. smaller seq after bigger
-    #seq = [1, 2, 3, 4, 1, 4, 2, 4, 1, 1, 2, 3, 4]
-    #seq = [1, 2, 3, 4, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 4, 3, 2, 1]
-    #seq = [1, 2, 2, 1, 1, 4, 1, 1, 4, 1, 0, 1, 1, 4, 1, 1, 0, 1, 4, 3, 2, 1]
-    #seq = [1, 2, 3, 4, 5, 6, 5, 4, 4, 5, 6, 5, 4, 1, 2, 1, 4, 5, 6, 5, 4, 4, 5, 6, 5, 4, 3, 2, 1]
-    #seq = [1, 2, 3, 4, 5, 6, 4, 5, 6, 4, 5, 6, 5, 4, 1, 2, 1, 4, 5, 6, 4, 5, 6, 4, 5, 6, 5, 4, 3, 2, 1]
-    seq = [1,6,7,6,1,6,7,6,1,2,3,2,1,2,3,2,1,2,3,2,1] # good
-    seq = [1,6,7,6,1,6,7,6,1,2,3,2,1,2,3,2,1,2,3,2,1,6,7,6,1] # mirror missing 1232@8
+    seq = [1, 3, 4, 5, 6, 7, 5, 4, 6, 5, 4, 3]  #. long seq internal
+    seq = [1, 3, 4, 5, 6, 7, 4, 6, 5, 4, 3]  #. long seq internal gap2
+    seq = [1, 3, 4, 5, 6, 4, 3, 5, 4, 3, 6, 3, 1, 5, 4, 3]  #. 1,3 ans 3,4 mirrors
+    seq = [1, 2, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 6]  #. ok bigger seq after smaller seq
+    # seq = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 6, 1, 3, 2, 1] #. smaller seq after bigger
+    # seq = [1, 2, 3, 4, 1, 4, 2, 4, 1, 1, 2, 3, 4]
+    # seq = [1, 2, 3, 4, 1, 4, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 4, 1, 4, 3, 2, 1]
+    # seq = [1, 2, 2, 1, 1, 4, 1, 1, 4, 1, 0, 1, 1, 4, 1, 1, 0, 1, 4, 3, 2, 1]
+    # seq = [1, 2, 3, 4, 5, 6, 5, 4, 4, 5, 6, 5, 4, 1, 2, 1, 4, 5, 6, 5, 4, 4, 5, 6, 5, 4, 3, 2, 1]
+    # seq = [1, 2, 3, 4, 5, 6, 4, 5, 6, 4, 5, 6, 5, 4, 1, 2, 1, 4, 5, 6, 4, 5, 6, 4, 5, 6, 5, 4, 3, 2, 1]
+    seq = [1,6,7,6,1,6,7,6,1,2,3,2,1,2,3,2,1,2,3,2,1]  # good
+    seq = [1,6,7,6,1,6,7,6,1,2,3,2,1,2,3,2,1,2,3,2,1,6,7,6,1]  # mirror missing 1232@8
 
     # Repeat tests
-    #seq = [1, 2, 3, 4, 1, 4, 4, 1, 1, 2, 3, 4]
-    #seq = [1,2,3,4,5,2,3,4,6,2,3,4,7,1,2,3,4]
-    #seq = [1,2,3,4,5,2,3,4,6,1,2,3,4]
-    #seq = [1,2,3,1,2,3,6,1,2,3,1,2,3]  # want extra repeat of the doublet
+    # seq = [1, 2, 3, 4, 1, 4, 4, 1, 1, 2, 3, 4]
+    # seq = [1,2,3,4,5,2,3,4,6,2,3,4,7,1,2,3,4]
+    # seq = [1,2,3,4,5,2,3,4,6,1,2,3,4]
+    # seq = [1,2,3,1,2,3,6,1,2,3,1,2,3]  # want extra repeat of the doublet
     # R,M: simple and as 2D
-    #seq = [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1]
-    #seq = [[1,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[1,1]]
+    # seq = [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 1]
+    # seq = [[1,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[3,1],[2,1],[1,1]]
     # R: super simple 2D
-    #seq = [1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 6, 7, 8, 2, 3, 4, 6, 7, 8, 9]
-    #seq = [[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1]]
-    #seq = [1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4]
-    #seq = [1,2,1,2,1,2,1,2,1,2,1,2]
+    # seq = [1, 2, 3, 4, 5, 3, 4, 5, 6, 7, 8, 6, 7, 8, 2, 3, 4, 6, 7, 8, 9]
+    # seq = [[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1],[1,1],[2,1],[3,1]]
+    # seq = [1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4]
+    # seq = [1,2,1,2,1,2,1,2,1,2,1,2]
 
-    #seq = beryl
+    # seq = beryl
     print("       0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6  7  8  9  0  1  2  3")
     print("Seq =", seq, len(seq))
-    #result = find_mirrors(seq)
-    #result = find_repeats(seq, 2)
-    #print("\nCollection: (%d)" % (len(result)))
-    #print(result)
-    #for r in result:
+    # result = find_mirrors(seq)
+    # result = find_repeats(seq, 2)
+    # print("\nCollection: (%d)" % (len(result)))
+    # print(result)
+    # for r in result:
     #    print(r)
-    #print()
+    # print()
     print("       0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5  6  7  8  9  0  1  2  3")
     print("Seq =", seq)
-    #parse_mirrors(seq, result)
-    #parse_repeats(seq, result)
+    # parse_mirrors(seq, result)
+    # parse_repeats(seq, result)
     # f = find_mirrors_repeats(seq)
     # print("Mirrors")
     # for i in f['mirrors']:
@@ -1145,12 +1151,14 @@ if __name__ == "__main__":
     print(test)
     for p in test.repeats:
         print(" ",p,"\n   ", p.positions)
-    #print("!!!#",len(test.mirrors), test.mirrors)
+    # print("!!!#",len(test.mirrors), test.mirrors)
     for p in test.mirrors:
         print(" ",p,"\n   ", p.positions)
     for p in test.spans:
         print(" ",p,"\n   ", p.positions)
-#. can we lose deepcopies
-#. can we lose extra check for already ?
-#. can we do -1 for unused slots - ignores
+
+# Todo
+#  can we lose deepcopies
+#  can we lose extra check for already ?
+#  can we do -1 for unused slots - ignores
 # what about the other mirror in aae
