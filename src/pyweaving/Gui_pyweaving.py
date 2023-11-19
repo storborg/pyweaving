@@ -32,19 +32,20 @@ ctk.set_appearance_mode("system")  # Modes: system (default), light, dark
 ctk.set_default_color_theme(theme_file)  # Our Orange theme
 
 # Logo_path = Path.home() / "Documents" / ".pyweaving" / "pyweaving-logo-100.png"
-tablabels = {"color": "Finding Colors", "remap": "Remapping", "render": "Render", "tartan": "Tartan"}
+tablabels = {"color": "Finding Colors", "remap": "Remapping", "render": "Render", "tartan": "Tartan", "help": "Help"}
 
 # Globals
-colors_description = "Find a number of common colors in an image.\n - print their RGB values and save a 'Color swatch' for visual reference.\nThe Swatch can be used in the remap tool, or as a visual reference."
+colors_description = "Find a number of common colors in an image.\n - print their RGB values and save a 'Color swatch' for visual reference.\nThe Swatch can be used in the 'Remapping' tool, or as a visual reference."
 initial_color_count = 8
 #
-remap_description = "Jacquard workflow: Reduce the number of colors in an image.\n - Use a count, and optionally colors defined in a colorref-image. See 'Finding Colors' tab.\n - can also scale width, and rescale height using aspect ratio.\nThe 'colorref-image' can have override colors in bottom of each swatch color block.\nThis will replace the color found in the top with a new color defined in the bottom 1/3 of each block."
+remap_description = "Jacquard workflow: Reduce the number of colors in an image.\n - Use a count, and optionally, colors defined in a colorref-image. (See 'Finding Colors' tab.)\n - can also scale the width, and rescale the height, using aspect ratio.\nThe 'colorref-image' can have override colors in the bottom 1/3 of each swatch color block.\nThis will replace the color found in the top with the new color defined in the bottom of each block."
 initial_remap_width = 4320
 initial_remap_aspect = "22/72"
 #
-render_description = "Render the WIF file into an image format.\n - Vector (SVG) is supported for publication. Raster files are smaller.\n - Can show as liftplan, structure, or highlight long floats.\n - Many visual styles are supported."
+render_description = "Render the WIF file into an image format.\n - Vector (SVG) is supported for publication. Raster files are smaller and faster to load.\n - Can also show as a liftplan, weave structure, or by highlighting long floats.\n - Many visual styles are supported.\nAutoPNG will name the file so no other files are overwritten."
 initial_floats_count = 5
-
+#
+help_description = "Pyweaving is a tool designed to present information found in a wif file.\nIt is designed as a command line tool.\nYou are looking at a 'Graphical interface' which exposes the same functionality.\nEach Tab operates independently and does a specific Pyweaving task."
 
 def load_styles():
     """
@@ -176,7 +177,7 @@ class MyTabView(ctk.CTkTabview):
         self.rn_radio_var = tk.IntVar(value=0)
         self.radio_0 = ctk.CTkRadioButton(master=self.tab(tablabels["render"]), text="AutoPNG", variable=self.rn_radio_var, value=0)
         self.radio_1 = ctk.CTkRadioButton(master=self.tab(tablabels["render"]), text="AutoSVG", variable=self.rn_radio_var, value=1)
-        self.radio_2 = ctk.CTkRadioButton(master=self.tab(tablabels["render"]), text="None(popup)", variable=self.rn_radio_var, value=2)
+        self.radio_2 = ctk.CTkRadioButton(master=self.tab(tablabels["render"]), text="Popup: Do not save", variable=self.rn_radio_var, value=2)
         self.radio_0.grid(row=3, column=1, padx=5, pady=5, sticky="w")
         self.radio_1.grid(row=3, column=2, padx=5, pady=5, sticky="w")
         self.radio_2.grid(row=3, column=2, padx=5, pady=5, sticky="e")
@@ -204,10 +205,14 @@ class MyTabView(ctk.CTkTabview):
                                             variable=self.rn_structure_check_var, onvalue=1, offvalue=0)
         self.rn_structure.grid(row=5, column=1, padx=2, pady=5, sticky="nw")
         # Perform
-        self.re_perform = ctk.CTkButton(master=self.tab(tablabels["render"]), text="Perform Action", command=self.do_render)
-        self.re_perform.grid(row=6, column=2, padx=2, pady=5, sticky="e")
-
-        # next tab!
+        self.rn_perform = ctk.CTkButton(master=self.tab(tablabels["render"]), text="Perform Action", command=self.do_render)
+        self.rn_perform.grid(row=6, column=2, padx=2, pady=5, sticky="e")
+        # Help
+        self.h_desc = ctk.CTkTextbox(master=self.tab(tablabels["help"]), height=sizeof(help_description))
+        self.h_desc.grid(row=0, column=0, padx=5, pady=5, columnspan=5, sticky="new")
+        self.h_desc.configure(wrap="word", border_width=0)
+        self.h_desc.insert("0.0", help_description)
+        self.tab(tablabels["help"]).columnconfigure(3, weight=1)
 
 
 # self.re_countlabel = ctk.CTkLabel(master=self.tab(tablabels["remap"]),text="Target Image:")
