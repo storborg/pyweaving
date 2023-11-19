@@ -1,13 +1,27 @@
 API Reference
 =============
 
-Core Data Model
----------------
+Draft model (Core of Pyweaving)
+-------------------------------
 
-.. automodule:: pyweaving
+.. automodule:: pyweaving.Draft
     :members:
     :undoc-members:
 
+Color module
+------------
+
+.. automodule:: pyweaving.Color
+    :members:
+    :undoc-members:
+	
+DrawStyle
+---------
+
+.. automodule:: pyweaving.Drawstyle
+    :members:
+    :undoc-members:
+	
 
 WIF Import / Export
 -------------------
@@ -17,8 +31,15 @@ WIF Import / Export
     :undoc-members:
 
 
-Draft Rendering
----------------
+Commandline
+-----------
+
+.. automodule:: pyweaving.cmd
+    :members:
+    :undoc-members:
+	
+Rendering
+---------
 
 .. automodule:: pyweaving.render
     :members:
@@ -36,11 +57,15 @@ Instructions
 Utility Generators
 ------------------
 
+.. automodule:: pyweaving.generators.tartan
+    :members:
+    :undoc-members:
+
 .. automodule:: pyweaving.generators.twill
     :members:
     :undoc-members:
 
-.. automodule:: pyweaving.generators.tartan
+.. automodule:: pyweaving.generators.raster
     :members:
     :undoc-members:
 

@@ -21,9 +21,13 @@
 # Tests coverage temp files.
 .coverage
 /cover
+/htmlcov
 
 # Rendered documentation.
 docs/_build/
 
 # Tox working dir.
 .tox/
+
+# working
+/working/

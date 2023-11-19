@@ -1,16 +1,14 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 from unittest import TestCase
 
-from .. import Color
-from ..generators import twill, dither
+from pyweaving import Color
+from pyweaving.generators import twill, dither
 
 
 class TestGenerators(TestCase):
     def test_plain_twill(self):
-        draft = twill.twill(2)
-        self.assertEqual(len(draft.shafts), 4)
+        draft = twill.twill("2/2 1/3")
+        self.assertEqual(len(draft.shafts), 8)
 
     def test_dithered_gradient(self):
         start = Color((0, 0, 0))

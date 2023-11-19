@@ -11,12 +11,14 @@ except ImportError:
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.dirname(os.path.abspath('.')))
+#sys.path.insert(0, os.path.dirname(os.path.abspath('.')))
+sys.path.insert(0, os.path.abspath('../pyweaving/'))
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.todo',
+			  'sphinx.ext.napoleon',
               'sphinx.ext.coverage',
               'sphinx.ext.viewcode']
 
@@ -29,16 +31,19 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+# order of items
+autodoc_member_order = 'bysource'
+
 # General information about the project.
 project = u'pyweaving'
-copyright = u'2014-2016, Scott Torborg'
+copyright = u'2014-2022, Scott Torborg'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '0.0.8.dev'
+release = '0.5'
 
 # The short X.Y version. For now let's just make it the same.
 # version = '.'.join(s.split('.', 2)[:2])
@@ -82,7 +87,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pyweaving', u'PyWeaving Documentation',
-     [u'Scott Torborg'], 1)
+     [u'Scott Torborg', u'Mark Schafer'], 1)
 ]
 
 # -- Options for Texinfo output -----------------------------------------------
